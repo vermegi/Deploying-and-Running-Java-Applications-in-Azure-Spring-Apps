@@ -50,7 +50,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 Now that you have familiarized yourself with the application you will be migrating to Azure, as the next step, you will need to consider different compute options you have at your disposal for hosting this application.
 
-The three primary options you will take into account are Azure App Service, Azure Kubernetes Service and Azure Spring Cloud. Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
+The three primary options you will take into account are Azure App Service, Azure Kubernetes Service and Azure Spring Apps. Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
 
 * The Spring Petclinic application should be accessible via a public endpoint to any user (anonymously).
 * The new implementation of Spring Petclinic should eliminate the need to manually upgrade and manage the underlying infrastructure. Instead, the application should use the platform-as-a-service (PaaS) model.
@@ -60,7 +60,7 @@ Consider any additional steps you may need to perform to migrate the Spring Petc
 
 Fill out the following table based on your analysis:
 
-||Azure App Service|Azure Kubernetes Service|Azure Spring Cloud|
+||Azure App Service|Azure Kubernetes Service|Azure Spring Apps|
 |---|---|---|---|
 |Public endpoint available||||
 |Auto-upgrade underlying hardware||||
@@ -76,15 +76,15 @@ Fill out the following table based on your analysis:
 * Each of the 3 options supports automatic upgrades and eliminates the need to manage the underlying infrastructure.
   * With Azure App Service, upgrades are automatic. All underlying infrastructure is managed by the platform.
   * With Azure Kubernetes Service (AKS), you can enable automatic upgrades based on the channel of your choice (patch, stable, rapid, node-image). The underlying infrastructure consists of VM's that you provision as part of agent pools, however you don't manage them directly. 
-  * With Azure Spring Cloud, all tasks related to upgrading and managing the underlying infrastructure are taken care of by the platform. While Azure Spring Cloud is built on top of an AKS cluster, that cluster is fully managed.
-* Both AKS and Azure Spring Cloud offer a convenient approach to implementing the microservices architecture. They also provide support for Spring Boot applications. If you decided to choose Azure App Service, you would need to create a new web app instance for each microservice, while both AKS and Azure Cloud Spring require only a single instance. AKS also facilitates controlling traffic flow between microservices by using network policies.
-* Azure Spring Cloud Service offers an easy migration path for existing spring boot applications. This would be an advantage for your existing application.
-* Azure Spring Cloud Service eliminates any administrative overhead required to run a Kubernetes cluster. This simplifies the operational model.
+  * With Azure Spring Apps, all tasks related to upgrading and managing the underlying infrastructure are taken care of by the platform. While Azure Spring Apps is built on top of an AKS cluster, that cluster is fully managed.
+* Both AKS and Azure Spring Apps offer a convenient approach to implementing the microservices architecture. They also provide support for Spring Boot applications. If you decided to choose Azure App Service, you would need to create a new web app instance for each microservice, while both AKS and Azure Apps Spring require only a single instance. AKS also facilitates controlling traffic flow between microservices by using network policies.
+* Azure Spring Apps Service offers an easy migration path for existing spring boot applications. This would be an advantage for your existing application.
+* Azure Spring Apps Service eliminates any administrative overhead required to run a Kubernetes cluster. This simplifies the operational model.
 * AKS would require an extra migration step that involves containerizing all components. You will also need to implement Azure Container Registry to store and deploy your container images from.
 * Running and operating an AKS cluster introduces an additional effort.
-* Azure App Service scalability is more limited than AKS or Azure Spring Cloud Service. 
+* Azure App Service scalability is more limited than AKS or Azure Spring Apps Service. 
 
-Given the above constraints and feature sets, in the case of the Spring Petclinic application, Azure Spring Cloud and Azure Kubernetes Service represent the most viable implementation choices. 
+Given the above constraints and feature sets, in the case of the Spring Petclinic application, Azure Spring Apps and Azure Kubernetes Service represent the most viable implementation choices. 
 
 </details>
 
@@ -117,7 +117,7 @@ In Azure all resources that are created and deleted together typically should be
 <details>
 <summary>hint</summary>
 <br/>
-In case you chose to use Azure Spring Cloud, you have the option to deploy Azure Spring Cloud either into a virtual network or deploy it without a virtual network dependency. The latter approach will simplify the task of making the first migrated version of the application accessible from the internet. Later on, in one of the subsequent exercises, you will change this approach to accommodate additional requirements. For now though, for the sake of simplicity, you will not create any virtual networks for Azure Spring Cloud.
+In case you chose to use Azure Spring Apps, you have the option to deploy Azure Spring Apps either into a virtual network or deploy it without a virtual network dependency. The latter approach will simplify the task of making the first migrated version of the application accessible from the internet. Later on, in one of the subsequent exercises, you will change this approach to accommodate additional requirements. For now though, for the sake of simplicity, you will not create any virtual networks for Azure Spring Apps.
 
 In case you chose AKS as the hosting platform, you will need at least one subnet in a virtual network to run the nodes of your AKS cluster. This subnet for now can be small, such as /26, which allows for the total of 64 IP addresses (although some of them are pre-allocated for the platform use).
 
@@ -129,7 +129,7 @@ The Azure Database for MySQL deployment will not require any virtual network con
 <details>
 <summary>hint</summary>
 <br/>
-In case you chose Azure Spring Cloud, no additional supporting services are needed during the first phase of the migration. All you need is a compute platform and a database.
+In case you chose Azure Spring Apps, no additional supporting services are needed during the first phase of the migration. All you need is a compute platform and a database.
 
 In case you chose AKS, you will also need a container registry for storing any container images that will be deployed to the cluster. You can use for this purpose Azure Container Registry.
 </details>
@@ -162,7 +162,7 @@ You also should record any commands and scripts you execute for later reference.
 <details>
 <summary>hint</summary>
 <br/>
-In case you chose Azure Spring Cloud as the target platform, there are no additional tools needed for your to perform the migration steps.
+In case you chose Azure Spring Apps as the target platform, there are no additional tools needed for your to perform the migration steps.
 
 In case you chose AKS as the target platform, you will also need Docker tools to containerize the microservices that the application consists of. You will also need to consider the most optimal base image for containerizing the microservices. 
 </details>
