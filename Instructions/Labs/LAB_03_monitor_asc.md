@@ -1,15 +1,15 @@
 ---
 lab:
-    title: 'Lab: Monitor an Azure Spring Cloud app'
-    module: 'Module 3: Monitor an Azure Spring Cloud app'
+    title: 'Lab: Monitor an Azure Spring Apps application'
+    module: 'Module 3: Monitor an Azure Spring Apps application'
 ---
 
-# Lab: Monitor an Azure Spring Cloud app
+# Lab: Monitor an Azure Spring Azure Apps applications 
 # Student lab manual
 
 ## Lab scenario
 
-You have created your first Spring Cloud service, installed your microservices as apps and exposed them through the api-gateway. Now that everything is up and running, it would be helpful to be able to monitor the availability of your apps and detect any errors or exceptions that might occur during their usage.
+You have created your first Spring Apps service, installed your microservices as apps and exposed them through the api-gateway. Now that everything is up and running, it would be helpful to be able to monitor the availability of your apps and detect any errors or exceptions that might occur during their usage.
 In this lab, you will implement their end-to-end monitoring.
 
 ## Objectives
@@ -39,9 +39,9 @@ In this lab, you'll:
 
 ### Live stream the logs from your apps
 
-As the initial mechanism for debugging any errors that may occur in your apps, Spring Cloud Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task.
+As the initial mechanism for debugging any errors that may occur in your apps, Spring Apps Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task.
 
-[Stream Azure Spring Cloud app logs in real-time](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-log-streaming)
+[Stream Azure Spring Apps application logs in real-time](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-log-streaming)
 
 <details>
 <summary>hint</summary>
@@ -67,15 +67,15 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
 
 ### Configure Application Insights to receive monitoring information from your apps
 
-You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Cloud Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Cloud Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task.
+You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task.
 
-[Use Application Insights Java In-Process Agent in Azure Spring Cloud](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
+[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. Run the following command to check whether Application Insights is linked to your Spring Cloud Service.
+1. Run the following command to check whether Application Insights is linked to your Spring Apps Service.
 
    ```bash
    az spring-cloud app-insights show \
@@ -110,7 +110,7 @@ You now know how to live stream any logs to your console. Next, you will configu
        -o tsv)
    ```
 
-1. You can now use this instrumentation key to reconfigure Application Insights for your Spring Cloud Service.
+1. You can now use this instrumentation key to reconfigure Application Insights for your Spring Apps Service.
 
    ```bash
    az spring-cloud app-insights update \
@@ -134,7 +134,7 @@ You now know how to live stream any logs to your console. Next, you will configu
 
 Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task.
 
-[Use Application Insights Java In-Process Agent in Azure Spring Cloud](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
+[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
 
 Use this guidance to review such Application Insights features as:
 - The Application Map
@@ -149,11 +149,11 @@ Use this guidance to review such Application Insights features as:
 <summary>hint</summary>
 <br/>
 
-1. In your browser, in the Azure Portal, navigate to the page displaying the resource group containing the Spring Cloud service resources.
+1. In your browser, in the Azure Portal, navigate to the page displaying the resource group containing the Spring Apps service resources.
 
 1. Select the Application Insights resource in the resource group. Note that the overview page displays data about Failed requests, Server response time, Server requests and Availability.
 
-1. In the navigation menu, in the **Investigate** section, select **Application map**. This will display information about the apps running in your Spring Cloud Service and their dependencies.
+1. In the navigation menu, in the **Investigate** section, select **Application map**. This will display information about the apps running in your Spring Apps Service and their dependencies.
 
 1. In the application map, select the circle representing the **api-gateway** service. This will display details about this app, including, for example, the slowest requests and failed dependencies.
 
@@ -211,7 +211,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 <summary>hint</summary>
 <br/>
 
-1. When configuring diagnostics settings, you can do so for multiple categories of logs. Each service exposes different categories. Switch back to the Git Bash shell and run the following command to list the log categories that Spring Cloud Service exposes.
+1. When configuring diagnostics settings, you can do so for multiple categories of logs. Each service exposes different categories. Switch back to the Git Bash shell and run the following command to list the log categories that Spring Apps Service exposes.
 
    ```bash
    az monitor diagnostic-settings categories list \
@@ -230,7 +230,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
        --workspace-name $WORKSPACE
    ```
 
-1. Once the provisioning task completes, you can configure the diagnostics settings for your Spring Cloud Service and associate them with the newly created workspace. To accomplish this, first create a file **logs.json** and save it in the same directory you are running your Azure CLI commands from.
+1. Once the provisioning task completes, you can configure the diagnostics settings for your Spring Apps Service and associate them with the newly created workspace. To accomplish this, first create a file **logs.json** and save it in the same directory you are running your Azure CLI commands from.
 
    ```json
    [
@@ -268,7 +268,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
    ]
    ```
 
-1. Now, reference both 2 JSON files to configure the diagnostics settings for your Spring Cloud Service, which will result in its logs being sent to the Log Analytics workspace.
+1. Now, reference both 2 JSON files to configure the diagnostics settings for your Spring Apps Service, which will result in its logs being sent to the Log Analytics workspace.
 
    ```bash
    az monitor diagnostic-settings create \
@@ -287,7 +287,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 
 ### Analyze logs
 
-Once you enabled log data collection from your Spring Cloud Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task.
+Once you enabled log data collection from your Spring Apps Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task.
 
 [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/en-us/azure/spring-cloud/diagnostic-services#analyze-the-logs)
 
@@ -355,4 +355,4 @@ Use this guidance to:
 
 #### Review
 
-In this lab, you implemented end-to-end monitoring of your Spring Cloud service apps.
+In this lab, you implemented end-to-end monitoring of your Spring Apps service apps.
