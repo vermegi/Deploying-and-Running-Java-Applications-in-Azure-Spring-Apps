@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Implement support for outbound messaging by Azure Spring Cloud apps'
-    module: 'Module 5: Implement support for outbound messaging by Azure Spring Cloud apps'
+    title: 'Lab: Implement support for outbound messaging by Azure Spring Apps applications'
+    module: 'Module 5: Implement support for outbound messaging by Azure Spring Apps applications'
 ---
 
-# Lab: Implement support for outbound messaging by Azure Spring Cloud apps
+# Lab: Implement support for outbound messaging using Azure Spring Apps applications
 # Student lab manual
 
 ## Lab scenario
