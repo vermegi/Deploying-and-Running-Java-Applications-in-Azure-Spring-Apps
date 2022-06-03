@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Implement event processing support by Azure Spring Cloud apps'
-    module: 'Module 6: Implement event processing support by Azure Spring Cloud apps'
+    title: 'Lab: Implement event processing support by Azure Spring Apps applications'
+    module: 'Module 6: Implement event processing support by Azure Spring Apps applications'
 ---
 
-# Lab: Implement event processing support by Azure Spring Cloud apps
+# Lab: Implement event processing support by Azure Spring Apps applications
 # Student lab manual
 
 ## Lab scenario
