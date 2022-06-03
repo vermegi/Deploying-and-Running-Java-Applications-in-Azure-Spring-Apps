@@ -1,24 +1,24 @@
 ---
 lab:
-    title: 'Lab: Migrate an existing microservices application to Azure Spring Cloud'
-    module: 'Module 2: Migrate an existing microservices application to Azure Spring Cloud'
+    title: 'Lab: Migrate an existing microservices application to Azure Spring Apps'
+    module: 'Module 2: Migrate an existing microservices application to Azure Spring Apps'
 ---
 
-# Lab: Migrate an existing microservices application to Azure Spring Cloud
+# Lab: Migrate an existing microservices application to Azure Spring Apps
 # Student lab manual
 
 ## Lab scenario
 
-You have established a plan for migrating the Spring Petclinic application to Azure Spring Cloud. It is now time to perform the actual migration of the Spring Petclinic application components.
+You have established a plan for migrating the Spring Petclinic application to Azure Spring Apps. It is now time to perform the actual migration of the Spring Petclinic application components.
 
 ## Objectives
 
 After you complete this lab, you will be able to:
 
-- Create an Azure Spring Cloud service
+- Create an Azure Spring Apps service
 - Set up the config server
 - Create an Azure MySQL Database service
-- Deploy the Spring Petclinic app components to the Spring Cloud service
+- Deploy the Spring Petclinic app components to the Spring Apps service
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
@@ -29,10 +29,10 @@ After you complete this lab, you will be able to:
 ## Instructions
 
 During this lab, you'll:
-- Create an Azure Spring Cloud service
+- Create an Azure Spring Apps service
 - Set up the config server
 - Create an Azure MySQL Database service
-- Deploy the Spring Petclinic app components to the Spring Cloud service
+- Deploy the Spring Petclinic app components to the Spring Apps service
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
@@ -65,12 +65,12 @@ During this lab, you'll:
 
    > **Note**: To set up jq, download the executable to the /bin subfolder (you might need to create it) of the current user's profile folder and rename the executable to jq.exe.
 
-### Create an Azure Spring Cloud service
+### Create an Azure Spring Apps service
 
-As the next step, you will create an Azure Spring Cloud Service instance. You will use for this purpose Azure CLI. If you are interested in accomplishing this programmatically, review the Microsoft documentation that describes the provisioning process.
+As the next step, you will create an Azure Spring Apps Service instance. You will use for this purpose Azure CLI. If you are interested in accomplishing this programmatically, review the Microsoft documentation that describes the provisioning process.
 
 
-- [Guidance on Azure Spring Cloud creation](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance?tabs=Azure-CLI&pivots=programming-language-java)
+- [Guidance on Azure Spring Apps creation](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance?tabs=Azure-CLI&pivots=programming-language-java)
 
 <details>
 <summary>hint</summary>
@@ -84,7 +84,7 @@ As the next step, you will create an Azure Spring Cloud Service instance. You wi
 
 1. Executing the command will automatically open a web browser window prompting you to authenticate. Once prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab and close the web browser window.
 
-1. From the Git Bash prompt, run the following command to add the Azure Spring Cloud Azure CLI extension:
+1. From the Git Bash prompt, run the following command to add the Azure Spring Apps Azure CLI extension:
 
    ```bash
    az extension add --name spring-cloud
@@ -98,7 +98,7 @@ As the next step, you will create an Azure Spring Cloud Service instance. You wi
 
    > **Note**: If you receive the message `No updates available for 'spring-cloud', simply proceed to the next step.
 
-1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Cloud service and an Azure Database for MySQL Single Server instance):
+1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Apps service and an Azure Database for MySQL Single Server instance):
 
    ```bash
    RESOURCE_GROUP=springcloudlab_rg_$RANDOM
@@ -106,7 +106,7 @@ As the next step, you will create an Azure Spring Cloud Service instance. You wi
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
 
-1. Run the following commands to create an instance of the standard SKU of the Azure Spring Cloud service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
+1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
    SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
@@ -120,7 +120,7 @@ As the next step, you will create an Azure Spring Cloud Service instance. You wi
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
-1. Run the following command to set your default resource group name and Spring Cloud service name. By setting these defaults, you don't need to repeat these names in the subsequent commands.
+1. Run the following command to set your default resource group name and Spring Apps service name. By setting these defaults, you don't need to repeat these names in the subsequent commands.
 
    ```bash
    az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_CLOUD_SERVICE
@@ -130,17 +130,17 @@ As the next step, you will create an Azure Spring Cloud Service instance. You wi
 
 1. In the Azure portal, use the **Search resources, services, and docs** text box to search for and navigate to the resource group you just created.
 
-1. On the resource group overview pane, verify that the resource group contains an Azure Spring Cloud instance.
+1. On the resource group overview pane, verify that the resource group contains an Azure Spring Apps instance.
 
-   > **Note**: In case you don't see the Azure Spring Cloud service in the overview list of the resource group, select the **Refresh** toolbar button to refresh the view of the resource group resources.
+   > **Note**: In case you don't see the Azure Spring Apps service in the overview list of the resource group, select the **Refresh** toolbar button to refresh the view of the resource group resources.
 
-1. Select the Azure Spring Cloud instance and, in the vertical navigation menu, in the **Settings** section, select **Apps**. Note that the instance does not include any spring apps at this point. You will perform the app deployment later in this exercise.
+1. Select the Azure Spring Apps instance and, in the vertical navigation menu, in the **Settings** section, select **Apps**. Note that the instance does not include any spring apps at this point. You will perform the app deployment later in this exercise.
 
 </details>
 
 ### Set up the config server
 
-Spring Cloud service provides a config server for the use of Spring Cloud apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings. 
+Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings. 
 
 <details>
 <summary>hint</summary>
@@ -208,7 +208,7 @@ Spring Cloud service provides a config server for the use of Spring Cloud apps. 
 
 </details>
 
-Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Spring Cloud instance. As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server.
+Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server.
 
 [Guidance on config server setup](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java)
 [Guidance for a private repo with basic authentication](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-config-server#private-repository-with-basic-authentication)
@@ -259,7 +259,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 ### Create an Azure MySQL Database service
 
-You now have the compute service that will host your applications and the config server that will be used by your migrated application. Before you start deploying individual microservices as Azure Spring Cloud apps, you need to first create an Azure Database for MySQL Single Server-hosted database for them. To accomplish this, you can use the following guidance.
+You now have the compute service that will host your applications and the config server that will be used by your migrated application. Before you start deploying individual microservices as Azure Spring Apps applications, you need to first create an Azure Database for MySQL Single Server-hosted database for them. To accomplish this, you can use the following guidance.
 
 [Create MySQL Single Server and Database](https://docs.microsoft.com/en-us/azure/mysql/quickstart-create-mysql-server-database-using-azure-cli)
 
@@ -298,7 +298,7 @@ You will also need to update the config for your applications to use the newly p
          --name $DATABASE_NAME
    ```
 
-1. You will also need to allow connections to the server from Azure Spring Cloud. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Cloud will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Cloud instance. 
+1. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance. 
 
    ```bash
    az mysql server firewall-rule create --name allAzureIPs \
@@ -339,11 +339,11 @@ You will also need to update the config for your applications to use the newly p
 
    > **Note**: At this point, the admin account user name and password are stored in clear text in the application.yml config file. In one of upcoming exercises, you will remediate this potential vulnerability by removing clear text credentials from your configuration.
 
-### Deploy the Spring Petclinic app components to the Spring Cloud service
+### Deploy the Spring Petclinic app components to the Spring Apps service
 
-You now have the compute and data services available for deployment of the components of your applications, including spring-petclinic-admin-server, spring-petclinic-customers-service, spring-petclinic-vets-service, spring-petclinic-visits-service and spring-petclinic-api-gateway. In this task, you will deploy these components as microservices to the Azure Spring Cloud service. You will not be deploying the spring-petclinic-config-server and spring-petclinic-discovery-server to Azure Spring Cloud, since these will be provided to you by the platform. To perform the deployment, you can use the following guidance:
+You now have the compute and data services available for deployment of the components of your applications, including spring-petclinic-admin-server, spring-petclinic-customers-service, spring-petclinic-vets-service, spring-petclinic-visits-service and spring-petclinic-api-gateway. In this task, you will deploy these components as microservices to the Azure Spring Apps service. You will not be deploying the spring-petclinic-config-server and spring-petclinic-discovery-server to Azure Spring Apps, since these will be provided to you by the platform. To perform the deployment, you can use the following guidance:
 
-[Guidance on creating apps on Azure Spring Cloud](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java)
+[Guidance on creating apps on Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java)
 
    > **Note**: The spring-petclinic-api-gateway and spring-petclinic-admin-server will have a public endpoint assigned to them.
 
@@ -381,7 +381,7 @@ You now have the compute and data services available for deployment of the compo
    [INFO] ------------------------------------------------------------------------
    ```
 
-1. For each application you will now create an app on Azure Spring Cloud service. You will start with the api-gateway. To deploy it, from the Git Bash prompt, run the following command:
+1. For each application you will now create an app on Azure Spring Apps service. You will start with the api-gateway. To deploy it, from the Git Bash prompt, run the following command:
 
    ```bash
    az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
@@ -506,7 +506,7 @@ Now that you have deployed all of your microservices, verify that the applicatio
                            --output table
    ```
 
-1. Alternatively, you can switch to the web browser window displaying the Azure portal interface, navigate to your Spring Cloud instance and select **Apps** from the vertical navigation menu. In the list of apps, select **api-gateway**, on the **api-gateway \| Overview** page, note the value of the **URL** property.
+1. Alternatively, you can switch to the web browser window displaying the Azure portal interface, navigate to your Azure Spring Apps instance and select **Apps** from the vertical navigation menu. In the list of apps, select **api-gateway**, on the **api-gateway \| Overview** page, note the value of the **URL** property.
 
 1. Open another web browser tab and navigate to the URL of the api-gateway endpoint to display the application web interface. 
 
@@ -514,4 +514,4 @@ Now that you have deployed all of your microservices, verify that the applicatio
 
 #### Review
 
-In this lab, you migrated your existing Spring Petclinic microservices application to Azure Spring Cloud.
+In this exercise, you migrated your existing Spring Petclinic microservices application to Azure Spring Apps.
