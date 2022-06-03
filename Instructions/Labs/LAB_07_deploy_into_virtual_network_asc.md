@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Enhance network security of Azure Spring Cloud apps'
-    module: 'Module 7: Enhance network security of Azure Spring Cloud apps'
+    title: 'Lab: Enhance network security of Azure Spring Apps applications'
+    module: 'Module 7: Enhance network security of Azure Spring Apps applications'
 ---
 
-# Lab: Enhance network security of Azure Spring Cloud apps
+# Lab: Enhance network security of Azure Spring Apps applications
 # Student lab manual
 
 ## Lab scenario
@@ -16,10 +16,10 @@ By now, you have completed setting up your Spring Petclinic application in Azure
 After you complete this lab, you will be able to:
 
 - Create networking resources
-- Recreate Azure Spring Cloud service and apps in the virtual network
+- Recreate Azure Spring Apps service and apps in the virtual network
 - Configure a private DNS zone
 - Acquire a certificate and add it to Key Vault
-- Configure a domain in Azure Spring Cloud
+- Configure a domain in Azure Spring Apps
 - Create the Application Gateway resources
 - Access the application by DNS name
 - Configure WAF on Application Gateway
@@ -33,10 +33,10 @@ After you complete this lab, you will be able to:
 During this lab, you'll:
 
 - Create networking resources
-- Recreate Azure Spring Cloud service and apps in the virtual network
+- Recreate Azure Spring Apps service and apps in the virtual network
 - Configure a private DNS zone
 - Acquire a certificate and add it to Key Vault
-- Configure a domain in Azure Spring Cloud
+- Configure a domain in Azure Spring Apps
 - Create the Application Gateway resources
 - Access the application by DNS name
 - Configure WAF on Application Gateway
