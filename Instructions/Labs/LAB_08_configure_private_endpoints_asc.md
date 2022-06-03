@@ -1,15 +1,15 @@
 ---
 lab:
-    title: 'Lab: Configure private endpoints for Azure Spring Cloud apps'
-    module: 'Module 8: Configure private endpoints for Azure Spring Cloud apps'
+    title: 'Lab: Configure private endpoints for Azure Spring Apps applications'
+    module: 'Module 8: Configure private endpoints for Azure Spring Apps applications'
 ---
 
-# Lab: Configure private endpoints for Azure Spring Cloud apps
+# Lab: Configure private endpoints for Azure Spring Apps applications
 # Student lab manual
 
 ## Lab scenario
 
-You now have your Azure Spring Cloud application deployed into a virtual network and the application connection requests from the internet must pass through your Application Gateway instance with Web Application Firewall enabled. However, the apps communicate with the backend services, such Azure Database for MySQL Single Server and Key Vault via their public endpoints. In this exercise, you will lock them down by implementing a configuration in which they only accept connections that originate from within your virtual network. 
+You now have your Azure Spring Apps application deployed into a virtual network and the application connection requests from the internet must pass through your Application Gateway instance with Web Application Firewall enabled. However, the apps communicate with the backend services, such Azure Database for MySQL Single Server and Key Vault via their public endpoints. In this exercise, you will lock them down by implementing a configuration in which they only accept connections that originate from within your virtual network. 
 
 ## Objectives
 
@@ -175,4 +175,4 @@ As the last step of this exercise and the lab, test again your setup. You should
 
 #### Review
 
-In this lab, you implemented a configuration in which PaaS services used by Azure Spring Cloud apps accept only connections that originate from within the virtual network hosting these apps.
+In this lab, you implemented a configuration in which PaaS services used by Azure Spring Apps applications accept only connections that originate from within the virtual network hosting these apps.
