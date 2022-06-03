@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Securing Azure Spring Cloud app secrets'
-    module: 'Module 4: Securing Azure Spring Cloud app secrets'
+    title: 'Lab: Securing Azure Spring Apps application secrets'
+    module: 'Module 4: Securing Azure Spring Apps application secrets'
 ---
 
-# Lab: Securing Azure Spring Cloud app secrets
+# Lab: Securing Azure Spring Apps application secrets
 # Student lab manual
 
 ## Lab scenario
