@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Securing Azure Spring Apps application secrets'
-    module: 'Module 4: Securing Azure Spring Apps application secrets'
+    title: 'Lab: Secure application secrets using Key Vault'
+    module: 'Module 4: Secure application secrets using Key Vaults'
 ---
 
-# Lab: Securing Azure Spring Apps application secrets
-# Student lab manual
+# Lab: Secure application secrets using Key Vault
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 Your team is now running a first version of the spring-petclinic microservice application in Azure. However you are concerned that your application secrets are stored directly in configuration code. As a matter of fact, GitHub has been generating notifications informing you about this vulnerability. You want to remediate this issue and implement a secure method of storing application secrets that are part of the database connection string. In this unit, you will step through implementing such method. 
 
