@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Configure private endpoints for Azure Spring Apps applications'
-    module: 'Module 8: Configure private endpoints for Azure Spring Apps applications'
+    title: 'Lab: Secure MySQL database and Key Vault using a Private Endpoint'
+    module: 'Module 8: Secure MySQL database and Key Vault using a Private Endpoint'
 ---
 
-# Lab: Configure private endpoints for Azure Spring Apps applications
-# Student lab manual
+# Lab: Secure MySQL database and Key Vault using a Private Endpoint
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 You now have your Azure Spring Apps application deployed into a virtual network and the application connection requests from the internet must pass through your Application Gateway instance with Web Application Firewall enabled. However, the apps communicate with the backend services, such Azure Database for MySQL Single Server and Key Vault via their public endpoints. In this exercise, you will lock them down by implementing a configuration in which they only accept connections that originate from within your virtual network. 
 
