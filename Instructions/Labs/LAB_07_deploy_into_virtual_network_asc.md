@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Enhance network security of Azure Spring Apps applications'
-    module: 'Module 7: Enhance network security of Azure Spring Apps applications'
+    title: 'Lab: Protect endpoints using Web Application Firewalls'
+    module: 'Module 7: Protect endpoints using Web Application Firewall'
 ---
 
-# Lab: Enhance network security of Azure Spring Apps applications
-# Student lab manual
+# Lab: Protect endpoints using Web Application Firewall
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 By now, you have completed setting up your Spring Petclinic application in Azure and secured the secrets used by the microservices to connect to their data store. You are satisfied with the results, but you do recognize that there is still room for improvements. In particular, you are concerned with the public endpoints of the application which are directly accessible to anyone with access to the internet. You would like to add a Web Application Firewall to filter incoming requests to your application. In this exercise, you will step through implementing this configuration.
 
