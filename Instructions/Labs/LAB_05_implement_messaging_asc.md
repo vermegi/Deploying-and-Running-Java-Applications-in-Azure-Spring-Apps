@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Implement support for outbound messaging by Azure Spring Apps applications'
-    module: 'Module 5: Implement support for outbound messaging by Azure Spring Apps applications'
+    title: 'Lab: Create and configure Azure Service Bus for Azure Spring Apps'
+    module: 'Module 5: Create and configure Azure Service Bus for Azure Spring Apps'
 ---
 
-# Lab: Implement support for outbound messaging using Azure Spring Apps applications
-# Student lab manual
+# Lab: Create and configure Azure Service Bus for Azure Spring Apps
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 You have now set up and deployed the Spring Petclinic application. Some of the microservices however also need to send messages to a third party system over a message bus and you want to enable an intake of telemetry events. You want to provide this functionality with native Azure services such as Azure Service Bus and Azure Event Hub. You will start by implementing support for outbound messaging.
 
