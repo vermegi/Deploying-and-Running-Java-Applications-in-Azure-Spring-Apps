@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Migrate an existing microservices application to Azure Spring Apps'
-    module: 'Module 2: Migrate an existing microservices application to Azure Spring Apps'
+    title: 'Lab: Migrate a Spring Apps application to Azure'
+    module: 'Module 2: Migrate a Spring Apps application to Azure'
 ---
 
-# Lab: Migrate an existing microservices application to Azure Spring Apps
-# Student lab manual
+# Lab: Migrate a Spring Apps application to Azure
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 You have established a plan for migrating the Spring Petclinic application to Azure Spring Apps. It is now time to perform the actual migration of the Spring Petclinic application components.
 
