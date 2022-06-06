@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Implement event processing support by Azure Spring Apps applications'
-    module: 'Module 6: Implement event processing support by Azure Spring Apps applications'
+    title: 'Lab: Configure Azure Event Hubs for Azure Spring Apps'
+    module: 'Module 6: Configure Azure Event Hubs for Azure Spring Apps'
 ---
 
-# Lab: Implement event processing support by Azure Spring Apps applications
-# Student lab manual
+# Lab: Configure Azure Event Hubs for Azure Spring Apps
+# Student challenge manual
 
-## Lab scenario
+## Challenge scenario
 
 You have completed implement messaging functionality for the Spring Petclinic application. Now, you will implement the event processing functionality by integrating your application with Event Hub.
 
