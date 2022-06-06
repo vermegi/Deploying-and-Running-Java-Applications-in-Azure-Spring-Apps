@@ -1,13 +1,13 @@
 ---
 lab:
-    title: 'Lab: Plan for migrating an existing microservices application to Azure'
-    module: 'Module 1: Plan for migrating an existing microservices application to Azure'
+    title: 'Lab: Plan a Java application migration to Azure Spring Apps'
+    module: 'Module 1: Plan a Java application migration to Azure Spring Apps'
 ---
 
-# Lab: Plan for migrating an existing microservices application to Azure
-# Student lab manual
+# Lab: Plan a Java application migration to Azure Spring Apps
+# Student challenge 
 
-## Lab scenario
+## Challenge scenario
 
 You want to establish a plan for migrating your existing Spring Petclinic microservices application to Azure. 
 
@@ -23,7 +23,7 @@ After you complete this lab, you will be able to:
 
 ## Lab Duration
 
-- **Estimated Time**: 30 minutes
+- **Estimated Time**: 45 minutes
 
 ## Instructions
 
