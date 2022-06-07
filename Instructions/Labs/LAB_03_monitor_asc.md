@@ -4,8 +4,8 @@ lab:
     module: 'Module 3: Enable monitoring and end-to-end tracing'
 ---
 
-# Lab: Enable monitoring and end-to-end tracing 
-# Student challenge manual
+# Challenge: Enable monitoring and end-to-end tracing 
+# Student manual
 
 ## Challenge scenario
 
@@ -14,7 +14,7 @@ In this lab, you will implement their end-to-end monitoring.
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Live stream the logs from your apps
 - Configure Application Insights to receive monitoring information from your apps
@@ -28,7 +28,7 @@ After you complete this lab, you will be able to:
 
 ## Instructions
 
-In this lab, you'll:
+In this challenge, you'll:
 - Live stream the logs from your apps
 - Configure Application Insights to receive monitoring information from your apps
 - Analyze app-specific monitoring data
