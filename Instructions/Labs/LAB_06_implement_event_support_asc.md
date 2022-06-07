@@ -4,8 +4,8 @@ lab:
     module: 'Module 6: Configure Azure Event Hubs for Azure Spring Apps'
 ---
 
-# Lab: Configure Azure Event Hubs for Azure Spring Apps
-# Student challenge manual
+# Challenge: Configure Azure Event Hubs for Azure Spring Apps
+# Student manual
 
 ## Challenge scenario
 
@@ -13,20 +13,20 @@ You have completed implement messaging functionality for the Spring Petclinic ap
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Create an Azure Event Hub resource
 - Use an existing microservice to send events to the Event Hub resource
 - Update an existing microservice to receive Event Hub events
 - Inspect telemetry data being received
 
-## Lab Duration
+## Challenge Duration
 
 - **Estimated Time**: 60 minutes
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 
 - Create an Azure Event Hub resource
 - Use an existing microservice to send events to the Event Hub resource
