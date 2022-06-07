@@ -4,8 +4,8 @@ lab:
     module: 'Module 4: Secure application secrets using Key Vaults'
 ---
 
-# Lab: Secure application secrets using Key Vault
-# Student challenge manual
+# Challenge: Secure application secrets using Key Vault
+# Student  manual
 
 ## Challenge scenario
 
@@ -13,7 +13,7 @@ Your team is now running a first version of the spring-petclinic microservice ap
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Create an Azure Key Vault instance
 - Store your connection string elements as Azure Key Vault secrets
@@ -28,7 +28,7 @@ After you complete this lab, you will be able to:
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 
 - Create an Azure Key Vault instance
 - Store your connection string elements as Azure Key Vault secrets
