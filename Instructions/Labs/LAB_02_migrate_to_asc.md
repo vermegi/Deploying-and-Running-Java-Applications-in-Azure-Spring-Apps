@@ -22,7 +22,7 @@ After you complete this challenge, you will be able to:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-## challenge Duration
+## Challenge Duration
 
 - **Estimated Time**: 120 minutes
 
