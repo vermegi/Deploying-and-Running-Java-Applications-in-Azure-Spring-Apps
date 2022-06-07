@@ -4,7 +4,7 @@ lab:
     module: 'Module 1: Plan a Java application migration to Azure Spring Apps'
 ---
 
-# Lab: Plan a Java application migration to Azure Spring Apps
+# Challenge: Plan a Java application migration to Azure Spring Apps
 # Student challenge 
 
 ## Challenge scenario
