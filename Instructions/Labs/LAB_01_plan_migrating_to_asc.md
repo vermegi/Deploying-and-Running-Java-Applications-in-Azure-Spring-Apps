@@ -5,7 +5,7 @@ lab:
 ---
 
 # Challenge: Plan a Java application migration to Azure Spring Apps
-# Student challenge 
+# Student procedures 
 
 ## Challenge scenario
 
