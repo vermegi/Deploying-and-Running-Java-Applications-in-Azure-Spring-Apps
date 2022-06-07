@@ -4,8 +4,8 @@ lab:
     module: 'Module 7: Protect endpoints using Web Application Firewall'
 ---
 
-# Lab: Protect endpoints using Web Application Firewall
-# Student challenge manual
+# Challenge: Protect endpoints using Web Application Firewall
+# Student manual
 
 ## Challenge scenario
 
@@ -13,7 +13,7 @@ By now, you have completed setting up your Spring Petclinic application in Azure
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Create networking resources
 - Recreate Azure Spring Apps service and apps in the virtual network
@@ -24,13 +24,13 @@ After you complete this lab, you will be able to:
 - Access the application by DNS name
 - Configure WAF on Application Gateway
 
-## Lab Duration
+## Challenge Duration
 
 - **Estimated Time**: 60 minutes
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 
 - Create networking resources
 - Recreate Azure Spring Apps service and apps in the virtual network
