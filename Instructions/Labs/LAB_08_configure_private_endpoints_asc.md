@@ -4,8 +4,8 @@ lab:
     module: 'Module 8: Secure MySQL database and Key Vault using a Private Endpoint'
 ---
 
-# Lab: Secure MySQL database and Key Vault using a Private Endpoint
-# Student challenge manual
+# Challenge: Secure MySQL database and Key Vault using a Private Endpoint
+# Student manual
 
 ## Challenge scenario
 
@@ -13,19 +13,19 @@ You now have your Azure Spring Apps application deployed into a virtual network 
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 - Lock down the Key Vault instance by using a private endpoint
 - Test your setup
 
-## Lab Duration
+## Challenge Duration
 
 - **Estimated Time**: 60 minutes
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 
 - Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 - Lock down the Key Vault instance by using a private endpoint
