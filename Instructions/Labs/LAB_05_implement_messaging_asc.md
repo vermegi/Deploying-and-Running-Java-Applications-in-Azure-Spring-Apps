@@ -4,8 +4,8 @@ lab:
     module: 'Module 5: Create and configure Azure Service Bus for Azure Spring Apps'
 ---
 
-# Lab: Create and configure Azure Service Bus for Azure Spring Apps
-# Student challenge manual
+# Challenge: Create and configure Azure Service Bus for Azure Spring Apps
+# Student manual
 
 ## Challenge scenario
 
@@ -13,20 +13,20 @@ You have now set up and deployed the Spring Petclinic application. Some of the m
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Create Azure Service Bus resources
 - Test the messaging functionality
 - Update the remaining microservice to use the message queues
 - Add the message producers and listeners
 
-## Lab Duration
+## Challenge Duration
 
 - **Estimated Time**: 60 minutes
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 
 - Create Azure Service Bus resources
 - Test the messaging functionality
