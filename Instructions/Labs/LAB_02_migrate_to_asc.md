@@ -4,8 +4,8 @@ lab:
     module: 'Module 2: Migrate a Spring Apps application to Azure'
 ---
 
-# Lab: Migrate a Spring Apps application to Azure
-# Student challenge manual
+# Challenge: Migrate a Spring Apps application to Azure
+# Student manual
 
 ## Challenge scenario
 
@@ -13,7 +13,7 @@ You have established a plan for migrating the Spring Petclinic application to Az
 
 ## Objectives
 
-After you complete this lab, you will be able to:
+After you complete this challenge, you will be able to:
 
 - Create an Azure Spring Apps service
 - Set up the config server
@@ -22,13 +22,13 @@ After you complete this lab, you will be able to:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-## Lab Duration
+## challenge Duration
 
 - **Estimated Time**: 120 minutes
 
 ## Instructions
 
-During this lab, you'll:
+During this challenge, you'll:
 - Create an Azure Spring Apps service
 - Set up the config server
 - Create an Azure MySQL Database service
