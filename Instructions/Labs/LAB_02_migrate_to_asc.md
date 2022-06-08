@@ -110,7 +110,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    ```bash
    SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
-   az spring-cloud create --name $SPRING_CLOUD_SERVICE \
+   az spring create --name $SPRING_CLOUD_SERVICE \
                           --resource-group $RESOURCE_GROUP \
                           --location $LOCATION \
                           --sku Standard
