@@ -109,7 +109,7 @@ You now have a clear understanding of which Azure services you will have working
 <details>
 <summary>hint</summary>
 <br/>
-In Azure all resources that are created and deleted together typically should belong to the same resource group. In this case, since there is 1 application which provides a specific functionality, you can provision all resources for this application in a single resource group
+In Azure all resources that are created and deleted together typically should belong to the same resource group. In this case, since there is 1 application which provides a specific functionality, you can provision all resources for this application in a single resource group. 
 
 For information on how to organize your cloud-based resources to secure, manage, and track costs related to your workloads, see [Organize your Azure resources effectively](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-setup-guide/organize-resources)
 </details>
