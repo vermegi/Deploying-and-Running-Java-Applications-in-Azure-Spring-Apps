@@ -92,7 +92,7 @@ Given the above constraints and feature sets, in the case of the Spring Petclini
 
 Now that you identified the viable compute platforms, you need to decide which Azure service could be used to store the applications data.
 
-Azure platform offers several database-as-a-services options, including Azure SQL Database, Azure Database for MySQL, Azure Cosmos DB, and Azure Database for PostgreSQL. Your choice of the database technology should be based on the following requirements for the Spring Petclinic application:
+Azure platform offers several database-as-a-services options, including [Azure SQL Database](https://docs.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview?view=azuresql), [Azure Database for MySQL](https://docs.microsoft.com/en-us/azure/mysql/), [Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction), and [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/). Your choice of the database technology should be based on the following requirements for the Spring Petclinic application:
 
 * The target database service should simplify the migration path from the on-premises MySQL deployment. 
 * The target database service must support automatic backups.
