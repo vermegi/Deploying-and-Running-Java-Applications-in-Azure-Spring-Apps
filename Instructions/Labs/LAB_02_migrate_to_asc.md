@@ -39,10 +39,15 @@ During this challenge, you'll:
    > **Note**: Your workstation contains the following components installed:
 
    - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
-   - Git available from [Git Downloads](https://git-scm.com/downloads)
+   - Git for Windows 3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
-   - jq available from [jq downloads](https://stedolan.github.io/jq/download/).
+   - jq available from [jq downloads](https://stedolan.github.io/jq/download/)
+   - Azure CLI version 2.37.0
+
+   > **Note**: If needed, reinstall the Git for Windows and, during installation, ensure that the Git Credential Manager is enabled.
+
+   > **Note**: If needed, upgrade the Azure CLI version by launching Command Prompt as administrator and running `az upgrade`.
 
    > **Note**: Following the installation of Git, ensure to set the global configuration variables user.email and user.name by running the following commands from the Git Bash shell (replace the `<your-email-address>` and `<your-full-name>` placeholders with your email address and your full name):
 
@@ -87,13 +92,13 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. From the Git Bash prompt, run the following command to add the Azure Spring Apps Azure CLI extension:
 
    ```bash
-   az extension add --name spring-cloud
+   az extension add --name spring
    ```
 
 1. Run the following command to update this extension to its latest version:
 
    ```bash
-   az extension update --name spring-cloud
+   az extension update --name spring
    ```
 
    > **Note**: If you receive the message `No updates available for 'spring-cloud', simply proceed to the next step.
@@ -152,18 +157,10 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 
    > **Note**: Make sure to configure the repository as private.
 
-   > **Note**: Record the value of the URL of the newly created GitHub repository. You will need it later in this lab. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
-
-1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**, and record the commands listed there. You will need them later in this task.
-
-   > **Note**: The commands should resemble the following ones (where the `<your-github-username>` placeholder represents your GitHub user name):
-
-   ```bash
-   git remote add origin https://github.com/<your-github-username>/spring-petclinic-microservices.git
-   git branch -M main
-   git push -u origin main
-   ```
-
+1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**.
+    
+    > **Note**: Record the value of the URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+    
 1. On your lab computer, in the Git Bash window, run the following commands to clone the [Spring Petclinic](https://github.com/spring-petclinic/spring-petclinic-microservices) application to your workstation:
 
    ```bash
