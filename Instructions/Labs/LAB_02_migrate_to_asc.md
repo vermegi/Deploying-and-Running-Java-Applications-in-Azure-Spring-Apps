@@ -39,7 +39,7 @@ During this challenge, you'll:
    > **Note**: Your workstation contains the following components installed:
 
    - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
-   - Git for Windows 3.61 available from [Git Downloads](https://git-scm.com/downloads)
+   - Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
    - jq available from [jq downloads](https://stedolan.github.io/jq/download/)
