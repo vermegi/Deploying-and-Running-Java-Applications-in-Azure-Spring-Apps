@@ -50,7 +50,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 Now that you have familiarized yourself with the application you will be migrating to Azure, as the next step, you will need to consider different compute options you have at your disposal for hosting this application.
 
-The three primary options you will take into account are [Azure App Sevice](https://docs.microsoft.com/en-us/azure/app-service/overview), [Azure Kubernetes Sevice](https://docs.microsoft.com/en-us/azure/aks/intro-kubernetes) and [Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
+The three primary options you will take into account are [Azure App Sevice](https://docs.microsoft.com/azure/app-service/overview), [Azure Kubernetes Sevice](https://docs.microsoft.com/en-us/azure/aks/intro-kubernetes) and [Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
 
 * The Spring Petclinic application should be accessible via a public endpoint to any user (anonymously).
 * The new implementation of Spring Petclinic should eliminate the need to manually upgrade and manage the underlying infrastructure. Instead, the application should use the platform-as-a-service (PaaS) model.
@@ -92,7 +92,7 @@ Given the above constraints and feature sets, in the case of the Spring Petclini
 
 Now that you identified the viable compute platforms, you need to decide which Azure service could be used to store the applications data.
 
-Azure platform offers several database-as-a-services options, including [Azure SQL Database](https://docs.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview?view=azuresql), [Azure Database for MySQL](https://docs.microsoft.com/en-us/azure/mysql/), [Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction), and [Azure Database for PostgreSQL](https://docs.microsoft.com/en-us/azure/postgresql/). Your choice of the database technology should be based on the following requirements for the Spring Petclinic application:
+Azure platform offers several database-as-a-services options, including [Azure SQL Database](https://docs.microsoft.com/azure/azure-sql/database/sql-database-paas-overview?view=azuresql), [Azure Database for MySQL](https://docs.microsoft.com/en-us/azure/mysql/), [Azure Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/introduction), and [Azure Database for PostgreSQL](https://docs.microsoft.com/azure/postgresql/). Your choice of the database technology should be based on the following requirements for the Spring Petclinic application:
 
 * The target database service should simplify the migration path from the on-premises MySQL deployment. 
 * The target database service must support automatic backups.
@@ -111,7 +111,7 @@ You now have a clear understanding of which Azure services you will have working
 <br/>
 In Azure all resources that are created and deleted together typically should belong to the same resource group. In this case, since there is 1 application which provides a specific functionality, you can provision all resources for this application in a single resource group. 
     
-For information on how to organize your cloud-based resources to secure, manage, and track costs related to your workloads, see [Organize your Azure resources effectively](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-setup-guide/organize-resources).
+For information on how to organize your cloud-based resources to secure, manage, and track costs related to your workloads, see [Organize your Azure resources effectively](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-setup-guide/organize-resources).
     
 </details>
 
@@ -147,7 +147,7 @@ You have now identified the resources you will need to proceed with the first st
 <details>
 <summary>hint</summary>
 <br/>
-For connecting to the Azure platform, you can use either the [Azure portal](http://portal.azure.com), or command line tools such as [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/what-is-azure-cli). The latter might be more challenging, but it will facilitate scripting your setup and making it repeatable in case anything needs to change or recreated.
+For connecting to the Azure platform, you can use either the [Azure portal](http://portal.azure.com), or command line tools such as [Azure CLI](https://docs.microsoft.com/cli/azure/what-is-azure-cli). The latter might be more challenging, but it will facilitate scripting your setup and making it repeatable in case anything needs to change or recreated.
 In your lab environment, make sure you can log into the Azure portal by using the credentials that were provided to you for running the lab.
 
 It is also a good idea to double check whether Azure CLI was correctly installed in your lab environment by running the following command from the Git Bash shell window:
