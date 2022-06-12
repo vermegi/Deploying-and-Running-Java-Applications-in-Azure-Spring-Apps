@@ -75,7 +75,7 @@ During this challenge, you'll:
 As the next step, you will create an Azure Spring Apps Service instance. You will use for this purpose Azure CLI. If you are interested in accomplishing this programmatically, review the Microsoft documentation that describes the provisioning process.
 
 
-- [Guidance on Azure Spring Apps creation](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-provision-service-instance?tabs=Azure-CLI&pivots=programming-language-java)
+- [Guidance on Azure Spring Apps creation](https://docs.microsoft.com/azure/spring-cloud/quickstart-provision-service-instance?tabs=Azure-CLI&pivots=programming-language-java)
 
 <details>
 <summary>hint</summary>
@@ -207,8 +207,8 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 
 Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server.
 
-[Guidance on config server setup](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java)
-[Guidance for a private repo with basic authentication](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-config-server#private-repository-with-basic-authentication)
+[Guidance on config server setup](https://docs.microsoft.com/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java)
+[Guidance for a private repo with basic authentication](https://docs.microsoft.com/azure/spring-cloud/how-to-config-server#private-repository-with-basic-authentication)
 [Guidance for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 <details>
@@ -258,7 +258,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 You now have the compute service that will host your applications and the config server that will be used by your migrated application. Before you start deploying individual microservices as Azure Spring Apps applications, you need to first create an Azure Database for MySQL Single Server-hosted database for them. To accomplish this, you can use the following guidance.
 
-[Create MySQL Single Server and Database](https://docs.microsoft.com/en-us/azure/mysql/quickstart-create-mysql-server-database-using-azure-cli)
+[Create MySQL Single Server and Database](https://docs.microsoft.com/azure/mysql/quickstart-create-mysql-server-database-using-azure-cli)
 
 You will also need to update the config for your applications to use the newly provisioned MySQL Server to authorize access to your private GitHub repository. This will involve updating the application.yml config file in your private git config repo with the values provided in the MySQL Server connection string.
 
@@ -340,7 +340,7 @@ You will also need to update the config for your applications to use the newly p
 
 You now have the compute and data services available for deployment of the components of your applications, including spring-petclinic-admin-server, spring-petclinic-customers-service, spring-petclinic-vets-service, spring-petclinic-visits-service and spring-petclinic-api-gateway. In this task, you will deploy these components as microservices to the Azure Spring Apps service. You will not be deploying the spring-petclinic-config-server and spring-petclinic-discovery-server to Azure Spring Apps, since these will be provided to you by the platform. To perform the deployment, you can use the following guidance:
 
-[Guidance on creating apps on Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java)
+[Guidance on creating apps on Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/quickstart-deploy-apps?tabs=Azure-CLI&pivots=programming-language-java)
 
    > **Note**: The spring-petclinic-api-gateway and spring-petclinic-admin-server will have a public endpoint assigned to them.
 
