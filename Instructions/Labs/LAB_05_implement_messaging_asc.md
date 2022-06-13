@@ -53,6 +53,7 @@ The connection to the Service Bus needs to be stored in the **spring.jms.service
        servicebus:
          connection-string: ${spring.jms.servicebus.connectionstring}
    ```
+> **Note**: Particular attention to indentation as shown above is important.
 
 This translates the secret in Key Vault to the correct application property for your microservices. This usage of properties is described in the following documentation:
 
