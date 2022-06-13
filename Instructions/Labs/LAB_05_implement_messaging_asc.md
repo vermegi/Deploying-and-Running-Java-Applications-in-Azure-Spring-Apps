@@ -228,8 +228,6 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 
    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-1. Select the **URL** on the overview page, open another tab in the same browser window, and navigate to that **URL** to access the messaging-emulator microservice.
-
 1. On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
 1. In the Azure Portal, navigate to the page of the Service Bus namespace you deployed in the previous task.
