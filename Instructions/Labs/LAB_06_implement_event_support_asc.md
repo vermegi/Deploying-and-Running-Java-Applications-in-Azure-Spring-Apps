@@ -347,4 +347,4 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 
 #### Review
 
-In this lab, you implemented support for event processing by Azure Spring Cloud apps.
+In this lab, you implemented support for event processing by Azure Spring Apps applications.
