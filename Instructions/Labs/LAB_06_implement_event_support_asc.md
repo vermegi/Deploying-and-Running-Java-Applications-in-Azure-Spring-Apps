@@ -247,7 +247,7 @@ In this task, you will update the customers microservice to receive events from 
 <summary>hint</summary>
 <br/>
 
-1. In the Git Bash window, in your local application repository, use your favorite text editor to open the **pom.xml** file of the **spring-petclinic-customers-service** microservice, add to it another dependency element within the `<!-- Spring Cloud -->` section of the `<dependencies> element, and save the change:
+1. In the Git Bash window, in your local application repository, use your favorite text editor to open the **pom.xml** file of the **spring-petclinic-customers-service** microservice, add to it another dependency element within the `<!-- Spring Apps -->` section of the `<dependencies> element, and save the change:
 
    ```xml
            <dependency>
@@ -288,7 +288,7 @@ In this task, you will update the customers microservice to receive events from 
    mvn clean package -DskipTests
    ```
 
-1. Redeploy the customers-service microservice to Azure Spring Cloud.
+1. Redeploy the customers-service microservice to Azure Spring Apps.
 
    ```bash
    az spring-cloud app deploy \
