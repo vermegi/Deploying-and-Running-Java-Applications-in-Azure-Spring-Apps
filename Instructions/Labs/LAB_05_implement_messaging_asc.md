@@ -173,7 +173,7 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
    mvn clean package -DskipTests
    ```
 
-1. Create a new application in your Spring Cloud service for the **messaging-emulator** and assign a public endpoint to it.
+1. Create a new application in your Spring Apps service for the **messaging-emulator** and assign a public endpoint to it.
 
    ```bash
    az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
@@ -222,7 +222,7 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
-1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Cloud Service.
+1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
 
 1. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the **messaging-emulator** app changes to **Succeeded**, and then select the **messaging-emulator** app entry.
 
@@ -263,7 +263,7 @@ To start, you will need to add the necessary dependencies.
 <details>
 <summary>hint</summary>
 <br/>
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Cloud -->` section, following the last dependency element, add the following dependency element.
+1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Apps -->` section, following the last dependency element, add the following dependency element.
 
    ```xml
            <dependency>
@@ -506,4 +506,4 @@ This **VisitsReceiver** service is listening to the **visits-requests** queue. E
 
 #### Review
 
-In this lab, you implemented support for outbound messaging by Azure Spring Cloud apps.
+In this lab, you implemented support for outbound messaging by Azure Spring Apps applications.
