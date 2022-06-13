@@ -5,7 +5,7 @@ lab:
 ---
 
 # Challenge: Secure application secrets using Key Vault
-# Student  manual
+# Student guide
 
 ## Challenge scenario
 
@@ -49,7 +49,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Cloud service in the previous exercise of this lab.
+1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Apps service in the previous exercise of this lab.
 
    ```bash
    KEYVAULT_NAME=springcloudkv$RANDOM$RANDOM
@@ -92,7 +92,7 @@ Now that your Key Vault provisioning is completed, you need to add to it a secre
 
 ### Create a managed identity for your microservices
 
-The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Cloud service application.
+The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application.
 
 [Assign a Managed Identity](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity)
 
@@ -171,7 +171,7 @@ The following three apps of your application use the database hosted by the Azur
 <summary>hint</summary>
 <br/>
 
-1. Grant the get and list secrets permissions in the Azure Key Vault instance to each Spring Cloud app managed identity by using Azure Key Vault access policy:
+1. Grant the get and list secrets permissions in the Azure Key Vault instance to each Spring Apps application managed identity by using Azure Key Vault access policy:
 
    ```bash
    az keyvault set-policy \
@@ -306,7 +306,7 @@ You now have all relevant components in place to switch to the secrets stored in
    [INFO] ------------------------------------------------------------------------
    ```
 
-1. Redeploy the customers, visits and vets services to their respective apps in your Spring Cloud service by running the following commands:
+1. Redeploy the customers, visits and vets services to their respective apps in your Spring Apps service by running the following commands:
 
    ```bash
    az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
@@ -342,4 +342,4 @@ You now have all relevant components in place to switch to the secrets stored in
 
 #### Review
 
-In this lab, you implemented a secure method of storing application secrets that are part of the database connection string of Azure Spring Cloud apps.
+In this lab, you implemented a secure method of storing application secrets that are part of the database connection string of Azure Spring Apps applications.
