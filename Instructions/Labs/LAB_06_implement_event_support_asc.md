@@ -218,7 +218,6 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
    ```yaml
    sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString"    password="Endpoint=sb://mynamespace.servicebus.windows.net/;SharedAccessKeyName=XXXXXX;SharedAccessKey=XXXXXX";
 
-   Endpoint=sb://javalab-eh-ns-3080227949.servicebus.windows.net/;SharedAccessKeyName=listensendrule;SharedAccessKey=OOqTHuZYbLoQ4CLlNAD9e4R6viBOUx9QWLasXsFqnZI=;EntityPath=telemetry
    ```
 
 1. Save the change to the file.
