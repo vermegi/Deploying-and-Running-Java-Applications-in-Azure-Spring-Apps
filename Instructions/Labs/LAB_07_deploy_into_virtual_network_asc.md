@@ -138,7 +138,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --resource-group $RESOURCE_GROUP
    ```
 
-1. Next, recreate your Azure Spring Cloud instance within the designated subnets of the virtual network you created earlier in this exercise.
+1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
    SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
