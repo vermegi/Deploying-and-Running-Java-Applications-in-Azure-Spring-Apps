@@ -311,7 +311,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 <summary>hint</summary>
 <br/>
 
-1. In the Git Bash window, set the current working directory to the **extra** folder and run the TestProducer application.
+1. In the Git Bash window, set the current working directory to the **events** folder and run the TestProducer application.
 
    ```bash
    mvn exec:java -Dexec.mainClass="TestProducer"
