@@ -191,7 +191,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 
 ### Use an existing microservice to send events to the Event Hub resource
 
-You will now implement the functionality that will allow you to emulate sending events from a third party system to the telemetry Event Hub. You can find this third party system in the **extra** folder of the starter project. 
+You will now implement the functionality that will allow you to emulate sending events from a third party system to the telemetry Event Hub. You can find this third party system in the **events** folder of the starter project. 
 
    > **Note**: This folder contains the content of the **producer** directory available from https://github.com/Azure/azure-event-hubs-for-kafka/tree/master/quickstart/java**
 
