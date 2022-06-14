@@ -176,7 +176,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
    azure:
      keyvault:
        enabled: true
-       uri: https://springcloudlab2-kv.vault.azure.net/
+       uri: https://<your-keyvault>.vault.azure.net/
    ```
 
 1. Commit and push your changes to the remote repository.
