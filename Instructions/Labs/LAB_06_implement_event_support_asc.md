@@ -158,7 +158,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
      datasource:
        schema: classpath*:db/mysql/schema.sql
        data: classpath*:db/mysql/data.sql
-       url: jdbc:mysql://javaopenlabmysql.mysql.database.azure.com:3306/db?useSSL=true
+       url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/db?useSSL=true
        initialization-mode: ALWAYS
      kafka:
        bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
