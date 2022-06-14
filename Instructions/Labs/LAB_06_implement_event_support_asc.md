@@ -201,7 +201,7 @@ Edit the **producer.config** file in the **extra/src/main/resources** folder:
 
 Update the **TestProducer.java** file in the **extra/src/main/java** directory, so it uses **telemetry** as a topic name.
 
-Compile the producer app. You will use it at the end of this lab to send 100 events to your event hub. 
+Compile the producer app. You will use it at the end of this lab to send 100 events to your event hub. You will be able to re-run this multiple times to send events to the event hub.
 
 <details>
 <summary>hint</summary>
