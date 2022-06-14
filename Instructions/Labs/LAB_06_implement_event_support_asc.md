@@ -228,7 +228,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
        private final static String TOPIC = "telemetry";
    ```
 
-1. From the Git Bash window, set the current working directory to the **extra** folder and run a maven build.
+1. From the Git Bash window, set the current working directory to the **events** folder and run a maven build.
 
    ```bash
    mvn clean package
