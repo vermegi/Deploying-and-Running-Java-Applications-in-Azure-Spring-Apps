@@ -40,7 +40,7 @@ This first challenge will be mainly a conceptual exercise that does not involve 
 
 To start, you will learn about the existing Spring Petclinic application.
 
-1. Start a web browser, navigate to the [GitHub repo hosting the Spring Petclinic application code](https://github.com/spring-petclinic/spring-petclinic-microservices) and review its [README.md file](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/README.md#understanding-the-spring-petclinic-application).
+1. Start a web browser, navigate to the [GitHub repo hosting the Spring Petclinic application code](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/StarterProject) and review the README.md file.
 
 1. Examine the information about [starting services locally without Docker](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/README.md#starting-services-locally-without-docker), [Starting services locally with docker-compose](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/README.md#starting-services-locally-with-docker-compose), and [Starting services locally with docker-compose and Java](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/README.md#starting-services-locally-with-docker-compose-and-java). If time permits, consider launching the application locally using either of these methods.
 
