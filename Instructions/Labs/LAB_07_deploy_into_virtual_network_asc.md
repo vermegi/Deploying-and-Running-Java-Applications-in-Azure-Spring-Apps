@@ -126,7 +126,7 @@ Now that you have all the networking resources ready, you need to recreate your 
 When you recreate your Spring Apps instance in the virtual network, you will also need to rerun some of the steps from the previous exercise: 
 - recreate the config server.
 - recreate and redeploy all apps. In the previous exercises you assigned an endpoint to the api-gateway and admin service apps. At this point, in this task, you will skip this step and, instead, you will do so later in this exercise, once you configure the internal DNS name resolution.
-- reassign a managed identity to each of the apps and give them access to the Azure Key Vault so they can access the username and password secrets required to connect to the MySQL database.
+- reassign a managed identity to each of the apps (for **customers, vets** and **visits** only) and give them access to the Azure Key Vault so they can access the username and password secrets required to connect to the MySQL database.
 
 <details>
 <summary>hint</summary>
