@@ -287,7 +287,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
 <summary>hint</summary>
 <br/>
 
-1. Start by identifying the IP address used by your Spring Apps service. You can accomplish this by querying for the internal load balancer IP address of the service runtime network.
+1. Start by identifying the IP address used by your Spring Apps service. You can accomplish this by querying for the internal load balancer IP address of the service runtime subnet.
 
    ```bash
    SERVICE_RUNTIME_RG=`az spring-cloud show \
