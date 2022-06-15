@@ -102,7 +102,7 @@ To start, you need to lock down access to your MySQL database by using a private
        --record-set-name $SQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
        --resource-group $RESOURCE_GROUP \
-    -a $NIC_IPADDRESS
+        -a $NIC_IPADDRESS
    ```
 
 1. You can now fully block connectivity to the public endpoint of your Azure Database for MySQL Single Server instance.
@@ -118,7 +118,7 @@ To start, you need to lock down access to your MySQL database by using a private
 
 ### Lock down the Key Vault instance by using a private endpoint
 
-Once you have locked down the internet access to the MySQL database, you will perform a similar setup to protect the Key Vault content. To accomplish this, you can use the following the guidance.
+Once you have locked down the internet access to the MySQL database, you will perform a similar setup to protect the Key Vault content. To accomplish this, you can use the following guidance.
 
 [Integrate Key Vault with Azure Private Link](https://docs.microsoft.com/en-us/azure/key-vault/general/private-link-service?tabs=cli)
 
