@@ -106,6 +106,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Apps service and an Azure Database for MySQL Single Server instance):
 
    ```bash
+   RANDOM=$(openssl rand -hex 3)
    RESOURCE_GROUP=springcloudlab_rg_$RANDOM
    LOCATION=<azure_region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
