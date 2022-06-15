@@ -172,6 +172,7 @@ Once you have locked down the internet access to the MySQL database, you will pe
 As the last step of this exercise and the lab, test again your setup. You should still be able to navigate to your application through the custom domain that you configured on your Application Gateway and view the listing of owners and veterinarians.
 
    > **Note**: In case you don't see any data when navigating the menu options in the application, try redeploying the customers, visits and vets apps again to Azure Spring Apps.
+    > **Note**: If don’t work as expected, you can reconnect monitoring for your application and troubleshooting as described in the previous monitoring lab.
 
 #### Review
 
