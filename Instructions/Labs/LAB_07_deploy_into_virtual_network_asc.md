@@ -224,7 +224,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --secret-permissions get list  \
        --object-id $VISITS_SERVICE_ID
 
-   VNETS_SERVICE_ID=$(az spring-cloud app identity show \
+   VETS_SERVICE_ID=$(az spring-cloud app identity show \
        --service $SPRING_CLOUD_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
@@ -235,7 +235,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \
        --secret-permissions get list  \
-       --object-id $VNETS_SERVICE_ID
+       --object-id $VETS_SERVICE_ID
    ```
 
 1. Redeploy each of the apps.
