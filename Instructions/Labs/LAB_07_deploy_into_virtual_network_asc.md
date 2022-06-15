@@ -47,6 +47,8 @@ During this challenge, you'll:
 
 Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 3 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance and the Azure Key Vault instance. You can use the following guidance to implement these changes.
 
+In later exercises you'll be creating the private endpoints for the Azure Service Bus or the Event Hubs. 
+
 [Create a Virtual Network and default subnet](https://docs.microsoft.com/en-us/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create)
 [Add subnets to a Virtual Network](https://docs.microsoft.com/en-us/cli/azure/network/vnet/subnet?view=azure-cli-latest)
 [Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal)
