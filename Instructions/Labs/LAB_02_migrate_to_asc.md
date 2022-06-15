@@ -42,7 +42,7 @@ During this challenge, you'll:
    - Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
-   - jq available from [jq downloads](https://stedolan.github.io/jq/download/)
+   - Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
    - Azure CLI version 2.37.0
 
    > **Note**: If needed, reinstall the Git for Windows and, during installation, ensure that the Git Credential Manager is enabled.
@@ -81,27 +81,13 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 <summary>hint</summary>
 <br/>
 
-1. On your lab computer, start open the Git Bash window and, from the Git Bash prompt, run the following command to sign in to your Azure subscription:
+1. On your lab computer, open the Git Bash window and, from the Git Bash prompt, run the following command to sign in to your Azure subscription:
 
    ```bash
    az login
    ```
 
 1. Executing the command will automatically open a web browser window prompting you to authenticate. Once prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab and close the web browser window.
-
-1. From the Git Bash prompt, run the following command to add the Azure Spring Apps Azure CLI extension:
-
-   ```bash
-   az extension add --name spring
-   ```
-
-1. Run the following command to update this extension to its latest version:
-
-   ```bash
-   az extension update --name spring
-   ```
-
-   > **Note**: If you receive the message `No updates available for 'spring-cloud', simply proceed to the next step.
 
 1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Apps service and an Azure Database for MySQL Single Server instance):
 
