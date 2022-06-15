@@ -315,25 +315,25 @@ You now have all relevant components in place to switch to the secrets stored in
    az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
-                              --runtime-version Java_11 \
+                              --runtime-version Java_8 \
                               --no-wait \
-                              --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.3.jar \
+                              --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
-                              --runtime-version Java_11 \
+                              --runtime-version Java_8 \
                               --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.3.jar \
+                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
-                              --runtime-version Java_11 \
+                              --runtime-version Java_8 \
                               --no-wait \
-                              --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.3.jar \
+                              --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
