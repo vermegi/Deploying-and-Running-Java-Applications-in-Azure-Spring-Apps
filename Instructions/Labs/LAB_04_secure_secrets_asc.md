@@ -250,8 +250,7 @@ You now have all relevant components in place to switch to the secrets stored in
    ```xml
            <dependency>
               <groupId>com.azure.spring</groupId>
-              <artifactId>azure-spring-boot-starter-keyvault-secrets</artifactId>
-              <version>3.14.0</version>
+              <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
            </dependency>
    ```
 
@@ -264,8 +263,8 @@ You now have all relevant components in place to switch to the secrets stored in
 
                <dependency>
                    <groupId>com.azure.spring</groupId>
-                   <artifactId>azure-spring-boot-bom</artifactId>
-                   <version>${azure.version}</version>
+                   <artifactId>spring-cloud-azure-dependencies</artifactId>
+                   <version>${version.spring.cloud.azure}</version>
                    <type>pom</type>
                    <scope>import</scope>
                </dependency>
@@ -277,7 +276,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. In the same file, add a property for the **azure.version**. This should be added within the **<properties></properties>** section.
 
    ```xml
-   <azure.version>3.13.0</azure.version>
+   <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
    ```
 
 1. Save the changes to the **pom.xml** file and close it.
