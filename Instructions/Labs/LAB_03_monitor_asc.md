@@ -300,7 +300,7 @@ Use this guidance to:
 <summary>hint</summary>
 <br/>
 
-1. Switch back to the Azure Portal and navigate to the page displayng the Log Analytics workspace you created in the previous task.
+1. Go to the Azure portal and navigate to the page displayng the Log Analytics workspace you created in the previous task.
 
 1. Select **Logs** and, if needed, close the default **Queries** pane.
 
