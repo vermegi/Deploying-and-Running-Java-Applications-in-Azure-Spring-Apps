@@ -301,7 +301,8 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --query "[0].privateIpAddress" \
        --output tsv`
    ```
-
+> **Note**: Notice that Azure Spring Apps uses a separate resource group for resources. You can view each resource as they are created. 
+    
 1. Next, create a private DNS zone to forward name resolution requests targeting the private.azuremicroservices.io namespace to this internal IP address.
 
    ```bash
