@@ -349,6 +349,8 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
    ```
 
    > **Note**: If you try connecting at this point to the spring petclinic application via the **api-gateway** and **admin-service** endpoints, you will not be able to do so, since these endpoints are currently only available within the virtual network. You could test such connectivity if you had an Azure VM connected to that virtual network. Later in this exercise, you will expose these two endpoints by using an Azure Application Gateway, which will allow you to test connectivity from the internet.
+    
+    > **Note**: Notice that you will be unable to use log streaming at this time. You will need a VM in the same virtual network to be able to do so.
 
 </details>
 
