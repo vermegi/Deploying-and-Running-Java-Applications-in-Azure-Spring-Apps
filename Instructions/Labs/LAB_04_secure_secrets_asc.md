@@ -52,7 +52,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Apps service in the previous exercise of this lab.
 
    ```bash
-   KEYVAULT_NAME=springcloudkv$RANDOM$RANDOM
+   KEYVAULT_NAME=springcloudkv$RANDOM
    az keyvault create \
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \
@@ -66,7 +66,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 
 ### Store your connection string elements as Azure Key Vault secrets
 
-Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task.
+Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task.Tthese secrets should be called SPRING-DATASOURCE-USERNAME and SPRING-DATASOURCE-PASSWORD.
 
 [Add a secret to Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
 
@@ -228,7 +228,11 @@ You now have all relevant components in place to switch to the secrets stored in
    azure:
      keyvault:
        enabled: true
-       uri: https://<key-vault-name>.vault.azure.net/
+         property-source-enabled: true
+         property-sources:
+               - name: key-vault-property-source-1
+              endpoint: https://springcloudlab3-kv.vault.azure.net/
+              credential.managed-identity-enabled: true
    ```
 
 1. Commit and push these changes to your remote config repository.
