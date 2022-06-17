@@ -207,7 +207,7 @@ You now have all relevant components in place to switch to the secrets stored in
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Remove the lines 83 and 84 that contain the values of the admin user account name and its password for target datasource endpoint. 
+1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Remove the lines 82 and 83 that contain the values of the admin user account name and its password for target datasource endpoint. 
 
    > **Note**: The lines 82 and 83 should have the following content (where the <your-server-name> and <myadmin-password> represent the name of the Azure Database for MySQL Single Server instance and the password you assigned to the myadmin account during its provisioning, respectively):
 
@@ -227,15 +227,19 @@ You now have all relevant components in place to switch to the secrets stored in
 1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open again the application.yml file and append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
 
    ```yaml
-   azure:
-     keyvault:
-       enabled: true
-         property-source-enabled: true
-         property-sources:
-               - name: key-vault-property-source-1
-              endpoint: https://springcloudlab3-kv.vault.azure.net/
-              credential.managed-identity-enabled: true
+    cloud:
+        azure:
+        keyvault:
+            secret:
+            property-source-enabled: true
+            property-sources:
+                - name: key-vault-property-souece-1
+                endpoint: https://<key-vault-name>.vault.azure.net/
+                credential.managed-identity-enabled: true
    ```
+
+   > **Note**: The properties start with _spring.cloud.azure.keyvault.secret_, so beware that you indent the _cloud_ property so it sits at the right indentation level of your config file.
+1. Commit and push these changes to your remote config repository.
 
 1. Commit and push these changes to your remote config repository.
 
@@ -314,29 +318,29 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Redeploy the customers, visits and vets services to their respective apps in your Spring Apps service by running the following commands:
 
    ```bash
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name customers-service \
-                              --runtime-version Java_8 \
-                              --no-wait \
-                              --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name customers-service \
+            --no-wait \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+            --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name visits-service \
-                              --runtime-version Java_8 \
-                              --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name visits-service \
+               --no-wait \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name vets-service \
-                              --runtime-version Java_8 \
-                              --no-wait \
-                              --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name vets-service \
+               --no-wait \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
 1. Retest your application through its public endpoint. Ensure that the application is functional, while the connection string secrets are retrieved from Azure Key Vault.
