@@ -212,7 +212,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
 
-1. Ensure that value in the **Expiration** drop-down list is set to **30 days**.
+1. Ensure that the value in the **Expiration** drop-down list is set to **30 days**.
 
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
@@ -220,7 +220,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git_repository>`, `<git_username>`, and `<git_password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
-   > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+   > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name.
 
    ```bash
    GIT_REPO=<git_repository>
@@ -231,7 +231,8 @@ Once you completed the initial update of your git repository hosting the server 
 1. To set up the config server such that it points to your GitHub repository, from the Git Bash prompt, run the following command. 
 
    ```bash
-   az spring-cloud config-server git set --name $SPRING_APPS_SERVICE \
+   az spring config-server git set \
+                           --name $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --uri $GIT_REPO \
                            --label main \
@@ -279,7 +280,8 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create a database in the Azure Database for MySQL Single Server instance.
 
    ```bash
-   az mysql db create --server-name $SQL_SERVER_NAME \
+   az mysql db create \
+         --server-name $SQL_SERVER_NAME \
          --resource-group $RESOURCE_GROUP \
          --name $DATABASE_NAME
    ```
@@ -287,7 +289,8 @@ You will also need to update the config for your applications to use the newly p
 1. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance. 
 
    ```bash
-   az mysql server firewall-rule create --name allAzureIPs \
+   az mysql server firewall-rule create \
+       --name allAzureIPs \
        --server ${SQL_SERVER_NAME} \
        --resource-group ${RESOURCE_GROUP} \
        --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
@@ -295,7 +298,7 @@ You will also need to update the config for your applications to use the newly p
 
 1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Change the entries in lines 82, 83, and 84 that contain the values of the target datasource endpoint, the corresponding admin user account, and its password. Set these values by using the information in the Azure Database for MySQL Single Server connection string you recorded earlier in this task. Your configuration should look like this:
 
-   > **Note**: The original content of these three lines in the application.yml file has the following format:
+   > **Note**: The original content of these three lines in the application.yml file have the following format:
 
    ```yaml
        url: jdbc:mysql://localhost:3306/db?useSSL=false
@@ -342,7 +345,8 @@ You now have the compute and data services available for deployment of the compo
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
-   cd ~/spring-petclinic-microservices/
+   cd ..
+   cd spring-petclinic-microservices
    mvn clean package -DskipTests
    ```
 
@@ -370,10 +374,11 @@ You now have the compute and data services available for deployment of the compo
 1. For each application you will now create an app on Azure Spring Apps service. You will start with the api-gateway. To deploy it, from the Git Bash prompt, run the following command:
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name api-gateway \
-                           --assign-endpoint true
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name api-gateway \
+            --assign-endpoint true
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
@@ -381,20 +386,24 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app by running the following command from the Git Bash prompt:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name api-gateway \
-                           --no-wait \
-                           --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.1.jar
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name api-gateway \
+            --no-wait \
+            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. In the same way create an app for the admin-server microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name app-admin \
-                           --assign-endpoint
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name app-admin \
+            --assign-endpoint
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -402,19 +411,23 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name app-admin \
-                           --no-wait \
-                           --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.1.jar
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name app-admin \
+            --no-wait \
+            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. Next, you will create an app for the customers-service microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name customers-service 
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name customers-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -422,21 +435,26 @@ You now have the compute and data services available for deployment of the compo
 1. For the customers service you will not assign an endpoint but you will set the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name customers-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name customers-service \
+            --no-wait \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+            --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
+
 
 1. Next, you will create an app for the visits-service microservice:
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name visits-service 
+   az spring app create \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name visits-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -444,21 +462,25 @@ You now have the compute and data services available for deployment of the compo
 1. For the visit-service will also skip the endpoint assignment but include the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name visits-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name visits-service \
+               --no-wait \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. To conclude, you will create an app for the vets-service microservice:
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name vets-service 
+   az spring app create \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name vets-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -466,13 +488,16 @@ You now have the compute and data services available for deployment of the compo
 1. In this case you will also skip the endpoint assignment but include the mysql profile:
 
   ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name vets-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name vets-service \
+               --no-wait \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 </details>
 
@@ -487,7 +512,7 @@ Now that you have deployed all of your microservices, verify that the applicatio
 1. To list all deployed apps, from the Git Bash shell, run the following CLI statement, which will also list all publicly accessible endpoints:
 
    ```bash
-   az spring-cloud app list --service $SPRING_APPS_SERVICE \
+   az spring app list --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --output table
    ```

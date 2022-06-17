@@ -50,7 +50,7 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
 1. From the Git Bash prompt, run the following command to live stream the logs of the api-gateway service, you can use the below statement:
 
    ```bash
-   az spring-cloud app logs \
+   az spring app logs \
        --name api-gateway \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
@@ -78,7 +78,7 @@ You now know how to live stream any logs to your console. Next, you will configu
 1. Run the following command to check whether Application Insights is linked to your Spring Apps Service.
 
    ```bash
-   az spring-cloud app-insights show \
+   az spring app-insights show \
        -g $RESOURCE_GROUP \
        -n $SPRING_APPS_SERVICE
    ```
@@ -113,17 +113,17 @@ You now know how to live stream any logs to your console. Next, you will configu
 1. You can now use this instrumentation key to reconfigure Application Insights for your Spring Apps Service.
 
    ```bash
-   az spring-cloud app-insights update \
+   az spring app-insights update \
        -g $RESOURCE_GROUP \
        -n $SPRING_APPS_SERVICE \
        --sampling-rate 50 \
        --app-insights-key $INSTRUMENTATIONKEY
    ```
 
-1. To validate the outcome, re-run the `az spring-cloud app-insights show` command and verify that it generates the intended output.
+1. To validate the outcome, re-run the `az spring app-insights show` command and verify that it generates the intended output.
 
    ```bash
-   az spring-cloud app-insights show \
+   az spring app-insights show \
        -g $RESOURCE_GROUP \
        -n $SPRING_APPS_SERVICE
    ```
