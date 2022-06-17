@@ -147,15 +147,31 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
 ### Set up the config server
 
-Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings. 
+Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash prompt, run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
+1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**. 
+
+   > **Note**: Make sure to configure the repository as private.
+
+1. On the newly created repository page, select the copy icon in the  **Quick setup** section.
+    
+    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+
+1. From the Git Bash prompt, make sure you are no longer in the **spring-petclinic-microservices** folder and clone the **spring-petclinic-microservices-config** repo
 
    ```bash
+   cd ..
+   git clone https://github.com/<your-github-username>/spring-petclinic-microservices-config.git
+   ```
+
+1. From the Git Bash prompt, move to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
+
+   ```bash
+   cd spring-petclinic-microservices-config
    curl -o admin-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/admin-server.yml
    curl -o api-gateway.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/api-gateway.yml
    curl -o application.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/application.yml
@@ -166,13 +182,15 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
    curl -o visit-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visit-service.yml
    ```
 
-1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
+4. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
 
    ```bash
    git add .
    git commit -m 'added base config'
    git push
    ```
+
+1. In your web browser, refresh the page of the newly created **spring-petclinic-microservices-config** repository and double check that all the configuration files are there.
 
 </details>
 

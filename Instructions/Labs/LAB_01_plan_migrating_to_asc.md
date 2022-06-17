@@ -54,7 +54,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
 
-1. In your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices**. 
+1. In your GitHub account, navigate to the **Repositories** page and create a new repository named **spring-petclinic-microservices**. 
 
 1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**.
     
