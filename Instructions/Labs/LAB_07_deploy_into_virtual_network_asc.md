@@ -135,7 +135,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. To start, delete your existing Azure Spring Apps instance by running the following command from the Git Bash shell prompt.
 
    ```bash
-   az spring-cloud delete \
+   az spring delete \
        --name $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP
    ```
@@ -145,7 +145,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
    ```bash
    SPRING_APPS_SERVICE=springcloudsvc$RANDOM$RANDOM
    az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
-   az spring-cloud create  \
+   az spring create  \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
        --vnet $VIRTUAL_NETWORK_NAME \
@@ -160,7 +160,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Set up the config server.
 
    ```bash
-   az spring-cloud config-server git set --name $SPRING_APPS_SERVICE \
+   az spring config-server git set --name $SPRING_APPS_SERVICE \
                                          --resource-group $RESOURCE_GROUP \
                                          --uri $GIT_REPO \
                                          --label main \
@@ -171,25 +171,25 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Recreate each of the apps in Spring Apps, including managed identities for the customers-service, visits-service, and vets-service apps.
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name api-gateway
 
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name admin-service
                         
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --system-assigned
 
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --system-assigned
 
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --system-assigned
@@ -198,7 +198,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Retrieve the managed identities of the customers, visits and vets apps, and grant them access to the Key Vault instance.
 
    ```bash
-   CUSTOMERS_SERVICE_ID=$(az spring-cloud app identity show \
+   CUSTOMERS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
@@ -211,7 +211,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --secret-permissions get list  \
        --object-id $CUSTOMERS_SERVICE_ID
 
-   VISITS_SERVICE_ID=$(az spring-cloud app identity show \
+   VISITS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
@@ -224,7 +224,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --secret-permissions get list  \
        --object-id $VISITS_SERVICE_ID
 
-   VETS_SERVICE_ID=$(az spring-cloud app identity show \
+   VETS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
@@ -241,33 +241,33 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Redeploy each of the apps.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name api-gateway \
                               --no-wait \
                               --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.1.jar
 
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name admin-service \
                               --no-wait \
                               --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.1.jar
                         
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --no-wait \
                               --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
                               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --no-wait \
@@ -290,7 +290,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
 1. Start by identifying the IP address used by your Spring Apps service. You can accomplish this by querying for the internal load balancer IP address of the service runtime subnet.
 
    ```bash
-   SERVICE_RUNTIME_RG=`az spring-cloud show \
+   SERVICE_RUNTIME_RG=`az spring show \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
        --query "properties.networkProfile.serviceRuntimeNetworkResourceGroup" \
@@ -335,13 +335,13 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
 1. Lastly you need to update your api-gateway and admin-service apps to retrieve the fully qualified domain name (FQDN) on your private DNS zone.
 
    ```bash
-   az spring-cloud app update \
+   az spring app update \
        --resource-group $RESOURCE_GROUP \
        --name api-gateway \
        --service $SPRING_APPS_SERVICE \
        --assign-endpoint true
 
-   az spring-cloud app update \
+   az spring app update \
        --resource-group $RESOURCE_GROUP \
        --name admin-service \
        --service $SPRING_APPS_SERVICE \
@@ -451,7 +451,7 @@ You will only create a custom domain for the api-gateway service. This is the on
 
    ```bash
    CERT_NAME_IN_ASC=openlab-certificate
-   az spring-cloud certificate add \
+   az spring certificate add \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
        --name $CERT_NAME_IN_ASC \
@@ -463,7 +463,7 @@ You will only create a custom domain for the api-gateway service. This is the on
 
    ```bash
    APPNAME=api-gateway
-   az spring-cloud app custom-domain bind \
+   az spring app custom-domain bind \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
        --domain-name $DNS_NAME \

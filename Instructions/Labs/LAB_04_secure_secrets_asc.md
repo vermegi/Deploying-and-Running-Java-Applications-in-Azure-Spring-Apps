@@ -109,43 +109,45 @@ The following three apps of your application use the database hosted by the Azur
 1. Assign an identity to each of the three apps by running the following commands from Git Bash shell:
 
    ```bash
-   az spring-cloud app identity assign \
+   az spring app identity assign \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
        --system-assigned
 
-   az spring-cloud app identity assign \
+   az spring app identity assign \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
        --system-assigned
 
-   az spring-cloud app identity assign \
+   az spring app identity assign \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
        --system-assigned
    ```
 
+    > **Note**: Wait for the operations to complete. This might take about 3 minutes each.
+
 1. Export the identity details to a separate environment variable for each of the apps so you can reuse it in the next part of the lab.
 
    ```bash
-   CUSTOMERS_SERVICE_ID=$(az spring-cloud app identity show \
+   CUSTOMERS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
        --output tsv \
        --query principalId)
 
-   VETS_SERVICE_ID=$(az spring-cloud app identity show \
+   VETS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
        --output tsv \
        --query principalId)
 
-   VISITS_SERVICE_ID=$(az spring-cloud app identity show \
+   VISITS_SERVICE_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
@@ -207,7 +209,7 @@ You now have all relevant components in place to switch to the secrets stored in
 
 1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Remove the lines 83 and 84 that contain the values of the admin user account name and its password for target datasource endpoint. 
 
-   > **Note**: The lines 83 and 84 should have the following content (where the <your-server-name> and <myadmin-password> represent the name of the Azure Database for MySQL Single Server instance and the password you assigned to the myadmin account during its provisioning, respectively):
+   > **Note**: The lines 82 and 83 should have the following content (where the <your-server-name> and <myadmin-password> represent the name of the Azure Database for MySQL Single Server instance and the password you assigned to the myadmin account during its provisioning, respectively):
 
    ```yaml
     username: myadmin@<your-server-name>
@@ -273,7 +275,7 @@ You now have all relevant components in place to switch to the secrets stored in
        </dependencyManagement>
    ```
 
-1. In the same file, add a property for the **azure.version**. This should be added within the **<properties></properties>** section.
+1. In the same file, add a property for the **version.spring.cloud.azure**. This should be added within the **<properties></properties>** section.
 
    ```xml
    <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
@@ -312,7 +314,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Redeploy the customers, visits and vets services to their respective apps in your Spring Apps service by running the following commands:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --runtime-version Java_8 \
@@ -320,7 +322,7 @@ You now have all relevant components in place to switch to the secrets stored in
                               --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --runtime-version Java_8 \
@@ -328,7 +330,7 @@ You now have all relevant components in place to switch to the secrets stored in
                               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --runtime-version Java_8 \

@@ -290,7 +290,7 @@ In this task, you will update the customers microservice to receive events from 
 1. Redeploy the customers-service microservice to Azure Spring Apps.
 
    ```bash
-   az spring-cloud app deploy \
+   az spring app deploy \
      --service $SPRING_APPS_SERVICE \
      --resource-group $RESOURCE_GROUP \
      --name customers-service \
@@ -324,7 +324,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 1. From the same Git Bash window, run the following command to start the log stream output for the **customers-service**.
 
    ```bash
-   az spring-cloud app logs -f --service $SPRING_APPS_SERVICE \
+   az spring app logs -f --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service
    ```

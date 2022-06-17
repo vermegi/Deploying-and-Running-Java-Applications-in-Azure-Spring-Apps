@@ -176,7 +176,7 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 1. Create a new application in your Spring Apps service for the **messaging-emulator** and assign a public endpoint to it.
 
    ```bash
-   az spring-cloud app create --service $SPRING_APPS_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --assign-endpoint true
@@ -187,13 +187,13 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 1. Create a system-assigned identity to this new application and store the reference to the identity in an environment variable.
 
    ```bash
-   az spring-cloud app identity assign \
+   az spring app identity assign \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --system-assigned
 
-   MESSAGING_EMULATOR_ID=$(az spring-cloud app identity show \
+   MESSAGING_EMULATOR_ID=$(az spring app identity show \
        --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
@@ -214,7 +214,7 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 1. You can now deploy the messaging-emulator application.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --no-wait \
@@ -482,7 +482,7 @@ This **VisitsReceiver** service is listening to the **visits-requests** queue. E
 1. Redeploy the visits microservice.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
