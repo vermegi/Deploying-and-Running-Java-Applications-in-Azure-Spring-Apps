@@ -342,6 +342,14 @@ You now have the compute and data services available for deployment of the compo
 <summary>hint</summary>
 <br/>
 
+1. In the main **pom.xml** file change the **spring-cloud.version** on line 33 from version **2021.0.2** t0 **2021.0.0** and save the file.
+
+   ```xml
+   <spring-cloud.version>2021.0.0</spring-cloud.version>
+   ```
+
+   > **Note**: This version change is currently needed, since there is a bug when running version 2021.0.2.
+
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
@@ -520,6 +528,8 @@ Now that you have deployed all of your microservices, verify that the applicatio
 1. Alternatively, you can switch to the web browser window displaying the Azure portal interface, navigate to your Azure Spring Apps instance and select **Apps** from the vertical navigation menu. In the list of apps, select **api-gateway**, on the **api-gateway \| Overview** page, note the value of the **URL** property.
 
 1. Open another web browser tab and navigate to the URL of the api-gateway endpoint to display the application web interface. 
+
+1. You can also navigate to the URL of the admin-server to see insight information of your microservices.
 
 </details>
 
