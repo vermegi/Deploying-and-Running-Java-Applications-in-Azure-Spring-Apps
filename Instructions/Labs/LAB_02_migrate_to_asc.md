@@ -153,37 +153,6 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 <summary>hint</summary>
 <br/>
 
-1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
-
-1. In your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices**. 
-
-   > **Note**: Make sure to configure the repository as private.
-
-1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**.
-    
-    > **Note**: Record the value of the URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
-    
-1. On your lab computer, in the Git Bash window, run the following commands to clone the [Spring Petclinic](https://github.com/spring-petclinic/spring-petclinic-microservices) application to your workstation:
-
-   ```bash
-   rm spring-petclinic-microservices/ -fr
-   git clone https://github.com/spring-petclinic/spring-petclinic-microservices.git
-   ```
-
-1. From the Git Bash prompt, run the following commands to change the working directory to the one containing the cloned repository and then push its content to your private GitHub repository (where the `<your-github-username>` placeholder represents your GitHub user name):
-
-   ```bash
-   cd ~/spring-petclinic-microservices/
-   git remote remove origin
-   git remote add origin https://github.com/<your-github-username>/spring-petclinic-microservices-private.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-1. When prompted to sign in to GitHub, select the **Sign in with your browser** option. This will automatically open a new tab in the web browser window, prompting you to provide your GitHub username and password.
-
-1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
-
 1. From the Git Bash prompt, run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
 
    ```bash
