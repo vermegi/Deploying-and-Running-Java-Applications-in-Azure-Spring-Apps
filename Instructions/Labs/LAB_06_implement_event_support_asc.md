@@ -291,7 +291,7 @@ In this task, you will update the customers microservice to receive events from 
 
    ```bash
    az spring-cloud app deploy \
-     --service $SPRING_CLOUD_SERVICE \
+     --service $SPRING_APPS_SERVICE \
      --resource-group $RESOURCE_GROUP \
      --name customers-service \
      --no-wait \
@@ -324,7 +324,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 1. From the same Git Bash window, run the following command to start the log stream output for the **customers-service**.
 
    ```bash
-   az spring-cloud app logs -f --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app logs -f --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service
    ```

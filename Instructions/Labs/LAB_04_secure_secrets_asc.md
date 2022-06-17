@@ -110,19 +110,19 @@ The following three apps of your application use the database hosted by the Azur
 
    ```bash
    az spring-cloud app identity assign \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
        --system-assigned
 
    az spring-cloud app identity assign \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
        --system-assigned
 
    az spring-cloud app identity assign \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
        --system-assigned
@@ -132,21 +132,21 @@ The following three apps of your application use the database hosted by the Azur
 
    ```bash
    CUSTOMERS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
        --output tsv \
        --query principalId)
 
    VETS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
        --output tsv \
        --query principalId)
 
    VISITS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
        --output tsv \
@@ -312,7 +312,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Redeploy the customers, visits and vets services to their respective apps in your Spring Apps service by running the following commands:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --runtime-version Java_8 \
@@ -320,7 +320,7 @@ You now have all relevant components in place to switch to the secrets stored in
                               --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --runtime-version Java_8 \
@@ -328,7 +328,7 @@ You now have all relevant components in place to switch to the secrets stored in
                               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --runtime-version Java_8 \

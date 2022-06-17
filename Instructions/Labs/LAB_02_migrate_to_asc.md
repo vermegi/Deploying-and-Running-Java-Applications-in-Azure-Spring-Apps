@@ -94,7 +94,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    ```bash
    RANDOM=$(openssl rand -hex 3)
-   RESOURCE_GROUP=springcloudlab_rg_$RANDOM
+   RESOURCE_GROUP=springappslab_rg_$RANDOM
    LOCATION=<azure_region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
@@ -102,8 +102,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
-   SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
-   az spring create --name $SPRING_CLOUD_SERVICE \
+   SPRING_APPS_SERVICE=springappssvc$RANDOM
+   az spring create --name $SPRING_APPS_SERVICE \
                           --resource-group $RESOURCE_GROUP \
                           --location $LOCATION \
                           --sku Standard
@@ -116,7 +116,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following command to set your default resource group name and Spring Apps service name. By setting these defaults, you don't need to repeat these names in the subsequent commands.
 
    ```bash
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_CLOUD_SERVICE
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
    ```
 
 1. Open a web browser window and navigate to the Azure portal. If prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab.
@@ -230,7 +230,7 @@ Once you completed the initial update of your git repository hosting the server 
 1. To set up the config server such that it points to your GitHub repository, from the Git Bash prompt, run the following command. 
 
    ```bash
-   az spring-cloud config-server git set --name $SPRING_CLOUD_SERVICE \
+   az spring-cloud config-server git set --name $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --uri $GIT_REPO \
                            --label main \
@@ -369,7 +369,7 @@ You now have the compute and data services available for deployment of the compo
 1. For each application you will now create an app on Azure Spring Apps service. You will start with the api-gateway. To deploy it, from the Git Bash prompt, run the following command:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name api-gateway \
                            --assign-endpoint true
@@ -380,7 +380,7 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app by running the following command from the Git Bash prompt:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name api-gateway \
                            --no-wait \
@@ -390,7 +390,7 @@ You now have the compute and data services available for deployment of the compo
 1. In the same way create an app for the admin-server microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name app-admin \
                            --assign-endpoint
@@ -401,7 +401,7 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name app-admin \
                            --no-wait \
@@ -411,7 +411,7 @@ You now have the compute and data services available for deployment of the compo
 1. Next, you will create an app for the customers-service microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name customers-service 
    ```
@@ -421,7 +421,7 @@ You now have the compute and data services available for deployment of the compo
 1. For the customers service you will not assign an endpoint but you will set the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name customers-service \
                            --no-wait \
@@ -433,7 +433,7 @@ You now have the compute and data services available for deployment of the compo
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name visits-service 
    ```
@@ -443,7 +443,7 @@ You now have the compute and data services available for deployment of the compo
 1. For the visit-service will also skip the endpoint assignment but include the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name visits-service \
                            --no-wait \
@@ -455,7 +455,7 @@ You now have the compute and data services available for deployment of the compo
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name vets-service 
    ```
@@ -465,7 +465,7 @@ You now have the compute and data services available for deployment of the compo
 1. In this case you will also skip the endpoint assignment but include the mysql profile:
 
   ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --name vets-service \
                            --no-wait \
@@ -486,7 +486,7 @@ Now that you have deployed all of your microservices, verify that the applicatio
 1. To list all deployed apps, from the Git Bash shell, run the following CLI statement, which will also list all publicly accessible endpoints:
 
    ```bash
-   az spring-cloud app list --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app list --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --output table
    ```

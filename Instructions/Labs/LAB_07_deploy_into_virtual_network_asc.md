@@ -136,18 +136,18 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    ```bash
    az spring-cloud delete \
-       --name $SPRING_CLOUD_SERVICE \
+       --name $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP
    ```
 
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_CLOUD_SERVICE
+   SPRING_APPS_SERVICE=springcloudsvc$RANDOM$RANDOM
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
    az spring-cloud create  \
        --resource-group $RESOURCE_GROUP \
-       --name $SPRING_CLOUD_SERVICE \
+       --name $SPRING_APPS_SERVICE \
        --vnet $VIRTUAL_NETWORK_NAME \
        --service-runtime-subnet service-runtime-subnet \
        --app-subnet apps-subnet \
@@ -160,7 +160,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Set up the config server.
 
    ```bash
-   az spring-cloud config-server git set --name $SPRING_CLOUD_SERVICE \
+   az spring-cloud config-server git set --name $SPRING_APPS_SERVICE \
                                          --resource-group $RESOURCE_GROUP \
                                          --uri $GIT_REPO \
                                          --label main \
@@ -171,25 +171,25 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Recreate each of the apps in Spring Apps, including managed identities for the customers-service, visits-service, and vets-service apps.
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name api-gateway
 
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name admin-service
                         
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --system-assigned
 
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --system-assigned
 
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app create --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --system-assigned
@@ -199,7 +199,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    ```bash
    CUSTOMERS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service \
        --output tsv \
@@ -212,7 +212,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --object-id $CUSTOMERS_SERVICE_ID
 
    VISITS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name visits-service \
        --output tsv \
@@ -225,7 +225,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
        --object-id $VISITS_SERVICE_ID
 
    VETS_SERVICE_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name vets-service \
        --output tsv \
@@ -241,33 +241,33 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Redeploy each of the apps.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name api-gateway \
                               --no-wait \
                               --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.1.jar
 
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name admin-service \
                               --no-wait \
                               --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.1.jar
                         
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name customers-service \
                               --no-wait \
                               --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
                               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring-cloud app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name vets-service \
                               --no-wait \
@@ -292,7 +292,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
    ```bash
    SERVICE_RUNTIME_RG=`az spring-cloud show \
        --resource-group $RESOURCE_GROUP \
-       --name $SPRING_CLOUD_SERVICE \
+       --name $SPRING_APPS_SERVICE \
        --query "properties.networkProfile.serviceRuntimeNetworkResourceGroup" \
        --output tsv`
    IP_ADDRESS=`az network lb frontend-ip list \
@@ -338,13 +338,13 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
    az spring-cloud app update \
        --resource-group $RESOURCE_GROUP \
        --name api-gateway \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --assign-endpoint true
 
    az spring-cloud app update \
        --resource-group $RESOURCE_GROUP \
        --name admin-service \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --assign-endpoint true
    ```
 
@@ -453,7 +453,7 @@ You will only create a custom domain for the api-gateway service. This is the on
    CERT_NAME_IN_ASC=openlab-certificate
    az spring-cloud certificate add \
        --resource-group $RESOURCE_GROUP \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --name $CERT_NAME_IN_ASC \
        --vault-certificate-name $CERT_NAME_IN_KV \
        --vault-uri $VAULTURI
@@ -465,7 +465,7 @@ You will only create a custom domain for the api-gateway service. This is the on
    APPNAME=api-gateway
    az spring-cloud app custom-domain bind \
        --resource-group $RESOURCE_GROUP \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --domain-name $DNS_NAME \
        --certificate $CERT_NAME_IN_ASC \
        --app $APPNAME

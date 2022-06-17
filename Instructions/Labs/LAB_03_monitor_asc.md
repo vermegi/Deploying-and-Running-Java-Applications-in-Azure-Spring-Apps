@@ -53,7 +53,7 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
    az spring-cloud app logs \
        --name api-gateway \
        --resource-group $RESOURCE_GROUP \
-       --service $SPRING_CLOUD_SERVICE \
+       --service $SPRING_APPS_SERVICE \
        --follow
    ```
 
@@ -80,7 +80,7 @@ You now know how to live stream any logs to your console. Next, you will configu
    ```bash
    az spring-cloud app-insights show \
        -g $RESOURCE_GROUP \
-       -n $SPRING_CLOUD_SERVICE
+       -n $SPRING_APPS_SERVICE
    ```
 
    > **Note**: This should generate an output that resembles the following content: 
@@ -115,7 +115,7 @@ You now know how to live stream any logs to your console. Next, you will configu
    ```bash
    az spring-cloud app-insights update \
        -g $RESOURCE_GROUP \
-       -n $SPRING_CLOUD_SERVICE \
+       -n $SPRING_APPS_SERVICE \
        --sampling-rate 50 \
        --app-insights-key $INSTRUMENTATIONKEY
    ```
@@ -125,7 +125,7 @@ You now know how to live stream any logs to your console. Next, you will configu
    ```bash
    az spring-cloud app-insights show \
        -g $RESOURCE_GROUP \
-       -n $SPRING_CLOUD_SERVICE
+       -n $SPRING_APPS_SERVICE
    ```
 
 </details>
@@ -215,7 +215,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 
    ```bash
    az monitor diagnostic-settings categories list \
-       --resource $SPRING_CLOUD_SERVICE \
+       --resource $SPRING_APPS_SERVICE \
        -g $RESOURCE_GROUP \
        --resource-type Microsoft.AppPlatform/Spring \
        --query value[].name
@@ -273,7 +273,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
    ```bash
    az monitor diagnostic-settings create \
        --name springcloudlogs \
-       --resource $SPRING_CLOUD_SERVICE \
+       --resource $SPRING_APPS_SERVICE \
        --resource-type Microsoft.AppPlatform/Spring \
        --resource-group $RESOURCE_GROUP \
        --workspace $WORKSPACE \
