@@ -46,6 +46,8 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. In the web browser displaying the GitHub repo, navigate to each folder containing the code of the individual spring-petclinic-* services and review their content. You don't need to know their full details, but you should understand their basic structure.
 
+1. Make sure you create a local copy of this project for you to work in during the lab.
+
 ### Consider the Azure services most suitable for hosting your application
 
 Now that you have familiarized yourself with the application you will be migrating to Azure, as the next step, you will need to consider different compute options you have at your disposal for hosting this application.
@@ -160,6 +162,8 @@ There are other tools you will us as well (including Git and mvn), but the porta
 </details>
 
 You also should record any commands and scripts you execute for later reference. This will help you in the subsequent exercises, in case you need to reuse them to repeat the same sequence of steps.
+
+  > **Note**: In the lab runthroughs you will make a lot of use of Azure CLI statements. In case you are using Visual Studio Code, you can record your statements in a file with the _.azcli_ extension. This extension in combination with the [Azure CLI Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.azurecli) give you extra capabilities like intellisense and directly running a statement from the script file in the terminal window.
 
 - What additional tools would you need to perform the migration?
 

@@ -36,9 +36,10 @@ During this challenge, you'll:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-   > **Note**: Your workstation contains the following components installed:
+   > **Note**: Your workstation should contain the following components:
 
    - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
+     - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
    - Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
