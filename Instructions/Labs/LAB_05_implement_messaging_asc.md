@@ -66,7 +66,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. On your lab computer, in Git Bash window, from the Git Bash prompt, run the following command to create a Service Bus namespace. Note that the name of the namespace needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. You will need to create the namespace with the **Premium** sku. This is needed to use JMS 2.0 messaging later on in the lab.
 
    ```bash
-   SERVICEBUS_NAMESPACE=springcloudns$RANDOM$RANDOM
+   SERVICEBUS_NAMESPACE=springcloudns$RANDOM
 
    az servicebus namespace create \
        --resource-group $RESOURCE_GROUP \
@@ -74,6 +74,8 @@ This translates the secret in Key Vault to the correct application property for 
        --location $LOCATION \
        --sku Premium
    ```
+
+   > **Note**: Wait for the operation to complete. This might take about 5 minutes.
 
 1. Next, create two queues in this namespace named visits-requests and visits-confirmations.
 
@@ -133,7 +135,7 @@ This translates the secret in Key Vault to the correct application property for 
 
 ### Test the messaging functionality
 
-In the Spring Petclinic application, the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspects whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
+In the [Lab repository Extra fiolder](), the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspects whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
 
 [Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/en-us/azure/service-bus-messaging/explorer).
 
