@@ -90,6 +90,18 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
 1. Executing the command will automatically open a web browser window prompting you to authenticate. Once prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab and close the web browser window.
 
+1. Make sure that you are logged in to the right subscription for the consecutive commands.
+
+   ```bash
+   az account list -o table
+   ```
+
+1. If in the above statement you don't see the right account being indicated as your default one, change your environment to the right subscription with the following command, replacing the _subscription-id_.
+
+   ```bash
+   az account set --subscription <subscription-id>
+   ```
+
 1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Apps service and an Azure Database for MySQL Single Server instance):
 
    ```bash
@@ -109,7 +121,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
                           --sku Standard
    ```
 
-   > **Note**: This will automatically register the Microsoft.AppPlatform provider if needed.
+   > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
@@ -126,6 +138,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. On the resource group overview pane, verify that the resource group contains an Azure Spring Apps instance.
 
    > **Note**: In case you don't see the Azure Spring Apps service in the overview list of the resource group, select the **Refresh** toolbar button to refresh the view of the resource group resources.
+
+   > **Note**: You will also notice an Application Insights resource also got created in your resource group. You will use this in one of the next labs.
 
 1. Select the Azure Spring Apps instance and, in the vertical navigation menu, in the **Settings** section, select **Apps**. Note that the instance does not include any spring apps at this point. You will perform the app deployment later in this exercise.
 
