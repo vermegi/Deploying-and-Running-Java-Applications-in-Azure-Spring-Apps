@@ -45,6 +45,7 @@ During this challenge, you'll:
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
    - Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
    - Azure CLI version 2.37.0
+   - jq command line tool available from [JQ Downloads](https://stedolan.github.io/jq/)
 
    > **Note**: If needed, reinstall the Git for Windows and, during installation, ensure that the Git Credential Manager is enabled.
 
