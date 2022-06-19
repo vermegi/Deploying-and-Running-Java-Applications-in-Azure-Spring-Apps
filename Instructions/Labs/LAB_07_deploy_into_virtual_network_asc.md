@@ -248,6 +248,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Redeploy each of the apps.
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices
    az spring app deploy \
         --service $SPRING_APPS_SERVICE \
         --resource-group $RESOURCE_GROUP \
@@ -411,7 +412,7 @@ To start, you need to generate a self-signed certificate and add it to Azure Key
 1. Replace `mydomain` DNS name in the sample-policy.json file with a randomly generated custom domain name that you will use later in this exercise by running the following commands:
 
    ```bash
-   DNS_LABEL=springclouddns$RANDOM$RANDOM
+   DNS_LABEL=springclouddns$RANDOM
    DNS_NAME=sampleapp.${DNS_LABEL}.com
    cat sample-policy.json | sed "s/myapp.mydomain.com/${DNS_NAME}/g" > result-policy.json
    ```
@@ -565,6 +566,8 @@ You are now ready to create an Application Gateway instance to expose your appli
        --key-vault-secret-id $KEYVAULT_SECRET_ID_FOR_CERT \
        --identity $APPGW_IDENTITY_NAME
    ```
+
+   > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
 1. To complete the configuration of the instance of Application Gateway, you need to retrieve the public key of the self-signed certificate, which is required to configure (in the next step) that certificate as issued by a trusted certification authority.
 
