@@ -219,23 +219,23 @@ In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deplo
        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
-7. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
+1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
 
-8. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the **messaging-emulator** app changes to **Succeeded**, and then select the **messaging-emulator** app entry.
+1. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the **messaging-emulator** app changes to **Succeeded**, and then select the **messaging-emulator** app entry.
 
    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-9.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
+1.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
-10. In the Azure Portal, navigate to the page of the Service Bus namespace you deployed in the previous task.
+1. In the Azure Portal, navigate to your resource group and select the Service Bus namespace you deployed in the previous task.
 
-11. In the navigation menu, in the **Entities** section, select **Queues** and then select the **visits-requests** queue entry.
+1. In the navigation menu, in the **Entities** section, select **Queues** and then select the **visits-requests** queue entry.
 
-12. On the **Overview** page of the **visits-requests** queue, verify that the active message count is set to 1.
+1. On the **Overview** page of the **visits-requests** queue, verify that the active message count is set to 1.
 
-13. Select **Service Bus Explorer (Preview)** and select **Peek from start**. This operation allows you to peek at the top messages on the queue, without dequeuing them.
+1. Select **Service Bus Explorer (Preview)** and select **Peek from start**. This operation allows you to peek at the top messages on the queue, without dequeuing them.
 
-14. Select the message entry in the queue and review the **Message Body** section to confirm that its content matches the message you submitted.
+1. Select the message entry in the queue and review the **Message Body** section to confirm that its content matches the message you submitted.
 
 </details>
 
@@ -261,13 +261,13 @@ To start, you will need to add the necessary dependencies.
 <details>
 <summary>hint</summary>
 <br/>
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Apps -->` section, following the last dependency element, add the following dependency element.
+
+1. From the Git Bash window, in the spring-petclinic-microservices repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Cloud -->` section, following the last dependency element, add the following dependency element.
 
    ```xml
            <dependency>
              <groupId>com.azure.spring</groupId>
              <artifactId>spring-cloud-azure-starter-servicebus-jms</artifactId>
-             <version>4.0.0</version>
            </dependency>
    ```
 
@@ -373,39 +373,33 @@ You will next add the code required to send and receive messages to the **visits
 1. In the **spring-petclinic-visits-service** directory, create a new **src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory and add there a **MessagingConfig.java** class file containing the following code:
 
    ```java
-   package org.springframework.samples.petclinic.visits.config;
-
-   import java.util.HashMap;
-   import java.util.Map;
-
-   import org.springframework.beans.factory.annotation.Value;
-   import org.springframework.context.annotation.Bean;
-   import org.springframework.context.annotation.Configuration;
-   import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
-   import org.springframework.jms.support.converter.MessageConverter;
-   import org.springframework.samples.petclinic.visits.entities.VisitRequest;
-   import org.springframework.samples.petclinic.visits.entities.VisitResponse;
-
-   @Configuration
-   public class MessagingConfig {
-
-       @Bean("QueueConfig")
-       public QueueConfig queueConfig() {
-           return new QueueConfig();
-       }
-
-       @Bean
-       public MessageConverter jackson2Converter() {
-           MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-
-           Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
-           typeMappings.put("visitRequest", VisitRequest.class);
-           typeMappings.put("visitResponse", VisitResponse.class);
-           converter.setTypeIdMappings(typeMappings);
-           converter.setTypeIdPropertyName("messageType");
-           return converter;
-       }
-   }
+    package org.springframework.samples.petclinic.visits.config;
+    import java.util.HashMap;
+    import java.util.Map;
+    import org.springframework.beans.factory.annotation.Value;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+    import org.springframework.jms.support.converter.MessageConverter;
+    import org.springframework.samples.petclinic.visits.entities.VisitRequest;
+    import org.springframework.samples.petclinic.visits.entities.VisitResponse;
+    @Configuration
+    public class MessagingConfig {
+        @Bean("QueueConfig")
+        public QueueConfig queueConfig() {
+            return new QueueConfig();
+        }
+        @Bean
+        public MessageConverter jackson2Converter() {
+            MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+            Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
+            typeMappings.put("visitRequest", VisitRequest.class);
+            typeMappings.put("visitResponse", VisitResponse.class);
+            converter.setTypeIdMappings(typeMappings);
+            converter.setTypeIdPropertyName("messageType");
+            return converter;
+        }
+    }
    ```
 
 1. In the **spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory, add another  **QueueConfig.java** class file containing the following code:
@@ -484,7 +478,7 @@ This **VisitsReceiver** service is listening to the **visits-requests** queue. E
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
+                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
