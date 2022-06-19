@@ -164,7 +164,7 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 1. From the Git Bash prompt, make sure you are no longer in the **spring-petclinic-microservices** folder and clone the **spring-petclinic-microservices-config** repo
 
    ```bash
-   cd ..
+   cd ~/projects
    git clone https://github.com/<your-github-username>/spring-petclinic-microservices-config.git
    ```
 
@@ -353,8 +353,7 @@ You now have the compute and data services available for deployment of the compo
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
-   cd ..
-   cd spring-petclinic-microservices
+   cd ~/projects/spring-petclinic-microservices
    mvn clean package -DskipTests
    ```
 

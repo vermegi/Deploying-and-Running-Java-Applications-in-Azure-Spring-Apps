@@ -219,6 +219,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Save the changes and push the updates you made to the **application.yml** file to your private GitHub repo by running the following commands from the Git Bash prompt:
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices-config
    git add .
    git commit -m 'removed azure mysql credentials'
    git push
@@ -290,7 +291,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Rebuild the services by running the following command in the root directory of the application.
 
    ```bash
-   cd ~/spring-petclinic-microservices/
+   cd ~/projects/spring-petclinic-microservices/
    mvn clean package -DskipTests
    ```
 
