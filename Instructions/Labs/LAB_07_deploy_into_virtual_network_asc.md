@@ -45,9 +45,9 @@ During this challenge, you'll:
 
 ### Create networking resources
 
-Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 3 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance and the Azure Key Vault instance. You can use the following guidance to implement these changes.
+Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 4 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance,  the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You can use the following guidance to implement these changes.
 
-In later exercises you'll be creating the private endpoints for the Azure Service Bus or the Event Hubs. 
+In later exercises you'll be creating the private endpoints for the backend services.
 
 [Create a Virtual Network and default subnet](https://docs.microsoft.com/en-us/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create)
 [Add subnets to a Virtual Network](https://docs.microsoft.com/en-us/cli/azure/network/vnet/subnet?view=azure-cli-latest)
@@ -143,7 +143,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=springcloudsvc$RANDOM$RANDOM
+   SPRING_APPS_SERVICE=springcloudsvcvnet$RANDOM
    az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
    az spring create  \
        --resource-group $RESOURCE_GROUP \
@@ -157,15 +157,18 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    > **Note**: Wait for the provisioning to complete. This might take about 15 minutes.
 
+   > **Note**: Notice the differences in this create statement to the first time you created the Spring Apps service. You are now also indicating in whicg vnet and subnets the deployment should happen.
+
 1. Set up the config server.
 
    ```bash
-   az spring config-server git set --name $SPRING_APPS_SERVICE \
-                                         --resource-group $RESOURCE_GROUP \
-                                         --uri $GIT_REPO \
-                                         --label main \
-                                         --password $GIT_PASSWORD \
-                                         --username $GIT_USERNAME
+   az spring config-server git set \
+        --name $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --uri $GIT_REPO \
+        --label main \
+        --password $GIT_PASSWORD \
+        --username $GIT_USERNAME
    ```
 
 1. Recreate each of the apps in Spring Apps, including managed identities for the customers-service, visits-service, and vets-service apps.
@@ -194,6 +197,10 @@ When you recreate your Spring Apps instance in the virtual network, you will als
                               --name vets-service \
                               --system-assigned
    ```
+
+   > **Note**: Wait for the provisioning of each app to complete. This might take about 5 minutes for each app.
+
+   > **Note**: Notice the differences in this create statement for the customers, visits and vets services as opposed to the first time you created these apps. You are now immediately assigning the managed identity to them.
 
 1. Retrieve the managed identities of the customers, visits and vets apps, and grant them access to the Key Vault instance.
 
@@ -241,38 +248,43 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Redeploy each of the apps.
 
    ```bash
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name api-gateway \
-                              --no-wait \
-                              --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.1.jar
+   az spring app deploy \
+        --service $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --name api-gateway \
+        --no-wait \
+        --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
 
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name admin-service \
-                              --no-wait \
-                              --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.1.jar
+   az spring app deploy \
+        --service $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --name admin-service \
+        --no-wait \
+        --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
                         
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name customers-service \
-                              --no-wait \
-                              --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+        --service $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --name customers-service \
+        --no-wait \
+        --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+        --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name visits-service \
-                              --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+        --service $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --name visits-service \
+        --no-wait \
+        --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+        --env SPRING_PROFILES_ACTIVE=mysql
 
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name vets-service \
-                              --no-wait \
-                              --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.1.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+        --service $SPRING_APPS_SERVICE \
+        --resource-group $RESOURCE_GROUP \
+        --name vets-service \
+        --no-wait \
+        --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
 </details>
