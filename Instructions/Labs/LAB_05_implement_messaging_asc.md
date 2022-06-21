@@ -66,7 +66,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. On your lab computer, in Git Bash window, from the Git Bash prompt, run the following command to create a Service Bus namespace. Note that the name of the namespace needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. You will need to create the namespace with the **Premium** sku. This is needed to use JMS 2.0 messaging later on in the lab.
 
    ```bash
-   SERVICEBUS_NAMESPACE=springcloudns$RANDOM$RANDOM
+   SERVICEBUS_NAMESPACE=springcloudns$RANDOM
 
    az servicebus namespace create \
        --resource-group $RESOURCE_GROUP \
@@ -74,6 +74,8 @@ This translates the secret in Key Vault to the correct application property for 
        --location $LOCATION \
        --sku Premium
    ```
+
+   > **Note**: Wait for the operation to complete. This might take about 5 minutes.
 
 1. Next, create two queues in this namespace named visits-requests and visits-confirmations.
 
@@ -124,6 +126,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. Commit and push your changes to the remote repository.
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices-config
    git add .
    git commit -m 'added service bus'
    git push
@@ -133,7 +136,7 @@ This translates the secret in Key Vault to the correct application property for 
 
 ### Test the messaging functionality
 
-In the Spring Petclinic application, the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspects whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
+In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/Extra), the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project, deploy it as an axtra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
 
 [Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/en-us/azure/service-bus-messaging/explorer).
 
@@ -141,42 +144,36 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservices/spring-petclinic-messaging-emulator/pom.xml** file. In the `<!-- Azure Service Bus starter -->` section, following the first dependency element, add the following dependency element.
+1. As a first step you will need to clone the [Lab repository](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps). From the Git Bash window, execute the following statement.
 
-   ```xml
-       <dependency>
-          <groupId>com.azure.spring</groupId>
-          <artifactId>azure-spring-boot-starter-keyvault-secrets</artifactId>
-          <version>3.14.0</version>
-       </dependency>
-   ```
+    ```bash
+    cd ~/projects
+    git clone https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps.git
+    ```
 
-   > **Note**: The updated content of the `<!-- Azure Service Bus starter -->` section should look like this:
+1. From the Git Bash window copy the **spring-petclinic-messaging-emulator** to the **spring-petclinic-microservices** directory.
 
-   ```xml
-       <!-- Azure Service Bus starter -->
-       <dependency>
-         <groupId>com.azure.spring</groupId>
-         <artifactId>spring-cloud-azure-starter-servicebus-jms</artifactId>
-         <version>4.0.0</version>
-       </dependency>
-       <dependency>
-          <groupId>com.azure.spring</groupId>
-          <artifactId>azure-spring-boot-starter-keyvault-secrets</artifactId>
-          <version>3.14.0</version>
-       </dependency>
-   ```
+    ```bash
+    cp -R Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/spring-petclinic-messaging-emulator spring-petclinic-microservices 
+    ```
+
+1. In the main **pom.xml** file, add an extra module for the **spring-petclinic-messaging-emulator** in the **<mudules>** element at line 26.
+
+    ```xml
+    <module>spring-petclinic-messaging-emulator</module>
+    ```
 
 1. Update the compiled version of the microservices available by running an additional build.
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices
    mvn clean package -DskipTests
    ```
 
 1. Create a new application in your Spring Apps service for the **messaging-emulator** and assign a public endpoint to it.
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
+   az spring app create --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --assign-endpoint true
@@ -187,14 +184,14 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 1. Create a system-assigned identity to this new application and store the reference to the identity in an environment variable.
 
    ```bash
-   az spring-cloud app identity assign \
-       --service $SPRING_CLOUD_SERVICE \
+   az spring app identity assign \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --system-assigned
 
-   MESSAGING_EMULATOR_ID=$(az spring-cloud app identity show \
-       --service $SPRING_CLOUD_SERVICE \
+   MESSAGING_EMULATOR_ID=$(az spring app identity show \
+       --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --output tsv \
@@ -214,11 +211,11 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 1. You can now deploy the messaging-emulator application.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --no-wait \
-       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-2.6.1.jar \
+       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-2.6.7.jar \
        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -228,9 +225,9 @@ In the Spring Petclinic application, the **messaging-emulator** microservice is 
 
    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-1. On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
+1.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
-1. In the Azure Portal, navigate to the page of the Service Bus namespace you deployed in the previous task.
+1. In the Azure Portal, navigate to your resource group and select the Service Bus namespace you deployed in the previous task.
 
 1. In the navigation menu, in the **Entities** section, select **Queues** and then select the **visits-requests** queue entry.
 
@@ -248,6 +245,7 @@ You might want to inspect the code of the **messaging-emulator** microservice. T
 - The **PetClinicVisitRequestSender** and **PetClinicMessageResponsesReceiver** classes in the **service** folder. These are the classes that enable sending and receiving messages to and from a queue using JMS.
 - The **PetClinicMessageRequest** and **PetClinicMessageResponse** classes in the **entity** folder. These are the messages being send back and forth.
 - The **MessagingConfig** class in the **config** folder. This class provides conversion to and from JSON.
+- The **AzureServiceBusResource** class in the **web** folder. This class makes use of the above classed to send a message to the service bus.
 
 In the next steps you will add similar functionality to the **visits** service.
 
@@ -263,13 +261,13 @@ To start, you will need to add the necessary dependencies.
 <details>
 <summary>hint</summary>
 <br/>
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Apps -->` section, following the last dependency element, add the following dependency element.
+
+1. From the Git Bash window, in the spring-petclinic-microservices repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Cloud -->` section, following the last dependency element, add the following dependency element.
 
    ```xml
            <dependency>
              <groupId>com.azure.spring</groupId>
              <artifactId>spring-cloud-azure-starter-servicebus-jms</artifactId>
-             <version>4.0.0</version>
            </dependency>
    ```
 
@@ -375,39 +373,33 @@ You will next add the code required to send and receive messages to the **visits
 1. In the **spring-petclinic-visits-service** directory, create a new **src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory and add there a **MessagingConfig.java** class file containing the following code:
 
    ```java
-   package org.springframework.samples.petclinic.visits.config;
-
-   import java.util.HashMap;
-   import java.util.Map;
-
-   import org.springframework.beans.factory.annotation.Value;
-   import org.springframework.context.annotation.Bean;
-   import org.springframework.context.annotation.Configuration;
-   import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
-   import org.springframework.jms.support.converter.MessageConverter;
-   import org.springframework.samples.petclinic.visits.entities.VisitRequest;
-   import org.springframework.samples.petclinic.visits.entities.VisitResponse;
-
-   @Configuration
-   public class MessagingConfig {
-
-       @Bean("QueueConfig")
-       public QueueConfig queueConfig() {
-           return new QueueConfig();
-       }
-
-       @Bean
-       public MessageConverter jackson2Converter() {
-           MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-
-           Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
-           typeMappings.put("visitRequest", VisitRequest.class);
-           typeMappings.put("visitResponse", VisitResponse.class);
-           converter.setTypeIdMappings(typeMappings);
-           converter.setTypeIdPropertyName("messageType");
-           return converter;
-       }
-   }
+    package org.springframework.samples.petclinic.visits.config;
+    import java.util.HashMap;
+    import java.util.Map;
+    import org.springframework.beans.factory.annotation.Value;
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+    import org.springframework.jms.support.converter.MessageConverter;
+    import org.springframework.samples.petclinic.visits.entities.VisitRequest;
+    import org.springframework.samples.petclinic.visits.entities.VisitResponse;
+    @Configuration
+    public class MessagingConfig {
+        @Bean("QueueConfig")
+        public QueueConfig queueConfig() {
+            return new QueueConfig();
+        }
+        @Bean
+        public MessageConverter jackson2Converter() {
+            MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+            Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
+            typeMappings.put("visitRequest", VisitRequest.class);
+            typeMappings.put("visitResponse", VisitResponse.class);
+            converter.setTypeIdMappings(typeMappings);
+            converter.setTypeIdPropertyName("messageType");
+            return converter;
+        }
+    }
    ```
 
 1. In the **spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory, add another  **QueueConfig.java** class file containing the following code:
@@ -482,11 +474,11 @@ This **VisitsReceiver** service is listening to the **visits-requests** queue. E
 1. Redeploy the visits microservice.
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
+   az spring app deploy --service $SPRING_APPS_SERVICE \
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
+                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

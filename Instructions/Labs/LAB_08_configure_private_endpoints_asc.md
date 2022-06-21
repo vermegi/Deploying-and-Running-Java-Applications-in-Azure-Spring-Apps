@@ -9,7 +9,7 @@ lab:
 
 ## Challenge scenario
 
-You now have your Azure Spring Apps application deployed into a virtual network and the application connection requests from the internet must pass through your Application Gateway instance with Web Application Firewall enabled. However, the apps communicate with the backend services, such Azure Database for MySQL Single Server and Key Vault via their public endpoints. In this exercise, you will lock them down by implementing a configuration in which they only accept connections that originate from within your virtual network. 
+You now have your Azure Spring Apps service deployed into a virtual network and the microservices connection requests from the internet must pass through your Application Gateway instance with Web Application Firewall enabled. However, the apps communicate with the backend services, such Azure Database for MySQL Single Server, Key Vault, Service Bus and Event Hub via their public endpoints. In this exercise, you will lock them down by implementing a configuration in which they only accept connections that originate from within your virtual network.
 
 ## Objectives
 
@@ -33,6 +33,8 @@ During this challenge, you'll:
 
    > **Note**: The instructions provided in this exercise assume that you successfully completed the previous exercise and are using the same lab environment, including your Git Bash session with the relevant environment variables already set.
 
+   > **Note**: Since adding private endpoints to services is very similar across services, we will leave locking down the Service Bus and Event Hub namespace as an additional exercise for you, without adding the step by step instructions.
+
 ### Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 
 To start, you need to lock down access to your MySQL database by using a private endpoint. A private endpoint is represented by a private IP address within a virtual network. Once you enable it, you can block public access to your database. You can use the following guidance to perform this task.
@@ -47,10 +49,10 @@ To start, you need to lock down access to your MySQL database by using a private
 
    ```bash
    az network vnet subnet update \
-    --name $PRIVATE_ENDPOINTS_SUBNET_NAME \
-    --resource-group $RESOURCE_GROUP \
-    --vnet-name $VIRTUAL_NETWORK_NAME \
-    --disable-private-endpoint-network-policies true
+      --name $PRIVATE_ENDPOINTS_SUBNET_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --vnet-name $VIRTUAL_NETWORK_NAME \
+      --disable-private-endpoint-network-policies true
    ```
 
 1. Next, in the same subnet, create the private endpoint corresponding to the Azure Database for MySQL Single Server instance. 
@@ -172,7 +174,7 @@ Once you have locked down the internet access to the MySQL database, you will pe
 As the last step of this exercise and the lab, test again your setup. You should still be able to navigate to your application through the custom domain that you configured on your Application Gateway and view the listing of owners and veterinarians.
 
    > **Note**: In case you don't see any data when navigating the menu options in the application, try redeploying the customers, visits and vets apps again to Azure Spring Apps.
-    > **Note**: If don’t work as expected, you can reconnect monitoring for your application and troubleshooting as described in the previous monitoring lab.
+    > **Note**: If things don’t work as expected, you can reconnect monitoring for your application and troubleshooting as described in the previous monitoring lab.
 
 #### Review
 

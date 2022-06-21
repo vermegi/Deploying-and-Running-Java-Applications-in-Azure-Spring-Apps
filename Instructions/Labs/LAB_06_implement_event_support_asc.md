@@ -51,10 +51,10 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 <summary>hint</summary>
 <br/>
 
-1. On your lab computer, in Git Bash window, from the Git Bash prompt, run the following command to create an Event Hub namespace. The name you use for your namespace should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. 
+1. On your lab computer, in the Git Bash window, from the Git Bash prompt, run the following command to create an Event Hub namespace. The name you use for your namespace should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. 
 
    ```bash
-   EVENTHUBS_NAMESPACE=javalab-eh-ns-$RANDOM$RANDOM
+   EVENTHUBS_NAMESPACE=javalab-eh-ns-$RANDOM
 
    az eventhubs namespace create \
      --resource-group $RESOURCE_GROUP \
@@ -147,41 +147,45 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 
    ```yaml
    spring:
-     config:
-       activate:
+   config:
+      activate:
          on-profile: mysql
-     jms:
-       servicebus:
-         connection-string: ${spring.jms.servicebus.connectionstring}
+   jms:
+      servicebus:
+         connection-string: ${spring.jms.servicebus.connection-string}
          idle-timeout: 60000
          pricing-tier: premium
-     datasource:
-       schema: classpath*:db/mysql/schema.sql
-       data: classpath*:db/mysql/data.sql
-       url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/db?useSSL=true
-       initialization-mode: ALWAYS
-     kafka:
-       bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
-       client-id: first-service
-       group-id: $Default
-       group.id: $Default
-       properties:
+   datasource:
+      schema: classpath*:db/mysql/schema.sql
+      data: classpath*:db/mysql/data.sql
+      url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/petclinic?useSSL=true
+      initialization-mode: ALWAYS
+   kafka:
+      bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
+      client-id: first-service
+      group-id: $Default
+      properties:
+         sasl.jaas.config:
          sasl.mechanism: PLAIN
          security.protocol: SASL_SSL
          spring.json:
-           use.type.headers: false
-           value.default.type: com.targa.labs.dev.telemetrystation.Message
-   topic:
-     name: telemetry
-   azure:
-     keyvault:
-       enabled: true
-       uri: https://<your-keyvault>.vault.azure.net/
+         use.type.headers: false
+         value.default.type: com.targa.labs.dev.telemetrystation.Message
+   cloud:
+      azure:
+         keyvault:
+         secret:
+            property-source-enabled: true
+            property-sources:
+               - name: key-vault-property-souece-1
+               endpoint: https://<your-keyvault>.vault.azure.net/
+               credential.managed-identity-enabled: true
    ```
 
 1. Commit and push your changes to the remote repository.
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices-config
    git add .
    git commit -m 'added event hub'
    git push
@@ -193,7 +197,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 
 You will now implement the functionality that will allow you to emulate sending events from a third party system to the telemetry Event Hub. You can find this third party system in the **events** folder of the starter project. 
 
-   > **Note**: This folder contains the content of the **producer** directory available from https://github.com/Azure/azure-event-hubs-for-kafka/tree/master/quickstart/java**
+   > **Note**: This folder contains the content of the **producer** directory available from [azure-event-hubs-for-kafka on GitHub](https://github.com/Azure/azure-event-hubs-for-kafka/tree/master/quickstart/java)
 
 Edit the **producer.config** file in the **extra/src/main/resources** folder: 
 - change the **bootstrap.servers** config setting so it contains the name of the Event Hub namespace you provisioned earlier in this lab
@@ -207,13 +211,13 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash window, in your local application repository, use your favorite text editor to open the **spring-petclinic-microservices/extra/src/main/resources/producer.config** file. Change line 1 by replacing the `mynamespacename` placeholder with the name of the Event Hub namespace you provisioned earlier in this lab.
+1. In your projects folder, use your favorite text editor to open the **Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer/src/main/resources/producer.config** file. Change line 1 by replacing the `javalab-eh-ns` placeholder with the name of the Event Hub namespace you provisioned earlier in this lab.
 
    ```yaml
    bootstrap.servers=mynamespace.servicebus.windows.net:9093
    ```
 
-1. Change line 4 by replacing the placeholder representing the Event Hub connection string placeholder with the value of the connection string to the **telemetry** event hub. This value should match the output of the **$EVENTHUB_CONNECTIONSTRING** environment variable.
+1. Change line 4 by replacing the password value with the value of the connection string to the **telemetry** event hub. This value should match the output of the **$EVENTHUB_CONNECTIONSTRING** environment variable.
 
    ```yaml
    sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString"    password="Endpoint=sb://mynamespace.servicebus.windows.net/;SharedAccessKeyName=XXXXXX;SharedAccessKey=XXXXXX";
@@ -222,15 +226,16 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 
 1. Save the change to the file.
 
-1. Open the **TestProducer.java** file in the **spring-petclinic-microservices/extra/src/main/java** directory. Alter line 16 by replacing the `test` placeholder with **telemetry** so it uses the telemetry event hub and save the change.
+1. Open the **TestProducer.java** file in the **Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps\Extra\events\producer\src\main\java** directory. Verify that line 16 uses **telemetry** az topic name.
 
    ```java
        private final static String TOPIC = "telemetry";
    ```
 
-1. From the Git Bash window, set the current working directory to the **events** folder and run a maven build.
+1. From the Git Bash window, set the current working directory to the **Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps\Extra\events\producer** folder and run a maven build.
 
    ```bash
+   cd ~/projects/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer
    mvn clean package
    ```
 
@@ -246,7 +251,7 @@ In this task, you will update the customers microservice to receive events from 
 <summary>hint</summary>
 <br/>
 
-1. In the Git Bash window, in your local application repository, use your favorite text editor to open the **pom.xml** file of the **spring-petclinic-customers-service** microservice, add to it another dependency element within the `<!-- Spring Apps -->` section of the `<dependencies> element, and save the change:
+1. In your local application repository, use your favorite text editor to open the **pom.xml** file of the **spring-petclinic-customers-service** microservice, add to it another dependency element within the `<!-- Spring Cloud -->` section of the `<dependencies> element, and save the change:
 
    ```xml
            <dependency>
@@ -283,19 +288,19 @@ In this task, you will update the customers microservice to receive events from 
 1. In the Git Bash window, navigate back to the root folder of the spring petclinic repository and rebuild the application.
 
    ```bash
-   cd ~/spring-petclinic-microservices/
+   cd ~/projects/spring-petclinic-microservices/
    mvn clean package -DskipTests
    ```
 
-1. Redeploy the customers-service microservice to Azure Spring Apps.
+4. Redeploy the customers-service microservice to Azure Spring Apps.
 
    ```bash
-   az spring-cloud app deploy \
-     --service $SPRING_CLOUD_SERVICE \
+   az spring app deploy \
+     --service $SPRING_APPS_SERVICE \
      --resource-group $RESOURCE_GROUP \
      --name customers-service \
      --no-wait \
-     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
+     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
      --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -314,6 +319,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 1. In the Git Bash window, set the current working directory to the **events** folder and run the TestProducer application.
 
    ```bash
+   cd ~/projects/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer
    mvn exec:java -Dexec.mainClass="TestProducer"
    ```
 
@@ -324,7 +330,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 1. From the same Git Bash window, run the following command to start the log stream output for the **customers-service**.
 
    ```bash
-   az spring-cloud app logs -f --service $SPRING_CLOUD_SERVICE \
+   az spring app logs -f --service $SPRING_APPS_SERVICE \
        --resource-group $RESOURCE_GROUP \
        --name customers-service
    ```
@@ -337,6 +343,8 @@ To conclude this lab, you will run the producer app to send 100 events to your e
    ```
 
 1. Switch to the web browser displaying the Azure portal, navigate to the page of the resource group containing resources you provisioned in this lab, and select the entry representing your Event Hub namespace. 
+
+   > **Note**: In case you don't see your Event Hub namespace in the list, select the refresh button.
 
 1. On the Event Hub namespace page, in the navigation menu, in the **Entities** section, select **Event Hubs** and then select the **telemetry** event hub entry.
 

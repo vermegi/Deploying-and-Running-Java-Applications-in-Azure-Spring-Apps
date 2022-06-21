@@ -36,14 +36,16 @@ During this challenge, you'll:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-   > **Note**: Your workstation contains the following components installed:
+   > **Note**: Your workstation should contain the following components:
 
    - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
+     - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
    - Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
    - Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
    - Azure CLI version 2.37.0
+   - jq command line tool available from [JQ Downloads](https://stedolan.github.io/jq/)
 
    > **Note**: If needed, reinstall the Git for Windows and, during installation, ensure that the Git Credential Manager is enabled.
 
@@ -89,11 +91,23 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
 1. Executing the command will automatically open a web browser window prompting you to authenticate. Once prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab and close the web browser window.
 
+1. Make sure that you are logged in to the right subscription for the consecutive commands.
+
+   ```bash
+   az account list -o table
+   ```
+
+1. If in the above statement you don't see the right account being indicated as your default one, change your environment to the right subscription with the following command, replacing the _subscription-id_.
+
+   ```bash
+   az account set --subscription <subscription-id>
+   ```
+
 1. Run the following commands to create a resource group that will contain all of your resources (replace the `<azure_region>` placeholder with the name of any Azure region in which you can create a Standard SKU instance of the Azure Spring Apps service and an Azure Database for MySQL Single Server instance):
 
    ```bash
    RANDOM=$(openssl rand -hex 3)
-   RESOURCE_GROUP=springcloudlab_rg_$RANDOM
+   RESOURCE_GROUP=springappslab_rg_$RANDOM
    LOCATION=<azure_region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
@@ -101,21 +115,21 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
-   SPRING_CLOUD_SERVICE=springcloudsvc$RANDOM$RANDOM
-   az spring create --name $SPRING_CLOUD_SERVICE \
+   SPRING_APPS_SERVICE=springappssvc$RANDOM
+   az spring create --name $SPRING_APPS_SERVICE \
                           --resource-group $RESOURCE_GROUP \
                           --location $LOCATION \
                           --sku Standard
    ```
 
-   > **Note**: This will automatically register the Microsoft.AppPlatform provider if needed.
+   > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
 1. Run the following command to set your default resource group name and Spring Apps service name. By setting these defaults, you don't need to repeat these names in the subsequent commands.
 
    ```bash
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_CLOUD_SERVICE
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
    ```
 
 1. Open a web browser window and navigate to the Azure portal. If prompted, sign in using the user account that has the Owner role in the target Azure subscription that you will use in this lab.
@@ -126,52 +140,39 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    > **Note**: In case you don't see the Azure Spring Apps service in the overview list of the resource group, select the **Refresh** toolbar button to refresh the view of the resource group resources.
 
+   > **Note**: You will also notice an Application Insights resource also got created in your resource group. You will use this in one of the next labs.
+
 1. Select the Azure Spring Apps instance and, in the vertical navigation menu, in the **Settings** section, select **Apps**. Note that the instance does not include any spring apps at this point. You will perform the app deployment later in this exercise.
 
 </details>
 
 ### Set up the config server
 
-Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings. 
+Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in [the PetClinic GitHub repo](https://github.com/spring-petclinic/spring-petclinic-microservices/blob/master/spring-petclinic-config-server/src/main/resources/application.yml). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
-
-1. In your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices**. 
+1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**. 
 
    > **Note**: Make sure to configure the repository as private.
 
-1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**.
+1. On the newly created repository page, select the copy icon in the  **Quick setup** section.
     
-    > **Note**: Record the value of the URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
-    
-1. On your lab computer, in the Git Bash window, run the following commands to clone the [Spring Petclinic](https://github.com/spring-petclinic/spring-petclinic-microservices) application to your workstation:
+    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+
+1. From the Git Bash prompt, make sure you are no longer in the **spring-petclinic-microservices** folder and clone the **spring-petclinic-microservices-config** repo
 
    ```bash
-   rm spring-petclinic-microservices/ -fr
-   git clone https://github.com/spring-petclinic/spring-petclinic-microservices.git
+   cd ~/projects
+   git clone https://github.com/<your-github-username>/spring-petclinic-microservices-config.git
    ```
 
-1. From the Git Bash prompt, run the following commands to change the working directory to the one containing the cloned repository and then push its content to your private GitHub repository (where the `<your-github-username>` placeholder represents your GitHub user name):
+1. From the Git Bash prompt, move to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
 
    ```bash
-   cd ~/spring-petclinic-microservices/
-   git remote remove origin
-   git remote add origin https://github.com/<your-github-username>/spring-petclinic-microservices-private.git
-   git branch -M main
-   git push -u origin main
-   ```
-
-1. When prompted to sign in to GitHub, select the **Sign in with your browser** option. This will automatically open a new tab in the web browser window, prompting you to provide your GitHub username and password.
-
-1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
-
-1. From the Git Bash prompt, run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
-
-   ```bash
+   cd spring-petclinic-microservices-config
    curl -o admin-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/admin-server.yml
    curl -o api-gateway.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/api-gateway.yml
    curl -o application.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/application.yml
@@ -182,13 +183,15 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
    curl -o visit-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visit-service.yml
    ```
 
-1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
+4. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
 
    ```bash
    git add .
    git commit -m 'added base config'
    git push
    ```
+
+1. In your web browser, refresh the page of the newly created **spring-petclinic-microservices-config** repository and double check that all the configuration files are there.
 
 </details>
 
@@ -210,7 +213,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
 
-1. Ensure that value in the **Expiration** drop-down list is set to **30 days**.
+1. Ensure that the value in the **Expiration** drop-down list is set to **30 days**.
 
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
@@ -218,7 +221,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git_repository>`, `<git_username>`, and `<git_password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
-   > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-private.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+   > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name.
 
    ```bash
    GIT_REPO=<git_repository>
@@ -229,7 +232,8 @@ Once you completed the initial update of your git repository hosting the server 
 1. To set up the config server such that it points to your GitHub repository, from the Git Bash prompt, run the following command. 
 
    ```bash
-   az spring-cloud config-server git set --name $SPRING_CLOUD_SERVICE \
+   az spring config-server git set \
+                           --name $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --uri $GIT_REPO \
                            --label main \
@@ -277,7 +281,8 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create a database in the Azure Database for MySQL Single Server instance.
 
    ```bash
-   az mysql db create --server-name $SQL_SERVER_NAME \
+   az mysql db create \
+         --server-name $SQL_SERVER_NAME \
          --resource-group $RESOURCE_GROUP \
          --name $DATABASE_NAME
    ```
@@ -285,7 +290,8 @@ You will also need to update the config for your applications to use the newly p
 1. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance. 
 
    ```bash
-   az mysql server firewall-rule create --name allAzureIPs \
+   az mysql server firewall-rule create \
+       --name allAzureIPs \
        --server ${SQL_SERVER_NAME} \
        --resource-group ${RESOURCE_GROUP} \
        --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
@@ -293,7 +299,7 @@ You will also need to update the config for your applications to use the newly p
 
 1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Change the entries in lines 82, 83, and 84 that contain the values of the target datasource endpoint, the corresponding admin user account, and its password. Set these values by using the information in the Azure Database for MySQL Single Server connection string you recorded earlier in this task. Your configuration should look like this:
 
-   > **Note**: The original content of these three lines in the application.yml file has the following format:
+   > **Note**: The original content of these three lines in the application.yml file have the following format:
 
    ```yaml
        url: jdbc:mysql://localhost:3306/db?useSSL=false
@@ -337,10 +343,18 @@ You now have the compute and data services available for deployment of the compo
 <summary>hint</summary>
 <br/>
 
+1. In the main **pom.xml** file change the **spring-cloud.version** on line 33 from version **2021.0.2** t0 **2021.0.0** and save the file.
+
+   ```xml
+   <spring-cloud.version>2021.0.0</spring-cloud.version>
+   ```
+
+   > **Note**: This version change is currently needed, since there is a bug when running version 2021.0.2.
+
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
-   cd ~/spring-petclinic-microservices/
+   cd ~/projects/spring-petclinic-microservices
    mvn clean package -DskipTests
    ```
 
@@ -368,10 +382,11 @@ You now have the compute and data services available for deployment of the compo
 1. For each application you will now create an app on Azure Spring Apps service. You will start with the api-gateway. To deploy it, from the Git Bash prompt, run the following command:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name api-gateway \
-                           --assign-endpoint true
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name api-gateway \
+            --assign-endpoint true
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
@@ -379,20 +394,24 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app by running the following command from the Git Bash prompt:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name api-gateway \
-                           --no-wait \
-                           --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.1.jar
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name api-gateway \
+            --no-wait \
+            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. In the same way create an app for the admin-server microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name app-admin \
-                           --assign-endpoint
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name app-admin \
+            --assign-endpoint
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -400,19 +419,23 @@ You now have the compute and data services available for deployment of the compo
 1. Next deploy the jar file to this newly created app:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name app-admin \
-                           --no-wait \
-                           --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.1.jar
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name app-admin \
+            --no-wait \
+            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. Next, you will create an app for the customers-service microservice:
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name customers-service 
+   az spring app create \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name customers-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -420,21 +443,26 @@ You now have the compute and data services available for deployment of the compo
 1. For the customers service you will not assign an endpoint but you will set the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name customers-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+            --service $SPRING_APPS_SERVICE \
+            --resource-group $RESOURCE_GROUP \
+            --name customers-service \
+            --no-wait \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+            --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
+
 
 1. Next, you will create an app for the visits-service microservice:
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name visits-service 
+   az spring app create \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name visits-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -442,21 +470,25 @@ You now have the compute and data services available for deployment of the compo
 1. For the visit-service will also skip the endpoint assignment but include the mysql profile:
 
    ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name visits-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name visits-service \
+               --no-wait \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 1. To conclude, you will create an app for the vets-service microservice:
 
 
    ```bash
-   az spring-cloud app create --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name vets-service 
+   az spring app create \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name vets-service 
    ```
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
@@ -464,13 +496,16 @@ You now have the compute and data services available for deployment of the compo
 1. In this case you will also skip the endpoint assignment but include the mysql profile:
 
   ```bash
-   az spring-cloud app deploy --service $SPRING_CLOUD_SERVICE \
-                           --resource-group $RESOURCE_GROUP \
-                           --name vets-service \
-                           --no-wait \
-                           --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.1.jar \
-                           --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy \
+               --service $SPRING_APPS_SERVICE \
+               --resource-group $RESOURCE_GROUP \
+               --name vets-service \
+               --no-wait \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+               --env SPRING_PROFILES_ACTIVE=mysql
    ```
+
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 </details>
 
@@ -485,7 +520,7 @@ Now that you have deployed all of your microservices, verify that the applicatio
 1. To list all deployed apps, from the Git Bash shell, run the following CLI statement, which will also list all publicly accessible endpoints:
 
    ```bash
-   az spring-cloud app list --service $SPRING_CLOUD_SERVICE \
+   az spring app list --service $SPRING_APPS_SERVICE \
                            --resource-group $RESOURCE_GROUP \
                            --output table
    ```
@@ -493,6 +528,8 @@ Now that you have deployed all of your microservices, verify that the applicatio
 1. Alternatively, you can switch to the web browser window displaying the Azure portal interface, navigate to your Azure Spring Apps instance and select **Apps** from the vertical navigation menu. In the list of apps, select **api-gateway**, on the **api-gateway \| Overview** page, note the value of the **URL** property.
 
 1. Open another web browser tab and navigate to the URL of the api-gateway endpoint to display the application web interface. 
+
+1. You can also navigate to the URL of the admin-server to see insight information of your microservices.
 
 </details>
 
