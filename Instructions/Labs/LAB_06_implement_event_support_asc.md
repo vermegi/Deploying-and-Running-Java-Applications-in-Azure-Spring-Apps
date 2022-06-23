@@ -147,39 +147,39 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 
    ```yaml
    spring:
-   config:
-      activate:
+     config:
+       activate:
          on-profile: mysql
-   jms:
-      servicebus:
+     jms:
+       servicebus:
          connection-string: ${spring.jms.servicebus.connection-string}
          idle-timeout: 60000
          pricing-tier: premium
-   datasource:
-      schema: classpath*:db/mysql/schema.sql
-      data: classpath*:db/mysql/data.sql
-      url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/petclinic?useSSL=true
-      initialization-mode: ALWAYS
-   kafka:
-      bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
-      client-id: first-service
-      group-id: $Default
-      properties:
+     datasource:
+       schema: classpath*:db/mysql/schema.sql
+       data: classpath*:db/mysql/data.sql
+       url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/petclinic?useSSL=true
+       initialization-mode: ALWAYS
+     kafka:
+       bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
+       client-id: first-service
+       group-id: $Default
+       properties:
          sasl.jaas.config:
          sasl.mechanism: PLAIN
          security.protocol: SASL_SSL
          spring.json:
          use.type.headers: false
          value.default.type: com.targa.labs.dev.telemetrystation.Message
-   cloud:
-      azure:
+     cloud:
+       azure:
          keyvault:
-         secret:
-            property-source-enabled: true
-            property-sources:
+           secret:
+             property-source-enabled: true
+             property-sources:
                - name: key-vault-property-souece-1
-               endpoint: https://<your-keyvault>.vault.azure.net/
-               credential.managed-identity-enabled: true
+                 endpoint: https://<your-keyvault>.vault.azure.net/
+                 credential.managed-identity-enabled: true
    ```
 
 1. Commit and push your changes to the remote repository.
