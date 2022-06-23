@@ -54,7 +54,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
 1. On your lab computer, in the Git Bash window, from the Git Bash prompt, run the following command to create an Event Hub namespace. The name you use for your namespace should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. 
 
    ```bash
-   EVENTHUBS_NAMESPACE=javalab-eh-ns-$RANDOM
+   EVENTHUBS_NAMESPACE=javalab-eh-ns-$UNIQUEID
 
    az eventhubs namespace create \
      --resource-group $RESOURCE_GROUP \

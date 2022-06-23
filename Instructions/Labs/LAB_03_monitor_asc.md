@@ -224,7 +224,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 1. To create a Log Analytics Workspace to send the logs to, run the following command.
 
    ```bash
-   WORKSPACE=springcloudworkspace$RANDOM
+   WORKSPACE=springcloudworkspace$UNIQUEID
    az monitor log-analytics workspace create \
        --resource-group $RESOURCE_GROUP \
        --workspace-name $WORKSPACE

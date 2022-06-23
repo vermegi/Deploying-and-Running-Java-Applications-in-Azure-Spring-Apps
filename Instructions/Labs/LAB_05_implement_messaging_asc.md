@@ -66,7 +66,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. On your lab computer, in Git Bash window, from the Git Bash prompt, run the following command to create a Service Bus namespace. Note that the name of the namespace needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. You will need to create the namespace with the **Premium** sku. This is needed to use JMS 2.0 messaging later on in the lab.
 
    ```bash
-   SERVICEBUS_NAMESPACE=springcloudns$RANDOM
+   SERVICEBUS_NAMESPACE=springcloudns$UNIQUEID
 
    az servicebus namespace create \
        --resource-group $RESOURCE_GROUP \

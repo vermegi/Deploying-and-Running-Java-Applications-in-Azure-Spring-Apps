@@ -143,8 +143,8 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=springcloudsvcvnet$RANDOM
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
+   SPRING_APPS_SERVICE=springcloudsvcvnet$UNIQUEID
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
    az spring create  \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
@@ -412,7 +412,7 @@ To start, you need to generate a self-signed certificate and add it to Azure Key
 1. Replace `mydomain` DNS name in the sample-policy.json file with a randomly generated custom domain name that you will use later in this exercise by running the following commands:
 
    ```bash
-   DNS_LABEL=springclouddns$RANDOM
+   DNS_LABEL=springclouddns$UNIQUEID
    DNS_NAME=sampleapp.${DNS_LABEL}.com
    cat sample-policy.json | sed "s/myapp.mydomain.com/${DNS_NAME}/g" > result-policy.json
    ```
