@@ -201,7 +201,7 @@ The following three apps of your application use the database hosted by the Azur
 
 You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the **com.azure.spring:spring-cloud-azure-starter-keyvault-secrets** dependency. You can use the following guidance to accomplish this task.
 
-[Azure Key Vault Secrets Spring Boot starter client library for Java](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/azure-spring-boot-starter-keyvault-secrets/README.md)
+[Spring Cloud Azure Starter Key Vault Secrets](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/README.md)
 
 <details>
 <summary>hint</summary>
@@ -229,12 +229,12 @@ You now have all relevant components in place to switch to the secrets stored in
 
    ```yaml
     cloud:
-        azure:
+      azure:
         keyvault:
-            secret:
+          secret:
             property-source-enabled: true
             property-sources:
-                - name: key-vault-property-souece-1
+              - name: key-vault-property-souece-1
                 endpoint: https://<key-vault-name>.vault.azure.net/
                 credential.managed-identity-enabled: true
    ```
