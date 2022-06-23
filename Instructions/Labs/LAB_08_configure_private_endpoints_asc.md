@@ -25,7 +25,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 - Lock down the Key Vault instance by using a private endpoint
@@ -39,7 +39,7 @@ During this challenge, you'll:
 
 To start, you need to lock down access to your MySQL database by using a private endpoint. A private endpoint is represented by a private IP address within a virtual network. Once you enable it, you can block public access to your database. You can use the following guidance to perform this task.
 
-[Create and manage Private Link for Azure Database for MySQL using CLI](https://docs.microsoft.com/en-us/azure/mysql/howto-configure-privatelink-cli)
+[Create and manage Private Link for Azure Database for MySQL using CLI](https://docs.microsoft.com/azure/mysql/howto-configure-privatelink-cli)
 
 <details>
 <summary>hint</summary>
@@ -122,7 +122,7 @@ To start, you need to lock down access to your MySQL database by using a private
 
 Once you have locked down the internet access to the MySQL database, you will perform a similar setup to protect the Key Vault content. To accomplish this, you can use the following guidance.
 
-[Integrate Key Vault with Azure Private Link](https://docs.microsoft.com/en-us/azure/key-vault/general/private-link-service?tabs=cli)
+[Integrate Key Vault with Azure Private Link](https://docs.microsoft.com/azure/key-vault/general/private-link-service?tabs=cli)
 
 <details>
 <summary>hint</summary>

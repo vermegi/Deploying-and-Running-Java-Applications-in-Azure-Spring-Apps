@@ -26,7 +26,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create an Azure Event Hub resource
 - Use an existing microservice to send events to the Event Hub resource
@@ -37,13 +37,13 @@ During this challenge, you'll:
 
 You will first need to create an Azure Event Hub namespace to send events to. Create an Event Hub namespace and assign to it a globally unique name. In the namespace you will then create an eventhub named **telemetry**. You can use the following guidance to implement these changes.
 
-[Quickstart: Create an event hub using Azure CLI](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quickstart-cli).
+[Quickstart: Create an event hub using Azure CLI](https://docs.microsoft.com/azure/event-hubs/event-hubs-quickstart-cli).
 
 You should add the connection string to the telemetry event hub in your Key Vault so the microservices can safely retrieve this value.
 
    > **Note**: As an alternative you can use the Managed Identity of your microservice to connect to the eventhub. For this challenge however you will store the connection string in your Key Vault. You can use the following guidance to implement these changes.
 
-[Authenticate a managed identity with Azure Active Directory to access Event Hubs Resources](https://docs.microsoft.com/en-us/azure/event-hubs/authenticate-managed-identity?tabs=latest).
+[Authenticate a managed identity with Azure Active Directory to access Event Hubs Resources](https://docs.microsoft.com/azure/event-hubs/authenticate-managed-identity?tabs=latest).
 
 The connection to the eventhub needs to be stored in the **spring.kafka.properties.sasl.jaas.config** application property. Store its value in a Key Vault secret named **SPRING-KAFKA-PROPERTIES-SASL-JAAS-CONFIG**.
 
@@ -310,7 +310,7 @@ In this task, you will update the customers microservice to receive events from 
 
 To conclude this lab, you will run the producer app to send 100 events to your event hub and use output logs of the customers microservice to verify that these messages are being received. You can use the following guidance to implement these changes.
 
-[Log streaming](https://docs.microsoft.com/en-us/azure/spring-cloud/quickstart-logs-metrics-tracing?tabs=Azure-CLI&pivots=programming-language-java#log-streaming-1)
+[Log streaming](https://docs.microsoft.com/azure/spring-cloud/quickstart-logs-metrics-tracing?tabs=Azure-CLI&pivots=programming-language-java#log-streaming-1)
 
 <details>
 <summary>hint</summary>

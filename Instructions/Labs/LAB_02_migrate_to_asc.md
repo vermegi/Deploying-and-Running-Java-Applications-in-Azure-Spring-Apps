@@ -28,7 +28,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 - Create an Azure Spring Apps service
 - Set up the config server
 - Create an Azure MySQL Database service

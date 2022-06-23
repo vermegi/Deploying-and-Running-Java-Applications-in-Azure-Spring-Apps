@@ -26,7 +26,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create Azure Service Bus resources
 - Test the messaging functionality
@@ -39,8 +39,8 @@ During this challenge, you'll:
 
 First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create two queues named visits-requests and visits-confirmations. You can use the following guidance to implement these changes.
 
-[Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-quickstart-cli).
-[Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
+[Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-cli).
+[Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
 
 Make sure to create the Service Bus namespace with the **Premium** SKU, since this is required in order to support JMS 2.0 messaging. You should also add a connection string to your Service Bus namespace in the Key Vault instance you provisioned earlier in this lab, so the microservices can retrieve its value.
 
@@ -138,7 +138,7 @@ This translates the secret in Key Vault to the correct application property for 
 
 In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/Extra), the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project, deploy it as an axtra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
 
-[Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/en-us/azure/service-bus-messaging/explorer).
+[Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/azure/service-bus-messaging/explorer).
 
 <details>
 <summary>hint</summary>
@@ -253,8 +253,8 @@ In the next steps you will add similar functionality to the **visits** service.
 
 You have now reviewed how an existing microservice interacts with the Service Bus queue. In the upcoming task, you will enable the **visits** microservice to also read messages from a queue and write messages to another queue. You can use the following guidance to implement these changes.
 
-[Use Java Message Service 2.0 API with Azure Service Bus Premium](https://docs.microsoft.com/en-us/azure/service-bus-messaging/how-to-use-java-message-service-20)
-[How to use the Spring Boot Starter for Azure Service Bus JMS](https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-service-bus)
+[Use Java Message Service 2.0 API with Azure Service Bus Premium](https://docs.microsoft.com/azure/service-bus-messaging/how-to-use-java-message-service-20)
+[How to use the Spring Boot Starter for Azure Service Bus JMS](https://docs.microsoft.com/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-service-bus)
 
 To start, you will need to add the necessary dependencies.
 

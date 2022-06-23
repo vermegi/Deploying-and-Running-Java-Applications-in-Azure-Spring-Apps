@@ -30,7 +30,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create networking resources
 - Recreate Azure Spring Apps service and apps in the virtual network
@@ -47,11 +47,11 @@ During this challenge, you'll:
 
 Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 4 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance,  the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You can use the following guidance to implement these changes.
 
-In later exercises you'll be creating the private endpoints for the backend services.
+In later exercises you will be creating the private endpoints for the backend services.
 
-[Create a Virtual Network and default subnet](https://docs.microsoft.com/en-us/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create)
-[Add subnets to a Virtual Network](https://docs.microsoft.com/en-us/cli/azure/network/vnet/subnet?view=azure-cli-latest)
-[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal)
+[Create a Virtual Network and default subnet](https://docs.microsoft.com/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create)
+[Add subnets to a Virtual Network](https://docs.microsoft.com/cli/azure/network/vnet/subnet?view=azure-cli-latest)
+[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal)
 
 <details>
 <summary>hint</summary>
@@ -121,7 +121,7 @@ In later exercises you'll be creating the private endpoints for the backend serv
 
 Now that you have all the networking resources ready, you need to recreate your Azure Spring Apps service within this virtual network. Before you do so, delete your existing Azure Spring Apps instance first. You can use the following guidance to perform this task.
 
-[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-CLI)
+[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-CLI)
 
 When you recreate your Spring Apps instance in the virtual network, you will also need to rerun some of the steps from the previous exercise: 
 - recreate the config server.
@@ -294,7 +294,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
 At this point, you have redeployed your Azure Spring Apps service in a virtual network, along with all of its apps. As the next step, to implement its connectivity without relying on a public endpoint, you need to set up a private DNS service for your apps so they are discoverable within the virtual network. You can use the following guidance to perform this task.
 
-[Access your application in a private network](https://docs.microsoft.com/en-us/azure/spring-cloud/access-app-virtual-network?tabs=azure-CLI)
+[Access your application in a private network](https://docs.microsoft.com/azure/spring-cloud/access-app-virtual-network?tabs=azure-CLI)
 
 <details>
 <summary>hint</summary>
@@ -375,7 +375,7 @@ To configure this, you need to set up a custom domain name and generate a corres
 
 To start, you need to generate a self-signed certificate and add it to Azure Key Vault. You can use the following guidance to perform this task.
 
-[Acquire a self-signed certificate](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#acquire-a-certificate)
+[Acquire a self-signed certificate](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#acquire-a-certificate)
 
 <details>
 <summary>hint</summary>
@@ -439,7 +439,7 @@ To start, you need to generate a self-signed certificate and add it to Azure Key
 
 Now that you have a self-signed certificate added to the Azure Key Vault instance, as a next step you will configure a public domain name in Azure Spring Apps using this self-signed certificate. You can use the following guidance to perform this task.
 
-[Configure the public domain name on Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-the-public-domain-name-on-azure-spring-cloud)
+[Configure the public domain name on Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-the-public-domain-name-on-azure-spring-cloud)
 
 You will only create a custom domain for the api-gateway service. This is the only endpoint that you will expose externally.
 
@@ -490,7 +490,7 @@ You will only create a custom domain for the api-gateway service. This is the on
 
 You are now ready to create an Application Gateway instance to expose your application to the internet. You can use the following guidance to perform this task.
 
-[Create the Application Gateway resources](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#create-network-resources)
+[Create the Application Gateway resources](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#create-network-resources)
 
 <details>
 <summary>hint</summary>
@@ -603,8 +603,8 @@ You are now ready to create an Application Gateway instance to expose your appli
 
 You now have completed all steps required to test whether your application is accessible from the internet via Application Gateway. You can use the following guidance to perform this task.
 
-[Check the deployment of Application Gateways](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#check-the-deployment-of-application-gateway)
-[Configure DNS and access the application](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-dns-and-access-the-application)
+[Check the deployment of Application Gateways](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#check-the-deployment-of-application-gateway)
+[Configure DNS and access the application](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-dns-and-access-the-application)
 
 <details>
 <summary>hint</summary>
@@ -656,9 +656,9 @@ You now have completed all steps required to test whether your application is ac
 
 Now that you have successfully deployed Application Gateway and you can connect to your application, you can additionally configure a Web Application Firewall on your Application Gateway. You can use the following guidance to perform this task.
 
-[Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/en-us/azure/web-application-firewall/ag/create-waf-policy-ag)
-[az network application-gateway waf-policy](https://docs.microsoft.com/en-us/cli/azure/network/application-gateway/waf-policy?view=azure-cli-latest)
-[az network application-gateway http-listener](https://docs.microsoft.com/en-us/cli/azure/network/application-gateway/http-listener?view=azure-cli-latest)
+[Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/azure/web-application-firewall/ag/create-waf-policy-ag)
+[az network application-gateway waf-policy](https://docs.microsoft.com/cli/azure/network/application-gateway/waf-policy?view=azure-cli-latest)
+[az network application-gateway http-listener](https://docs.microsoft.com/cli/azure/network/application-gateway/http-listener?view=azure-cli-latest)
 
 <details>
 <summary>hint</summary>

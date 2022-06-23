@@ -5,7 +5,7 @@ lab:
 ---
 
 # Challenge: Secure application secrets using Key Vault
-# Student guide
+# Student manual
 
 ## Challenge scenario
 
@@ -28,7 +28,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create an Azure Key Vault instance
 - Store your connection string elements as Azure Key Vault secrets
@@ -43,7 +43,7 @@ During this challenge, you'll:
 
 You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task.
 
-[Create Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+[Create Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
 
 <details>
 <summary>hint</summary>
@@ -68,7 +68,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 
 Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task.Tthese secrets should be called SPRING-DATASOURCE-USERNAME and SPRING-DATASOURCE-PASSWORD.
 
-[Add a secret to Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+[Add a secret to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
 
 <details>
 <summary>hint</summary>
@@ -94,7 +94,7 @@ Now that your Key Vault provisioning is completed, you need to add to it a secre
 
 The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application.
 
-[Assign a Managed Identity](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity)
+[Assign a Managed Identity](https://docs.microsoft.com/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity)
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so they will need to be assigned a managed identity:
 
@@ -161,7 +161,7 @@ The following three apps of your application use the database hosted by the Azur
 
 By now, you have created a managed identity for the spring-petclinic-customers-service, spring-petclinic-vets-service and spring-petclinic-visits-service. In this step, you need to grant these 3 managed identities access to the secrets your added to the Azure Key Vault instance. To accomplish this, you can use the following the guidance.
 
-[Grant your app access to Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#grant-your-app-access-to-key-vault)
+[Grant your app access to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#grant-your-app-access-to-key-vault)
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so their managed instances will need to be granted permissions to access the secrets:
 
