@@ -177,7 +177,7 @@ The connection to the eventhub needs to be stored in the **spring.kafka.properti
          secret:
             property-source-enabled: true
             property-sources:
-               - name: key-vault-property-souece-1
+               - name: key-vault-property-source-1
                endpoint: https://<your-keyvault>.vault.azure.net/
                credential.managed-identity-enabled: true
    ```
@@ -292,7 +292,7 @@ In this task, you will update the customers microservice to receive events from 
    mvn clean package -DskipTests
    ```
 
-4. Redeploy the customers-service microservice to Azure Spring Apps.
+1. Redeploy the customers-service microservice to Azure Spring Apps.
 
    ```bash
    az spring app deploy \
