@@ -42,9 +42,9 @@ During this challenge, you will:
 
 ### Create an Azure Key Vault instance
 
-You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task.
+You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task:
 
-[Create Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+- [Create Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
 
 <details>
 <summary>hint</summary>
@@ -67,9 +67,11 @@ You will start by creating an Azure Key Vault instance that will host your appli
 
 ### Store your connection string elements as Azure Key Vault secrets
 
-Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task. These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOURCE-PASSWORD`.
+Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task:
 
-[Add a secret to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+- [Add a secret to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
+
+These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOURCE-PASSWORD`.
 
 <details>
 <summary>hint</summary>
@@ -93,9 +95,9 @@ Now that your Key Vault provisioning is completed, you need to add to it a secre
 
 ### Create a managed identity for your microservices
 
-The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application.
+The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application:
 
-[Assign a Managed Identity](https://docs.microsoft.com/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity)
+- [Assign a Managed Identity](https://docs.microsoft.com/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity).
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so they will need to be assigned a managed identity:
 
@@ -198,7 +200,9 @@ The following three apps of your application use the database hosted by the Azur
 
 ### Update application config
 
-You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the `com.azure.spring:spring-cloud-azure-starter-keyvault-secrets` dependency. You can use the following guidance to accomplish this task: [Azure Key Vault Secrets Spring Boot starter client library for Java](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/azure-spring-boot-starter-keyvault-secrets/README.md).
+You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the `com.azure.spring:spring-cloud-azure-starter-keyvault-secrets` dependency. You can use the following guidance to accomplish this task:
+
+- [Azure Key Vault Secrets Spring Boot starter client library for Java](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/azure-spring-boot-starter-keyvault-secrets/README.md).
 
 <details>
 <summary>hint</summary>

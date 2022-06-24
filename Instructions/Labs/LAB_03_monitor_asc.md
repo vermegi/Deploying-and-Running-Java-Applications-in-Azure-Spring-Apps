@@ -40,9 +40,9 @@ In this challenge, you will:
 
 ### Live stream the logs from your apps
 
-As the initial mechanism for debugging any errors that may occur in your apps, Spring Apps Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task.
+As the initial mechanism for debugging any errors that may occur in your apps, Spring Apps Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task:
 
-[Stream Azure Spring Apps application logs in real-time](https://docs.microsoft.com/azure/spring-cloud/how-to-log-streaming)
+- [Stream Azure Spring Apps application logs in real-time](https://docs.microsoft.com/azure/spring-cloud/how-to-log-streaming).
 
 <details>
 <summary>hint</summary>
@@ -62,15 +62,15 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
 
 1. Switch to the web browser displaying the Spring Petclinic application and navigate through its interface. Note that your actions trigger display of new log entries in the console output.
 
-1. Switch back to the Git Bash prompt and press **Ctrl+C** to stop streaming the logs.
+1. Switch back to the Git Bash prompt and press `Ctrl+C` to stop streaming the logs.
 
 </details>
 
 ### Configure Application Insights to receive monitoring information from your apps
 
-You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task.
+You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task:
 
-[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?pivots=sc-standard-tier)
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?pivots=sc-standard-tier).
 
 <details>
 <summary>hint</summary>
@@ -132,9 +132,9 @@ You now know how to live stream any logs to your console. Next, you will configu
 
 ### Analyze app-specific monitoring data
 
-Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task.
+Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task:
 
-[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier).
 
 Use this guidance to review such Application Insights features as:
 
@@ -199,10 +199,10 @@ Use this guidance to review such Application Insights features as:
 
 ### Configure diagnostics settings
 
-Application Insights allows you to monitor app-specific logs. To retrieve additional telemetry, configure diagnostic settings and use Log Analytics as the log destination. You can use the following guidance to perform this task.
+Application Insights allows you to monitor app-specific logs. To retrieve additional telemetry, configure diagnostic settings and use Log Analytics as the log destination. You can use the following guidance to perform this task:
 
-- [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs)
-- [az monitor diagnostic-settings](https://docs.microsoft.com/cli/azure/monitor/diagnostic-settings?view=azure-cli-latest#az-monitor-diagnostic-settings-create)
+- [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs).
+- [az monitor diagnostic-settings](https://docs.microsoft.com/cli/azure/monitor/diagnostic-settings?view=azure-cli-latest#az-monitor-diagnostic-settings-create).
 
 <details>
 <summary>hint</summary>
@@ -284,7 +284,9 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 
 ### Analyze logs
 
-Once you enabled log data collection from your Spring Apps Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task: [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs).
+Once you enabled log data collection from your Spring Apps Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task:
+
+- [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs).
 
 Use this guidance to:
 
