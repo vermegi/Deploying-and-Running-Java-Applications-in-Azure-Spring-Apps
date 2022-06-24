@@ -5,6 +5,7 @@ lab:
 ---
 
 # Challenge: Create and configure Azure Service Bus for Azure Spring Apps
+
 # Student manual
 
 ## Challenge scenario
@@ -37,27 +38,28 @@ During this challenge, you will:
 
 ### Create Azure Service Bus resources
 
-First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create two queues named visits-requests and visits-confirmations. You can use the following guidance to implement these changes.
+First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create two queues named `visits-requests` and `visits-confirmations`. You can use the following guidance to implement these changes:
 
-[Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-cli).
-[Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
+- [Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-cli).
+- [Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
 
 Make sure to create the Service Bus namespace with the **Premium** SKU, since this is required in order to support JMS 2.0 messaging. You should also add a connection string to your Service Bus namespace in the Key Vault instance you provisioned earlier in this lab, so the microservices can retrieve its value.
 
-   > **Note**: As an alternative you could use managed identities associated with your microservices to connect directly to the Service Bus namespace. However, in this lab, you will store the connection string in your Key Vault.
+> **Note**: As an alternative you could use managed identities associated with your microservices to connect directly to the Service Bus namespace. However, in this lab, you will store the connection string in your Key Vault.
 
-The connection to the Service Bus needs to be stored in the **spring.jms.servicebus.connection-string** application property. Name your Key Vault secret **SPRING-JMS-SERVICEBUS-CONNECTIONSTRING** and add the following section to the **application.yml** file in your configuration repository.
+The connection to the Service Bus needs to be stored in the `spring.jms.servicebus.connection-string` application property. Name your Key Vault secret `SPRING-JMS-SERVICEBUS-CONNECTIONSTRING` and add the following section to the `application.yml` file in your configuration repository.
 
    ```yaml
      jms:
        servicebus:
          connection-string: ${spring.jms.servicebus.connectionstring}
+         idle-timeout: 60000
+         pricing-tier: premium
    ```
-> **Note**: Particular attention to indentation as shown above is important.
 
-This translates the secret in Key Vault to the correct application property for your microservices. This usage of properties is described in the following documentation:
+> **Note**: Particular attention to indentation as shown above is important: `jms` should be at the same indentation level as `config`, `datasource` and `cloud`.
 
-[Special Characters in Property Name](https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#special-characters-in-property-name).
+This translates the secret in Key Vault to the correct application property for your microservices. This usage of properties is described in the following documentation: [Special Characters in Property Name](https://microsoft.github.io/spring-cloud-azure/current/reference/html/index.html#special-characters-in-property-name).
 
 <details>
 <summary>hint</summary>
@@ -77,7 +79,7 @@ This translates the secret in Key Vault to the correct application property for 
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
 
-1. Next, create two queues in this namespace named visits-requests and visits-confirmations.
+1. Next, create two queues in this namespace named `visits-requests` and `visits-confirmations`.
 
    ```bash
    az servicebus queue create \
@@ -111,7 +113,7 @@ This translates the secret in Key Vault to the correct application property for 
        --vault-name $KEYVAULT_NAME
    ```
 
-1. In your configuration repository's **application.yml** file add the below fragment directly under the `      on-profile: mysql` entry (in line 78).
+1. In your configuration repository's `application.yml` file add the below fragment directly under the `on-profile: mysql` entry (in line 78).
 
    ```yaml
      jms:
@@ -121,7 +123,7 @@ This translates the secret in Key Vault to the correct application property for 
          pricing-tier: premium
    ```
 
-    Make sure your YAML is correctly aligned. The **jms** element should be at the same level as the **config** and **datasource** elements.
+    > **Note**: Particular attention to indentation as shown above is important: `jms` should be at the same indentation level as `config`, `datasource` and `cloud`.
 
 1. Commit and push your changes to the remote repository.
 
@@ -136,7 +138,7 @@ This translates the secret in Key Vault to the correct application property for 
 
 ### Test the messaging functionality
 
-In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/Extra), the **messaging-emulator** microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project, deploy it as an axtra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the **visits-requests** queue. You can use the following guidance to implement these changes.
+In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/Extra), the `messaging-emulator` microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project, deploy it as an extra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the `visits-requests` queue. You can use the following guidance to implement these changes.
 
 [Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/azure/service-bus-messaging/explorer).
 
@@ -151,13 +153,13 @@ In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deplo
     git clone https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps.git
     ```
 
-1. From the Git Bash window copy the **spring-petclinic-messaging-emulator** to the **spring-petclinic-microservices** directory.
+1. From the Git Bash window copy the `spring-petclinic-messaging-emulator` to the `spring-petclinic-microservices` directory.
 
     ```bash
     cp -R Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/spring-petclinic-messaging-emulator spring-petclinic-microservices 
     ```
 
-1. In the main **pom.xml** file, add an extra module for the **spring-petclinic-messaging-emulator** in the **<mudules>** element at line 26.
+1. In the main `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
 
     ```xml
     <module>spring-petclinic-messaging-emulator</module>
@@ -170,7 +172,7 @@ In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deplo
    mvn clean package -DskipTests
    ```
 
-1. Create a new application in your Spring Apps service for the **messaging-emulator** and assign a public endpoint to it.
+1. Create a new application in your Spring Apps service for the `messaging-emulator` and assign a public endpoint to it.
 
    ```bash
    az spring app create --service $SPRING_APPS_SERVICE \
@@ -221,17 +223,17 @@ In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deplo
 
 1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
 
-1. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the **messaging-emulator** app changes to **Succeeded**, and then select the **messaging-emulator** app entry.
+1. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the `messaging-emulator` app changes to **Succeeded**, and then select the `messaging-emulator` app entry.
 
    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-1.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
+1. On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
 1. In the Azure Portal, navigate to your resource group and select the Service Bus namespace you deployed in the previous task.
 
-1. In the navigation menu, in the **Entities** section, select **Queues** and then select the **visits-requests** queue entry.
+1. In the navigation menu, in the **Entities** section, select **Queues** and then select the `visits-requests` queue entry.
 
-1. On the **Overview** page of the **visits-requests** queue, verify that the active message count is set to 1.
+1. On the **Overview** page of the `visits-requests` queue, verify that the active message count is set to 1.
 
 1. Select **Service Bus Explorer (Preview)** and select **Peek from start**. This operation allows you to peek at the top messages on the queue, without dequeuing them.
 
@@ -239,22 +241,22 @@ In the [Lab repository Extra fiolder](https://github.com/MicrosoftLearning/Deplo
 
 </details>
 
-You might want to inspect the code of the **messaging-emulator** microservice. Take a look at:
+You might want to inspect the code of the `messaging-emulator` microservice. Take a look at:
 
-- The dependencies for the Service Bus in the **pom.xml** file.
-- The **PetClinicVisitRequestSender** and **PetClinicMessageResponsesReceiver** classes in the **service** folder. These are the classes that enable sending and receiving messages to and from a queue using JMS.
-- The **PetClinicMessageRequest** and **PetClinicMessageResponse** classes in the **entity** folder. These are the messages being send back and forth.
-- The **MessagingConfig** class in the **config** folder. This class provides conversion to and from JSON.
-- The **AzureServiceBusResource** class in the **web** folder. This class makes use of the above classed to send a message to the service bus.
+- The dependencies for the Service Bus in the `pom.xml` file.
+- The `PetClinicVisitRequestSender` and `PetClinicMessageResponsesReceiver` classes in the `service` folder. These are the classes that enable sending and receiving of messages to and from a queue using JMS.
+- The `PetClinicMessageRequest` and `PetClinicMessageResponse` classes in the `entity` folder. These are the messages being sent back and forth.
+- The `MessagingConfig` class in the `config` folder. This class provides conversion to and from JSON.
+- The `AzureServiceBusResource` class in the `web` folder. This class makes use of the above classed to send a message to the Service Bus.
 
-In the next steps you will add similar functionality to the **visits** service.
+In the next steps you will add similar functionality to the `visits` service.
 
 ### Update the remaining microservice to use the message queues
 
-You have now reviewed how an existing microservice interacts with the Service Bus queue. In the upcoming task, you will enable the **visits** microservice to also read messages from a queue and write messages to another queue. You can use the following guidance to implement these changes.
+You have now reviewed how an existing microservice interacts with the Service Bus queue. In the upcoming task, you will enable the `visits` microservice to also read messages from a queue and write messages to another queue. You can use the following guidance to implement these changes:
 
-[Use Java Message Service 2.0 API with Azure Service Bus Premium](https://docs.microsoft.com/azure/service-bus-messaging/how-to-use-java-message-service-20)
-[How to use the Spring Boot Starter for Azure Service Bus JMS](https://docs.microsoft.com/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-service-bus)
+- [Use Java Message Service 2.0 API with Azure Service Bus Premium](https://docs.microsoft.com/azure/service-bus-messaging/how-to-use-java-message-service-20).
+- [How to use the Spring Boot Starter for Azure Service Bus JMS](https://docs.microsoft.com/azure/developer/java/spring-framework/configure-spring-boot-starter-java-app-with-azure-service-bus).
 
 To start, you will need to add the necessary dependencies.
 
@@ -262,7 +264,7 @@ To start, you will need to add the necessary dependencies.
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash window, in the spring-petclinic-microservices repository you cloned locally, use your favorite text editor to open the **spring-petclinic-microservice/spring-petclinic-visits-service/pom.xml** file of the **visits** microservice. In the `<!-- Spring Cloud -->` section, following the last dependency element, add the following dependency element.
+1. From the Git Bash window, in the spring-petclinic-microservices repository you cloned locally, use your favorite text editor to open the `spring-petclinic-microservices/spring-petclinic-visits-service/pom.xml` file of the `visits` microservice. In the `<!-- Spring Cloud -->` section, following the last dependency element, add the following dependency element:
 
    ```xml
            <dependency>
@@ -275,13 +277,13 @@ To start, you will need to add the necessary dependencies.
 
 ### Add the message producers and listeners
 
-You will next add the code required to send and receive messages to the **visits** service. The **message-emulator** will send a **PetClinicMessageRequest** to the **visits-requests** queue. The **visits** service will need to listen to this queue and each time a **VisitRequest** message is submitted, it will create a new **Visit** for the pet ID referenced in the message. The **visits** service will also send back a **VisitResponse** as a confirmation to the **visits-confirmations** queue. This is the queue the **message-emulator** is listening to.
+You will next add the code required to send and receive messages to the `visits` service. The `message-emulator` will send a `PetClinicMessageRequest` to the `visits-requests` queue. The `visits` service will need to listen to this queue and each time a `VisitRequest` message is submitted, it will create a new `Visit` for the pet ID referenced in the message. The `visits` service will also send back a `VisitResponse` as a confirmation to the `visits-confirmations` queue. This is the queue the `message-emulator` is listening to.
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. In the **spring-petclinic-visits-service** directory, create a new **src/main/java/org/springframework/samples/petclinic/visits/entities** subdirectory and add there a **VisitRequest.java** class file containing the following code:
+1. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/entities` subdirectory and add a `VisitRequest.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.entities;
@@ -325,7 +327,7 @@ You will next add the code required to send and receive messages to the **visits
    }
    ```
 
-1. In the same **spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/entities** directory, add a **VisitResponse.java** class containing the following code:
+2. In the same directory, add a `VisitResponse.java` class containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.entities;
@@ -370,7 +372,7 @@ You will next add the code required to send and receive messages to the **visits
    }
    ```
 
-1. In the **spring-petclinic-visits-service** directory, create a new **src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory and add there a **MessagingConfig.java** class file containing the following code:
+3. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/config` subdirectory and add a `MessagingConfig.java` class file containing the following code:
 
    ```java
     package org.springframework.samples.petclinic.visits.config;
@@ -402,7 +404,7 @@ You will next add the code required to send and receive messages to the **visits
     }
    ```
 
-1. In the **spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/config** subdirectory, add another  **QueueConfig.java** class file containing the following code:
+4. In the same directory, add a `QueueConfig.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.config;
@@ -419,7 +421,7 @@ You will next add the code required to send and receive messages to the **visits
    }
    ```
 
-1. In the **spring-petclinic-visits-service** directory, create a new **src/main/java/org/springframework/samples/petclinic/visits/service** subdirectory and add there a **VisitsReceiver.java** class file containing the following code:
+5. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/service` subdirectory and add a `VisitsReceiver.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.service;
@@ -463,7 +465,7 @@ You will next add the code required to send and receive messages to the **visits
    }
    ```
 
-This **VisitsReceiver** service is listening to the **visits-requests** queue. Each time a message is present on the queue, it will dequeue this message and save a new **Visit** in the database. In the next step, you will verify it by having it sent a confirmation message to the **visits-confirmations** queue.  
+This `VisitsReceiver` service is listening to the `visits-requests` queue. Each time a message is present on the queue, it will dequeue this message and save a new `Visit` in the database. In the next step, you will verify it by having it sent a confirmation message to the `visits-confirmations` queue.  
 
 1. Rebuild your application
 
@@ -482,11 +484,11 @@ This **VisitsReceiver** service is listening to the **visits-requests** queue. E
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
-1. To validate the resulting functionality, in the Azure Portal, navigate back to the page of the **visits-requests** queue of the Service Bus namespace you deployed earlier in this lab.
+1. To validate the resulting functionality, in the Azure Portal, navigate back to the page of the `visits-requests` queue of the Service Bus namespace you deployed earlier in this lab.
 
-1. On the **Overview** page of the **visits-requests** queue, verify that there are no active messages.
+1. On the **Overview** page of the `visits-requests` queue, verify that there are no active messages.
 
-1. In the web browser window, open another tab and navigate to the public endpoint of the api-gateway service.
+1. In the web browser window, open another tab and navigate to the public endpoint of the `api-gateway` service.
 
 1. On the **Welcome to Petclinic** page, select **Owners** and, in the drop-down menu, select **All**.
 
