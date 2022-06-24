@@ -174,11 +174,11 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
        group-id: $Default
        properties:
          sasl.jaas.config:
-           sasl.mechanism: PLAIN
-           security.protocol: SASL_SSL
-           spring.json:
-             use.type.headers: false
-             value.default.type: com.targa.labs.dev.telemetrystation.Message
+         sasl.mechanism: PLAIN
+         security.protocol: SASL_SSL
+         spring.json:
+           use.type.headers: false
+           value.default.type: com.targa.labs.dev.telemetrystation.Message
    ```
 
 1. Commit and push your changes to the remote repository.
