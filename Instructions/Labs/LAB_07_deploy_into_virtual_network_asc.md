@@ -454,7 +454,7 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 
    ```bash
    VAULTURI=$(az keyvault show -n $KEYVAULT_NAME -g $RESOURCE_GROUP --query properties.vaultUri -o tsv)
-   ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query objectId --output tsv)
+   ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query id --output tsv)
    ```
 
 1. Once you have the Key Vault URI and the Spring Apps object ID, you can grant the permissions to access Key Vault certificates to the Spring Apps service:
@@ -523,7 +523,7 @@ You are now ready to create an Application Gateway instance to expose your appli
        --name $APPGW_IDENTITY_NAME
 
    APPGW_IDENTITY_CLIENTID=$(az identity show --resource-group $RESOURCE_GROUP --name $APPGW_IDENTITY_NAME --query clientId --output tsv)
-   APPGW_IDENTITY_OID=$(az ad sp show --id $APPGW_IDENTITY_CLIENTID --query objectId --output tsv)
+   APPGW_IDENTITY_OID=$(az ad sp show --id $APPGW_IDENTITY_CLIENTID --query id --output tsv)
    ```
 
 1. You can now reference the object ID when granting the `get` and `list` permissions to the Key Vault secrets and certificates.
@@ -567,7 +567,8 @@ You are now ready to create an Application Gateway instance to expose your appli
        --subnet $APPLICATION_GATEWAY_SUBNET_NAME \
        --servers $SPRING_APP_PRIVATE_FQDN \
        --key-vault-secret-id $KEYVAULT_SECRET_ID_FOR_CERT \
-       --identity $APPGW_IDENTITY_NAME
+       --identity $APPGW_IDENTITY_NAME \
+       --priority "1"
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.

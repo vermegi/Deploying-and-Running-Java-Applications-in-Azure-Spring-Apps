@@ -99,7 +99,7 @@ To start, you need to lock down access to your MySQL database by using a private
    az network private-dns record-set a create \
        --name $SQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
-       --resource-group $RESOURCE_GROUP  
+       --resource-group $RESOURCE_GROUP
 
    az network private-dns record-set a add-record \
        --record-set-name $SQL_SERVER_NAME \
@@ -149,14 +149,14 @@ Once you have locked down the internet access to the MySQL database, you will pe
    ```bash
    az network private-dns zone create \
        --resource-group $RESOURCE_GROUP \
-       --name "privatelink.vaultcore.azure.net" 
+       --name "privatelink.vaultcore.azure.net"
 
    az network private-dns link vnet create \
        --resource-group $RESOURCE_GROUP \
        --zone-name "privatelink.vaultcore.azure.net" \
        --name MyVaultDNSLink \
        --virtual-network $VIRTUAL_NETWORK_NAME \
-       --registration-enabled false 
+       --registration-enabled false
    ```
 
 1. As before, you need to create the A record to link the Azure Key Vault instance name to the IP address of the private endpoint.
