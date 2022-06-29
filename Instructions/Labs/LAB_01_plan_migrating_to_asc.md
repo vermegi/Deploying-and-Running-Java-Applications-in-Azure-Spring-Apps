@@ -54,35 +54,23 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
 
-1. In your GitHub account, navigate to the **Repositories** page and create a new repository named **spring-petclinic-microservices**. 
+1. Navigate to the [spring-petclinic-microservices project](https://github.com/spring-petclinic/spring-petclinic-microservices) and select **Fork**.
 
-1. On the newly created repository page, review the section titled **... or push an existing repository from the command line**.
-    
-    > **Note**: Record the value of the URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
-    
-1. On your lab computer, in the Git Bash window, run the following commands to clone the [Spring Petclinic Microservices](https://github.com/spring-petclinic/spring-petclinic-microservices) application to your workstation:
+1. Make sure your own username is indicated as the fork `Owner` and select **Create fork**. This will create a copy or fork of this project in your own account.
+
+1. On your lab computer, in the Git Bash window, run the following commands to clone your fork of the spring-petclinic-microservices project to your workstation. Make sure to replace `<your-github-account>` in the below command:
 
    ```bash
    mkdir projects
    cd projects
-   git clone https://github.com/spring-petclinic/spring-petclinic-microservices.git
-   ```
-
-1. From the Git Bash prompt, run the following commands to change the working directory to the one containing the cloned repository and then push its content to your private GitHub repository (where the `<your-github-username>` placeholder represents your GitHub user name):
-
-   ```bash
-   cd spring-petclinic-microservices
-   git remote remove origin
-   git remote add origin https://github.com/<your-github-username>/spring-petclinic-microservices.git
-   git branch -M main
-   git push -u origin main
+   git clone https://github.com/<your-github-account>/spring-petclinic-microservices.git
    ```
 
 1. When prompted to sign in to GitHub, select the **Sign in with your browser** option. This will automatically open a new tab in the web browser window, prompting you to provide your GitHub username and password.
 
 1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
 
-1. In your browser double check that your newly created repository contains the spring petclinic application. You can use this repository to regularly push your changes to.
+1. In projects folder double check that the spring petclinic application got cloned correctly. You can use the repository to regularly push your changes to.
 
 </details>
 
@@ -120,7 +108,7 @@ Fill out the following table based on your analysis:
 * Both AKS and Azure Spring Apps offer a convenient approach to implementing the microservices architecture. They also provide support for Spring Boot applications. If you decided to choose Azure App Service, you would need to create a new web app instance for each microservice, while both AKS and Azure Apps Spring require only a single instance. AKS also facilitates controlling traffic flow between microservices by using network policies.
 * Azure Spring Apps Service offers an easy migration path for existing spring boot applications. This would be an advantage for your existing application.
 * Azure Spring Apps Service eliminates any administrative overhead required to run a Kubernetes cluster. This simplifies the operational model.
-* AKS would require an extra migration step that involves containerizing all components. You will also need to implement Azure Container Registry to store and deploy your container images from.
+* AKS would require an extra migration step that involves containerizing all components. You will also need to implement Azure Container Registry to store and deploy your container images from or you could use a publicly available Docker repository.
 * Running and operating an AKS cluster introduces an additional effort.
 * Azure App Service scalability is more limited than AKS or Azure Spring Apps Service. 
 
