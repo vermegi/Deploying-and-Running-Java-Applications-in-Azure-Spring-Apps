@@ -4,13 +4,13 @@ lab:
     module: 'Module 3: Enable monitoring and end-to-end tracing'
 ---
 
-# Challenge: Enable monitoring and end-to-end tracing 
+# Challenge: Enable monitoring and end-to-end tracing
+
 # Student manual
 
 ## Challenge scenario
 
-You have created your first Spring Apps service, installed your microservices as apps and exposed them through the api-gateway. Now that everything is up and running, it would be helpful to be able to monitor the availability of your apps and detect any errors or exceptions that might occur during their usage.
-In this lab, you will implement their end-to-end monitoring.
+You have created your first Spring Apps service, installed your microservices as apps and exposed them through the `api-gateway`. Now that everything is up and running, it would be helpful to be able to monitor the availability of your apps and detect any errors or exceptions that might occur during their usage. In this lab, you will implement their end-to-end monitoring.
 
 ## Objectives
 
@@ -28,7 +28,8 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-In this challenge, you'll:
+In this challenge, you will:
+
 - Live stream the logs from your apps
 - Configure Application Insights to receive monitoring information from your apps
 - Analyze app-specific monitoring data
@@ -39,15 +40,15 @@ In this challenge, you'll:
 
 ### Live stream the logs from your apps
 
-As the initial mechanism for debugging any errors that may occur in your apps, Spring Apps Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task.
+As the initial mechanism for debugging any errors that may occur in your apps, Spring Apps Service provides the ability to live stream app logs. Use this method to live stream the logs of the api-gateway and the visits services. You can use the following guidance to perform this task:
 
-[Stream Azure Spring Apps application logs in real-time](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-log-streaming)
+- [Stream Azure Spring Apps application logs in real-time](https://docs.microsoft.com/azure/spring-cloud/how-to-log-streaming).
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash prompt, run the following command to live stream the logs of the api-gateway service, you can use the below statement:
+1. From the Git Bash prompt, run the following command to live stream the logs of the `api-gateway` service, you can use the below statement:
 
    ```bash
    az spring app logs \
@@ -57,19 +58,19 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
        --follow
    ```
 
-   > **Note**: This will stream the api-gateway service app logs to your console. 
+   > **Note**: This will stream the `api-gateway` service app logs to your console.
 
 1. Switch to the web browser displaying the Spring Petclinic application and navigate through its interface. Note that your actions trigger display of new log entries in the console output.
 
-1. Switch back to the Git Bash prompt and press **Ctrl+C** to stop streaming the logs.
+1. Switch back to the Git Bash prompt and press `Ctrl+C` to stop streaming the logs.
 
 </details>
 
 ### Configure Application Insights to receive monitoring information from your apps
 
-You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task.
+You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task:
 
-[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?pivots=sc-standard-tier).
 
 <details>
 <summary>hint</summary>
@@ -83,7 +84,7 @@ You now know how to live stream any logs to your console. Next, you will configu
        -n $SPRING_APPS_SERVICE
    ```
 
-   > **Note**: This should generate an output that resembles the following content: 
+   > **Note**: This should generate an output that resembles the following content:
 
    ```json
    {
@@ -103,7 +104,6 @@ You now know how to live stream any logs to your console. Next, you will configu
 1. To re-enable Application Insights, you will first need to retrieve the instrumentation key of your Application Insights instance.
 
    ```bash
-   az extension add --name application-insights
    INSTRUMENTATIONKEY=$(az monitor app-insights component show \
        -g $RESOURCE_GROUP \
        --query [0].connectionString \
@@ -132,11 +132,12 @@ You now know how to live stream any logs to your console. Next, you will configu
 
 ### Analyze app-specific monitoring data
 
-Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task.
+Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task:
 
-[Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier)
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier).
 
 Use this guidance to review such Application Insights features as:
+
 - The Application Map
 - Performance data
 - Failures
@@ -155,34 +156,32 @@ Use this guidance to review such Application Insights features as:
 
 1. In the navigation menu, in the **Investigate** section, select **Application map**. This will display information about the apps running in your Spring Apps Service and their dependencies.
 
-1. In the application map, select the circle representing the **api-gateway** service. This will display details about this app, including, for example, the slowest requests and failed dependencies.
+1. In the application map, select the circle representing the `api-gateway` service. This will display details about this app, including, for example, the slowest requests and failed dependencies.
 
 1. Select **Investigate performance**. This will automatically open the **Performance** page displaying detailed performance data related to operations, dependencies, and roles.
 
-   > **Note**: You can use your mouse to select a specific time period in the graph, which will automatically adjust the view of the performance data.
+   > **Note**: You can select a specific time period in the graph, which will automatically adjust the view of the performance data.
 
 1. Navigate back to the **Application map** page.
 
 1. In the navigation menu, in the **Investigate** section, select **Live Metrics**, to display live metrics of your app, which includes near real time performance, as well as logs and traces.
 
-1. In the navigation menu, in the **Investigate** section, select **Availability**. 
+1. In the navigation menu, in the **Investigate** section, select **Availability**.
 
 1. In the toolbar of the **Availability** page, select **+ Add Standard (preview) test** in order to configure an availability test for your app.
 
-1. Fill out the following details and select **Create**: 
+1. Fill out the following details and select **Create**:
 
-   - [Test name]: The api-gateway availability test
-   - [URL]: The URL of your api-gateway
+   - **Test name**: The api-gateway availability test
+   - **URL**: The URL for the assigned endpoint of your `api-gateway`
 
-1.  Accept the default values for all other settings. Notice that alerts are automatically enabled.
+1. Accept the default values for all other settings. Notice that alerts are automatically enabled.
 
       > **Note**: Once the configuration is completed, the availability of your app will be tested every 5 minutes from 5 different locations.
 
 1. Select the three dots to the right of the newly configured availability test and select **Open Rules (Alerts) page**.
 
-1. Select the alert rule for your availability test. By default there are no action groups associated with this alert rule. We will not configure them in this task, but note that action groups can be used to configure email or SMS notifications targeting designated individuals or groups.
-    
-[Create and manage action groups in the Azure portal](https://docs.microsoft.com/en-us/azure/azure-monitor/alerts/action-groups) 
+1. Select the alert rule for your availability test. By default there are no action groups associated with this alert rule. We will not configure them in this task, but note that action groups can be used to configure email or SMS notifications targeting designated individuals or groups. For more information, see [Create and manage action groups in the Azure portal](https://docs.microsoft.com/azure/azure-monitor/alerts/action-groups).
 
 1. Navigate back to the page of your Application Insights resource.
 
@@ -190,9 +189,7 @@ Use this guidance to review such Application Insights features as:
 
 1. In the navigation menu, in the **Investigate** section, select **Performance** to display performance data about your app's operations. This is matching the information you reviewed earlier.
 
-1. In the navigation menu, in the **Monitoring** section, select **Logs** to display log data. You can use Kusto Query Language (KQL) queries to search and analyze the log data.
-    
-[Log queries in Azure Monitor](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/log-query-overview) 
+1. In the navigation menu, in the **Monitoring** section, select **Logs** to display log data. You can use Kusto Query Language (KQL) queries to search and analyze the log data. For more information, see [Log queries in Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/logs/log-query-overview).
 
 1. On the **Queries** pane, select **Performance**.
 
@@ -202,10 +199,10 @@ Use this guidance to review such Application Insights features as:
 
 ### Configure diagnostics settings
 
-Application Insights allows you to monitor app-specific logs. To retrieve additional telemetry, configure diagnostic settings and use Log Analytics as the log destination. You can use the following guidance to perform this task.
+Application Insights allows you to monitor app-specific logs. To retrieve additional telemetry, configure diagnostic settings and use Log Analytics as the log destination. You can use the following guidance to perform this task:
 
-[Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/en-us/azure/spring-cloud/diagnostic-services#analyze-the-logs)
-[az monitor diagnostic-settings](https://docs.microsoft.com/en-us/cli/azure/monitor/diagnostic-settings?view=azure-cli-latest#az-monitor-diagnostic-settings-create)
+- [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs).
+- [az monitor diagnostic-settings](https://docs.microsoft.com/cli/azure/monitor/diagnostic-settings?view=azure-cli-latest#az-monitor-diagnostic-settings-create).
 
 <details>
 <summary>hint</summary>
@@ -224,7 +221,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 1. To create a Log Analytics Workspace to send the logs to, run the following command.
 
    ```bash
-   WORKSPACE=springcloudworkspace$RANDOM
+   WORKSPACE=springappsworkspace$UNIQUEID
    az monitor log-analytics workspace create \
        --resource-group $RESOURCE_GROUP \
        --workspace-name $WORKSPACE
@@ -268,11 +265,11 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
    ]
    ```
 
-1. Now, reference both 2 JSON files to configure the diagnostics settings for your Spring Apps Service, which will result in its logs being sent to the Log Analytics workspace.
+1. Now, reference both JSON files to configure the diagnostics settings for your Spring Apps Service, which will result in its logs being sent to the Log Analytics workspace.
 
    ```bash
    az monitor diagnostic-settings create \
-       --name springcloudlogs \
+       --name springappslogs \
        --resource $SPRING_APPS_SERVICE \
        --resource-type Microsoft.AppPlatform/Spring \
        --resource-group $RESOURCE_GROUP \
@@ -287,11 +284,12 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 
 ### Analyze logs
 
-Once you enabled log data collection from your Spring Apps Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task.
+Once you enabled log data collection from your Spring Apps Service into the Log Analytics workspace, you want to start querying this data. You can use the following guidance to perform this task:
 
-[Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/en-us/azure/spring-cloud/diagnostic-services#analyze-the-logs)
+- [Analyze logs and metrics with diagnostics settings](https://docs.microsoft.com/azure/spring-cloud/diagnostic-services#analyze-the-logs).
 
 Use this guidance to:
+
 - Show logs entries containing errors or exceptions
 - Show ingress log entries
 - Show container log entries
@@ -300,13 +298,13 @@ Use this guidance to:
 <summary>hint</summary>
 <br/>
 
-1. Go to the Azure portal and navigate to the page displayng the Log Analytics workspace you created in the previous task.
+1. Go to the Azure portal and navigate to the page displaying the Log Analytics workspace you created in the previous task.
 
 1. Select **Logs** and, if needed, close the default **Queries** pane.
 
-1. On the **Tables** tab, review the list of tables and verify that they include AppPlatformContainerEventLogs, AppPlatformIngressLogs, AppPlatformLogsforSpring, AppPlatformSystemLogs, AzureMetrics and AppPlatformBuildLogs. 
+1. On the **Tables** tab, review the list of tables and verify that they include `AppPlatformContainerEventLogs`, `AppPlatformIngressLogs`, `AppPlatformLogsforSpring`, `AppPlatformSystemLogs`, `AzureMetrics` and `AppPlatformBuildLogs`.
 
-   > **Note**: Not all of these categories might be available at this point yet. It might takes extra time for the logging data to appear in the Log Analytics workspace. If needed, wait for a few minutes and refresh the web page displaying the Azure portal.
+   > **Note**: Not all of these categories might be available at this point yet. It might take extra time for the logging data to appear in the Log Analytics workspace. If needed, wait for a few minutes and refresh the web page displaying the Azure portal.
 
 1. In the query editor, enter the following query and select **Run**.
 
@@ -335,7 +333,7 @@ Use this guidance to:
    AppPlatformContainerEventLogs 
    | where TimeGenerated > ago(1h)
    | sort by TimeGenerated
-   ``` 
+   ```
 
    > **Note**: The results of the query will display the container event logs.
 

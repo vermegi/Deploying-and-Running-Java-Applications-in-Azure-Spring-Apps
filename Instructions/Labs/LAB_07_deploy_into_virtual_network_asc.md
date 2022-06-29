@@ -5,11 +5,12 @@ lab:
 ---
 
 # Challenge: Protect endpoints using Web Application Firewall
+
 # Student manual
 
 ## Challenge scenario
 
-By now, you have completed setting up your Spring Petclinic application in Azure and secured the secrets used by the microservices to connect to their data store. You are satisfied with the results, but you do recognize that there is still room for improvements. In particular, you are concerned with the public endpoints of the application which are directly accessible to anyone with access to the internet. You would like to add a Web Application Firewall to filter incoming requests to your application. In this exercise, you will step through implementing this configuration.
+By now, you have completed setting up your Spring Petclinic application in Azure and secured the secrets used by the microservices to connect to their data store. You are satisfied with the results, but you do recognize that there is still room for improvement. In particular, you are concerned with the public endpoints of the application which are directly accessible to anyone with access to the internet. You would like to add a Web Application Firewall to filter incoming requests to your application. In this exercise, you will step through implementing this configuration.
 
 ## Objectives
 
@@ -30,7 +31,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create networking resources
 - Recreate Azure Spring Apps service and apps in the virtual network
@@ -45,13 +46,13 @@ During this challenge, you'll:
 
 ### Create networking resources
 
-Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 4 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance,  the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You can use the following guidance to implement these changes.
+Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 4 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance,  the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You can use the following guidance to implement these changes:
 
-In later exercises you'll be creating the private endpoints for the backend services.
+- [Create a Virtual Network and default subnet](https://docs.microsoft.com/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create).
+- [Add subnets to a Virtual Network](https://docs.microsoft.com/cli/azure/network/vnet/subnet?view=azure-cli-latest).
+- [Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal).
 
-[Create a Virtual Network and default subnet](https://docs.microsoft.com/en-us/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create)
-[Add subnets to a Virtual Network](https://docs.microsoft.com/en-us/cli/azure/network/vnet/subnet?view=azure-cli-latest)
-[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal)
+In later exercises you will be creating the private endpoints for the backend services.
 
 <details>
 <summary>hint</summary>
@@ -60,14 +61,14 @@ In later exercises you'll be creating the private endpoints for the backend serv
 1. From the Git Bash prompt, run the following command to create a virtual network.
 
    ```bash
-   VIRTUAL_NETWORK_NAME=springcloudvnet
+   VIRTUAL_NETWORK_NAME=springappsvnet
    az network vnet create --resource-group $RESOURCE_GROUP \
        --name $VIRTUAL_NETWORK_NAME \
        --location $LOCATION \
        --address-prefix 10.1.0.0/16
    ```
 
-1. Create 2 subnets intended for hosting Azure Spring Apps in this virtual network, 1 subnet intended for Application Gateway and 1 subnet for the private endpoints of the Azure Database for MySQL Single Server instance and the Azure Key Vault instance. Store the subnet names in environment variables, which will allow you to reference them later in this exercise:
+1. Create 2 subnets intended for hosting Azure Spring Apps in this virtual network: 1 subnet intended for Application Gateway and 1 subnet for the private endpoints of the Azure Database for MySQL Single Server instance and the Azure Key Vault instance. Store the subnet names in environment variables, which will allow you to reference them later in this exercise:
 
    ```bash
    SERVICE_RUNTIME_SUBNET_CIDR=10.1.0.0/24
@@ -96,7 +97,7 @@ In later exercises you'll be creating the private endpoints for the backend serv
        --address-prefix $PRIVATE_ENDPOINTS_SUBNET_CIDR
    ```
 
-1. Assign the Owner role-based access control (RBAC) role to the Azure Service Provider for Spring Apps access in the scope of the newly created virtual network. This will allow the resource provider to create its resources in the service-runtime-subnet and apps-subnet subnets. The GUID used in the second command is the service provider id for Azure Spring Apps.
+1. Assign the Owner role-based access control (RBAC) role to the Azure Service Provider for Spring Apps access in the scope of the newly created virtual network. This will allow the resource provider to create its resources in the `service-runtime-subnet` and `apps-subnet` subnets. The GUID used in the second command is the service principal id for Azure Spring Apps.
 
    > **Note**: The `export MSYS_NO_PATHCONV=1` must be included to address an issue with implementing role assignment when using Azure CLI in Git Bash shell, as documented on [GitHub](https://github.com/Azure/azure-cli/issues/16317).
 
@@ -119,14 +120,15 @@ In later exercises you'll be creating the private endpoints for the backend serv
 
 ### Recreate Azure Spring Apps service and apps in the virtual network
 
-Now that you have all the networking resources ready, you need to recreate your Azure Spring Apps service within this virtual network. Before you do so, delete your existing Azure Spring Apps instance first. You can use the following guidance to perform this task.
+Now that you have all the networking resources ready, you need to recreate your Azure Spring Apps service within this virtual network. Before you do so, delete your existing Azure Spring Apps instance first. You can use the following guidance to perform this task:
 
-[Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-CLI)
+- [Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-CLI).
 
-When you recreate your Spring Apps instance in the virtual network, you will also need to rerun some of the steps from the previous exercise: 
-- recreate the config server.
-- recreate and redeploy all apps. In the previous exercises you assigned an endpoint to the api-gateway and admin service apps. At this point, in this task, you will skip this step and, instead, you will do so later in this exercise, once you configure the internal DNS name resolution.
-- reassign a managed identity to each of the apps (for **customers, vets** and **visits** only) and give them access to the Azure Key Vault so they can access the username and password secrets required to connect to the MySQL database.
+When you recreate your Spring Apps instance in the virtual network, you will also need to rerun some of the steps from the previous exercise:
+
+- Recreate the config server.
+- Recreate and redeploy all apps. In the previous exercises you assigned an endpoint to the `api-gateway` and `app-admin` service apps. At this point, in this task, you will skip this step and, instead, you will do so later in this exercise, once you configure the internal DNS name resolution.
+- Reassign a managed identity to each of the apps (for `customers-service`, `vets-service` and `visits-service` only) and give them access to the Azure Key Vault so they can access the username and password secrets required to connect to the MySQL database.
 
 <details>
 <summary>hint</summary>
@@ -143,8 +145,8 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=springcloudsvcvnet$RANDOM
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring-cloud=$SPRING_APPS_SERVICE
+   SPRING_APPS_SERVICE=springappssvcvnet$UNIQUEID
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
    az spring create  \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
@@ -157,7 +159,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    > **Note**: Wait for the provisioning to complete. This might take about 15 minutes.
 
-   > **Note**: Notice the differences in this create statement to the first time you created the Spring Apps service. You are now also indicating in whicg vnet and subnets the deployment should happen.
+   > **Note**: Notice the differences in this create statement to the first time you created the Spring Apps service. You are now also indicating in which vnet and subnets the deployment should happen.
 
 1. Set up the config server.
 
@@ -171,7 +173,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
         --username $GIT_USERNAME
    ```
 
-1. Recreate each of the apps in Spring Apps, including managed identities for the customers-service, visits-service, and vets-service apps.
+1. Recreate each of the apps in Spring Apps, including managed identities for the `customers-service`, `visits-service`, and `vets-service` apps.
 
    ```bash
    az spring app create --service $SPRING_APPS_SERVICE \
@@ -200,9 +202,9 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    > **Note**: Wait for the provisioning of each app to complete. This might take about 5 minutes for each app.
 
-   > **Note**: Notice the differences in this create statement for the customers, visits and vets services as opposed to the first time you created these apps. You are now immediately assigning the managed identity to them.
+   > **Note**: Notice the differences in this create statement for the services as opposed to the first time you created these apps. You are now immediately assigning the managed identity to them.
 
-1. Retrieve the managed identities of the customers, visits and vets apps, and grant them access to the Key Vault instance.
+1. Retrieve the managed identities of the apps, and grant them access to the Key Vault instance.
 
    ```bash
    CUSTOMERS_SERVICE_ID=$(az spring app identity show \
@@ -292,9 +294,9 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
 ### Configure a private DNS zone
 
-At this point, you have redeployed your Azure Spring Apps service in a virtual network, along with all of its apps. As the next step, to implement its connectivity without relying on a public endpoint, you need to set up a private DNS service for your apps so they are discoverable within the virtual network. You can use the following guidance to perform this task.
+At this point, you have redeployed your Azure Spring Apps service in a virtual network, along with all of its apps. As the next step, to implement its connectivity without relying on a public endpoint, you need to set up a private DNS service for your apps so they are discoverable within the virtual network. You can use the following guidance to perform this task:
 
-[Access your application in a private network](https://docs.microsoft.com/en-us/azure/spring-cloud/access-app-virtual-network?tabs=azure-CLI)
+- [Access your application in a private network](https://docs.microsoft.com/azure/spring-cloud/access-app-virtual-network?tabs=azure-CLI).
 
 <details>
 <summary>hint</summary>
@@ -314,9 +316,10 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --query "[0].privateIpAddress" \
        --output tsv`
    ```
-    > **Note**: Notice that Azure Spring Apps uses a separate resource group for resources. You can view each resource as they are created. 
-    
-1. Next, create a private DNS zone to forward name resolution requests targeting the private.azuremicroservices.io namespace to this internal IP address.
+
+    > **Note**: Notice that Azure Spring Apps uses a separate resource group for resources. You can view each resource as they are created.
+
+1. Next, create a private DNS zone to resolve name resolution requests targeting the `private.azuremicroservices.io` namespace to this internal IP address.
 
    ```bash
    az network private-dns zone create \
@@ -335,7 +338,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --registration-enabled false
    ```
 
-1. Now you need to create an A DNS record that will resolve the name associated with your Azure Spring Apps service to the private IP address you identified earlier in this task.
+1. Now you need to create an `A` DNS record that will resolve the name associated with your Azure Spring Apps service to the private IP address you identified earlier in this task.
 
    ```bash
    az network private-dns record-set a add-record \
@@ -345,7 +348,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --ipv4-address $IP_ADDRESS
    ```
 
-1. Lastly you need to update your api-gateway and admin-service apps to retrieve the fully qualified domain name (FQDN) on your private DNS zone.
+1. Lastly you need to update your `api-gateway` and `admin-service` apps to retrieve the fully qualified domain name (FQDN) on your private DNS zone.
 
    ```bash
    az spring app update \
@@ -361,9 +364,9 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --assign-endpoint true
    ```
 
-   > **Note**: If you try connecting at this point to the spring petclinic application via the **api-gateway** and **admin-service** endpoints, you will not be able to do so, since these endpoints are currently only available within the virtual network. You could test such connectivity if you had an Azure VM connected to that virtual network. Later in this exercise, you will expose these two endpoints by using an Azure Application Gateway, which will allow you to test connectivity from the internet.
-    
-    > **Note**: Notice that you will be unable to use log streaming at this time. You will need a VM in the same virtual network to be able to do so.
+   > **Note**: If you try connecting at this point to the spring petclinic application via the `api-gateway` and `admin-service` endpoints, you will not be able to do so, since these endpoints are currently only available within the virtual network. You could test such connectivity if you had an Azure VM connected to that virtual network. Later in this exercise, you will expose these two endpoints by using an Azure Application Gateway, which will allow you to test connectivity from the internet.
+
+   > **Note**: Notice that you will be unable to use log streaming at this time. You will need a VM in the same virtual network to be able to do so.
 
 </details>
 
@@ -371,27 +374,27 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
 
 You now have Spring Apps service redeployed into a virtual network with a private DNS zone providing its name resolution. This configuration allows microservices to communicate with each other within the virtual network. However, to make the corresponding apps accessible from the internet, you need to implement a service that exposes a public endpoint. You will use for this purpose Azure Application Gateway. To accomplish this, you will also need to make sure that the domain name associated with the endpoint is the same as the name that Application Gateway uses to direct the traffic to the Azure Spring Apps back end. This is required in order for cookies and generated redirect URLs to work as expected.
 
-To configure this, you need to set up a custom domain name and generate a corresponding certificate for your Azure Spring Apps apps. The certificate will be stored in the Azure Key Vault instance you created in the previous exercise and will be retrieved from there by your apps. In this exercise, for the simplicity sake, you will use a self-signed certificate. Keep in mind that, in production scenarios, you should use a certificate issued by a trusted certification authority.
+To configure this, you need to set up a custom domain name and generate a corresponding certificate for Azure Spring Apps. The certificate will be stored in the Azure Key Vault instance you created in the previous exercise and will be retrieved from there by your apps. In this exercise, for the sake of simplicity, you will use a self-signed certificate. Keep in mind that, in production scenarios, you should use a certificate issued by a trusted certification authority.
 
-To start, you need to generate a self-signed certificate and add it to Azure Key Vault. You can use the following guidance to perform this task.
+To start, you need to generate a self-signed certificate and add it to Azure Key Vault. You can use the following guidance to perform this task:
 
-[Acquire a self-signed certificate](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#acquire-a-certificate)
+- [Acquire a self-signed certificate](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#acquire-a-certificate).
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. To create a self-signed certificate, you will use a sample-policy.json file. To generate the file, from the Git Bash shell prompt, run the following command:
+1. To create a self-signed certificate, you will use a `sample-policy.json` file. To generate the file, from the Git Bash shell prompt, run the following command:
 
    ```bash
    az keyvault certificate get-default-policy > sample-policy.json
    ```
 
-1. From the Git Bash window, use your favorite text editor to open the sample-policy.json file, change its `subject` property and add the `subjectAlternativeNames` property to match the following content, save the file, and close it. 
+1. From the Git Bash window, use your favorite text editor to open the `sample-policy.json` file, change its `subject` property and add the `subjectAlternativeNames` property to match the following content, save the file, and close it.
 
    ```json
    {
-     // ...
+       // ...
        "subject": "C=US, ST=WA, L=Redmond, O=Contoso, OU=Contoso HR, CN=myapp.mydomain.com",
        "subjectAlternativeNames": {
            "dnsNames": [
@@ -402,28 +405,28 @@ To start, you need to generate a self-signed certificate and add it to Azure Key
                "hello@contoso.com"
            ],
            "upns": []
-         },
-     // ...
+       },
+       // ...
    }
    ```
 
    > **Note**: Ensure that you include the trailing comma at the end of the updated content as long as there is another JSON element following it.
 
-1. Replace `mydomain` DNS name in the sample-policy.json file with a randomly generated custom domain name that you will use later in this exercise by running the following commands:
+1. Replace the `mydomain` DNS name in the `sample-policy.json` file with a randomly generated custom domain name that you will use later in this exercise by running the following commands:
 
    ```bash
-   DNS_LABEL=springclouddns$RANDOM
+   DNS_LABEL=springappsdns$UNIQUEID
    DNS_NAME=sampleapp.${DNS_LABEL}.com
    cat sample-policy.json | sed "s/myapp.mydomain.com/${DNS_NAME}/g" > result-policy.json
    ```
 
-1. Review the updated content of the result-policy.json file and record the updated DNS name in the format `sampleapp.<your-custom-domain-name>.com` (you will need it later in this exercise) by running the following command:
+1. Review the updated content of the `result-policy.json` file and record the updated DNS name in the format `sampleapp.<your-custom-domain-name>.com` (you will need it later in this exercise) by running the following command:
 
    ```bash
    cat result-policy.json
    ```
 
-1. You can now use the **result-policy.json** file to create a self-signed certificate in Key Vault.
+1. You can now use the `result-policy.json` file to create a self-signed certificate in Key Vault.
 
    ```bash
    CERT_NAME_IN_KV=openlab-certificate
@@ -437,11 +440,11 @@ To start, you need to generate a self-signed certificate and add it to Azure Key
 
 ### Configure domain in Azure Spring Apps
 
-Now that you have a self-signed certificate added to the Azure Key Vault instance, as a next step you will configure a public domain name in Azure Spring Apps using this self-signed certificate. You can use the following guidance to perform this task.
+Now that you have a self-signed certificate added to the Azure Key Vault instance, as a next step you will configure a public domain name in Azure Spring Apps using this self-signed certificate. You can use the following guidance to perform this task:
 
-[Configure the public domain name on Azure Spring Apps](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-the-public-domain-name-on-azure-spring-cloud)
+- [Configure the public domain name on Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-the-public-domain-name-on-azure-spring-cloud).
 
-You will only create a custom domain for the api-gateway service. This is the only endpoint that you will expose externally.
+You will only create a custom domain for the `api-gateway` service. This is the only endpoint that you will expose externally.
 
 <details>
 <summary>hint</summary>
@@ -451,7 +454,7 @@ You will only create a custom domain for the api-gateway service. This is the on
 
    ```bash
    VAULTURI=$(az keyvault show -n $KEYVAULT_NAME -g $RESOURCE_GROUP --query properties.vaultUri -o tsv)
-   ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query objectId --output tsv)
+   ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query id --output tsv)
    ```
 
 1. Once you have the Key Vault URI and the Spring Apps object ID, you can grant the permissions to access Key Vault certificates to the Spring Apps service:
@@ -472,7 +475,7 @@ You will only create a custom domain for the api-gateway service. This is the on
        --vault-uri $VAULTURI
    ```
 
-1. To conclude this procedure, you need to bind the custom domain to the api-gateway app.
+1. To conclude this procedure, you need to bind the custom domain to the `api-gateway` app.
 
    ```bash
    APPNAME=api-gateway
@@ -488,17 +491,17 @@ You will only create a custom domain for the api-gateway service. This is the on
 
 ### Create the Application Gateway resources
 
-You are now ready to create an Application Gateway instance to expose your application to the internet. You can use the following guidance to perform this task.
+You are now ready to create an Application Gateway instance to expose your application to the internet. You can use the following guidance to perform this task:
 
-[Create the Application Gateway resources](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#create-network-resources)
+- [Create the Application Gateway resources](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#create-network-resources).
 
 <details>
 <summary>hint</summary>
 <br/>
 
-   > **Note**: An Application Gateway resource needs a dedicated subnet to be deployed into, however, you already created this subnet at the beginning of this exercise. 
+   > **Note**: An Application Gateway resource needs a dedicated subnet to be deployed into, however, you already created this subnet at the beginning of this exercise.
 
-1. An Application Gateway instance also needs a public IP address, which you will create next by running the following commands from the Git Bash shell: 
+1. An Application Gateway instance also needs a public IP address, which you will create next by running the following commands from the Git Bash shell:
 
    ```bash
    APPLICATION_GATEWAY_PUBLIC_IP_NAME=app-gw-openlab-public-ip
@@ -520,10 +523,10 @@ You are now ready to create an Application Gateway instance to expose your appli
        --name $APPGW_IDENTITY_NAME
 
    APPGW_IDENTITY_CLIENTID=$(az identity show --resource-group $RESOURCE_GROUP --name $APPGW_IDENTITY_NAME --query clientId --output tsv)
-   APPGW_IDENTITY_OID=$(az ad sp show --id $APPGW_IDENTITY_CLIENTID --query objectId --output tsv)
+   APPGW_IDENTITY_OID=$(az ad sp show --id $APPGW_IDENTITY_CLIENTID --query id --output tsv)
    ```
 
-1. You can now reference the object ID when granting the get and list permissions to the Key Vault secrets and certificates.
+1. You can now reference the object ID when granting the `get` and `list` permissions to the Key Vault secrets and certificates.
 
    ```bash
    az keyvault set-policy \
@@ -564,7 +567,8 @@ You are now ready to create an Application Gateway instance to expose your appli
        --subnet $APPLICATION_GATEWAY_SUBNET_NAME \
        --servers $SPRING_APP_PRIVATE_FQDN \
        --key-vault-secret-id $KEYVAULT_SECRET_ID_FOR_CERT \
-       --identity $APPGW_IDENTITY_NAME
+       --identity $APPGW_IDENTITY_NAME \
+       --priority "1"
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
@@ -585,7 +589,7 @@ You are now ready to create an Application Gateway instance to expose your appli
        --name MySelfSignedTrustedRootCert
    ```
 
-1. Finally, you can now update the HTTP settings of the Application Gateway instance to configure self-signed certificate as issued by a trusted certification authority.
+1. Finally, you can now update the HTTP settings of the Application Gateway instance to configure the self-signed certificate as issued by a trusted certification authority.
 
    ```bash
    az network application-gateway http-settings update \
@@ -601,16 +605,16 @@ You are now ready to create an Application Gateway instance to expose your appli
 
 ### Access the application by DNS name
 
-You now have completed all steps required to test whether your application is accessible from the internet via Application Gateway. You can use the following guidance to perform this task.
+You now have completed all steps required to test whether your application is accessible from the internet via Application Gateway. You can use the following guidance to perform this task:
 
-[Check the deployment of Application Gateways](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#check-the-deployment-of-application-gateway)
-[Configure DNS and access the application](https://docs.microsoft.com/en-us/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-dns-and-access-the-application)
+- [Check the deployment of Application Gateways](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#check-the-deployment-of-application-gateway).
+- [Configure DNS and access the application](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#configure-dns-and-access-the-application).
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. Check the back end health of the instance of Application Gateway you deployed in the previous task.
+1. Check the back-end health of the Application Gateway instance you deployed in the previous task.
 
    ```bash
    az network application-gateway show-backend-health \
@@ -618,9 +622,9 @@ You now have completed all steps required to test whether your application is ac
        --resource-group $RESOURCE_GROUP
    ```
 
-   > **Note**: The output of this command should return the **Healthy** value of the **health** property of the **backendHttpSettingsCollection** element. If this is the case, your setup is valid. If you see any other value than healthy, review the previous steps.
+   > **Note**: The output of this command should return the `Healthy` value on the `health` property of the `backendHttpSettingsCollection` element. If this is the case, your setup is valid. If you see any other value than healthy, review the previous steps.
 
-   > **Note**: There might be a delay before the Application Gateway reports the **Healthy** status of **backendHttpSettingsCollection**, so if you encounter any issues, wait a few minutes and re-run the previous command before you start troubleshooting.
+   > **Note**: There might be a delay before the Application Gateway reports the `Healthy` status of `backendHttpSettingsCollection`, so if you encounter any issues, wait a few minutes and re-run the previous command before you start troubleshooting.
 
 1. Next, identify the public IP address of the Application Gateway by running the following command from the Git Bash shell.
 
@@ -638,9 +642,9 @@ You now have completed all steps required to test whether your application is ac
    echo $DNS_NAME
    ```
 
-   > **Note**: To validate the configuration, you will need to use the custom DNS name to access the public endpoint of the api-gateway app, exposed via the Application Gateway instance. You can test this by adding an entry that maps the DNS name to the IP address you identified in the previous step to the hosts file on your lab computer. 
+   > **Note**: To validate the configuration, you will need to use the custom DNS name to access the public endpoint of the `api-gateway` app, exposed via the Application Gateway instance. You can test this by adding an entry that maps the DNS name to the IP address you identified in the previous step to the `hosts` file on your lab computer.
 
-1. On you lab computer, open the file **C:\Windows\System32\drivers\etc\hosts** in Notepad using elevated privileges (as administrator) and add an extra line to the file that has the following content (replace the `<app-gateway-ip-address> ` and `<custom-dns-name>` placeholders with the IP address and the DNS name you identified in the previous two steps):
+1. On you lab computer, open the file `C:\Windows\System32\drivers\etc\hosts` in Notepad using elevated privileges (as administrator) and add an extra line to the file that has the following content (replace the `<app-gateway-ip-address>` and `<custom-dns-name>` placeholders with the IP address and the DNS name you identified in the previous two steps):
 
    ```text
    <app-gateway-ip-address>   <custom-dns-name>
@@ -654,11 +658,11 @@ You now have completed all steps required to test whether your application is ac
 
 ### Configure WAF on Application Gateway
 
-Now that you have successfully deployed Application Gateway and you can connect to your application, you can additionally configure a Web Application Firewall on your Application Gateway. You can use the following guidance to perform this task.
+Now that you have successfully deployed Application Gateway and you can connect to your application, you can additionally configure a Web Application Firewall on your Application Gateway. You can use the following guidance to perform this task:
 
-[Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/en-us/azure/web-application-firewall/ag/create-waf-policy-ag)
-[az network application-gateway waf-policy](https://docs.microsoft.com/en-us/cli/azure/network/application-gateway/waf-policy?view=azure-cli-latest)
-[az network application-gateway http-listener](https://docs.microsoft.com/en-us/cli/azure/network/application-gateway/http-listener?view=azure-cli-latest)
+- [Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/azure/web-application-firewall/ag/create-waf-policy-ag).
+- [az network application-gateway waf-policy](https://docs.microsoft.com/cli/azure/network/application-gateway/waf-policy?view=azure-cli-latest).
+- [az network application-gateway http-listener](https://docs.microsoft.com/cli/azure/network/application-gateway/http-listener?view=azure-cli-latest).
 
 <details>
 <summary>hint</summary>
@@ -701,4 +705,4 @@ Now that you have successfully deployed Application Gateway and you can connect 
 
 #### Review
 
-In this lab, you enhanced network security of Azure Spring Apps applicationss by blocking connections to its public endpoints and adding a Web Application Firewall to filter incoming requests. 
+In this lab, you enhanced network security of Azure Spring Apps applications by blocking connections to its public endpoints and adding a Web Application Firewall to filter incoming requests.
