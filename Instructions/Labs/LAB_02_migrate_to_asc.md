@@ -38,7 +38,7 @@ During this challenge, you will:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-> **Note**: Your workstation should contain the following components:
+> **Note**: This lab contains guidance for a Windows workstation. Your workstation should contain the following components:
 
 - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
   - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
@@ -60,6 +60,8 @@ During this challenge, you will:
 git config --global user.email "<your-email-address>"
 git config --global user.name "<your-full-name>"
 ```
+
+> **Note**: Additionaly the repository containing this guidance contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
 
 ### Create an Azure Spring Apps service
 
