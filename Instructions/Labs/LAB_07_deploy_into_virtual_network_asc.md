@@ -676,10 +676,6 @@ Now that you have successfully deployed Application Gateway and you can connect 
 1. You can now link this WAF policy to the HTTP listener for the incoming requests.
 
    ```bash
-   az network application-gateway http-listener list \
-       -g $RESOURCE_GROUP \
-       --gateway-name $APPGW_NAME -o table
-
    az network application-gateway http-listener update \
        -g $RESOURCE_GROUP \
        --gateway-name $APPGW_NAME \
