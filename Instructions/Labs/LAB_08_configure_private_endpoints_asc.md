@@ -5,6 +5,7 @@ lab:
 ---
 
 # Challenge: Secure MySQL database and Key Vault using a Private Endpoint
+
 # Student manual
 
 ## Challenge scenario
@@ -25,11 +26,11 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 - Lock down the Key Vault instance by using a private endpoint
-- Test your setup	
+- Test your setup
 
    > **Note**: The instructions provided in this exercise assume that you successfully completed the previous exercise and are using the same lab environment, including your Git Bash session with the relevant environment variables already set.
 
@@ -37,15 +38,15 @@ During this challenge, you'll:
 
 ### Lock down the Azure Database for MySQL Single Server instance by using a private endpoint
 
-To start, you need to lock down access to your MySQL database by using a private endpoint. A private endpoint is represented by a private IP address within a virtual network. Once you enable it, you can block public access to your database. You can use the following guidance to perform this task.
+To start, you need to lock down access to your MySQL database by using a private endpoint. A private endpoint is represented by a private IP address within a virtual network. Once you enable it, you can block public access to your database. You can use the following guidance to perform this task:
 
-[Create and manage Private Link for Azure Database for MySQL using CLI](https://docs.microsoft.com/en-us/azure/mysql/howto-configure-privatelink-cli)
+- [Create and manage Private Link for Azure Database for MySQL using CLI](https://docs.microsoft.com/azure/mysql/howto-configure-privatelink-cli).
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. To start, you need to disable private endpoint network policies in the subnet you will use to create the private endpoints. 
+1. To start, you need to disable private endpoint network policies in the subnet you will use to create the private endpoints.
 
    ```bash
    az network vnet subnet update \
@@ -55,7 +56,7 @@ To start, you need to lock down access to your MySQL database by using a private
       --disable-private-endpoint-network-policies true
    ```
 
-1. Next, in the same subnet, create the private endpoint corresponding to the Azure Database for MySQL Single Server instance. 
+1. Next, in the same subnet, create the private endpoint corresponding to the Azure Database for MySQL Single Server instance.
 
    ```bash
    MYSQL_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${SQL_SERVER_NAME} --resource-type "Microsoft.DBforMySQL/servers" --query "id" -o tsv)
@@ -71,24 +72,24 @@ To start, you need to lock down access to your MySQL database by using a private
        --location $LOCATION
    ```
 
-   > **Note**: Once you created the private endpoint, you will set up a private Azure DNS zone named **privatelink.mysql.database.azure.com** with an A DNS record matching the original DNS name with the suffix **mysql.database.azure.com** but replacing that suffix with **privatelink.mysql.database.azure.com**. Your apps connecting to the MySQL database will not need to be updated, but instead they can continue using the existing connection strings. 
+   > **Note**: Once you created the private endpoint, you will set up a private Azure DNS zone named `privatelink.mysql.database.azure.com` with an `A` DNS record matching the original DNS name with the suffix `mysql.database.azure.com` but replacing that suffix with `privatelink.mysql.database.azure.com`. Your apps connecting to the MySQL database will not need to be updated, but instead they can continue using the existing connection strings.
 
 1. To implement this configuration, start by creating a new private DNS zone and linking it to your virtual network.
 
    ```bash
    az network private-dns zone create \
        --resource-group $RESOURCE_GROUP \
-       --name  "privatelink.mysql.database.azure.com"
+       --name "privatelink.mysql.database.azure.com"
 
    az network private-dns link vnet create \
       --resource-group $RESOURCE_GROUP \
-      --zone-name  "privatelink.mysql.database.azure.com"\
+      --zone-name "privatelink.mysql.database.azure.com"\
       --name MyDNSLink \
       --virtual-network $VIRTUAL_NETWORK_NAME \
       --registration-enabled false 
    ```
 
-1. Next, create a new A record pointing to the IP address of the newly created private endpoint.
+1. Next, create a new `A` record pointing to the IP address of the newly created private endpoint.
 
    ```bash
    NIC_ID=$(az network private-endpoint show --name pe-openlab-mysql --resource-group $RESOURCE_GROUP --query 'networkInterfaces[0].id' -o tsv)
@@ -98,7 +99,7 @@ To start, you need to lock down access to your MySQL database by using a private
    az network private-dns record-set a create \
        --name $SQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
-       --resource-group $RESOURCE_GROUP  
+       --resource-group $RESOURCE_GROUP
 
    az network private-dns record-set a add-record \
        --record-set-name $SQL_SERVER_NAME \
@@ -120,9 +121,9 @@ To start, you need to lock down access to your MySQL database by using a private
 
 ### Lock down the Key Vault instance by using a private endpoint
 
-Once you have locked down the internet access to the MySQL database, you will perform a similar setup to protect the Key Vault content. To accomplish this, you can use the following guidance.
+Once you have locked down the internet access to the MySQL database, you will perform a similar setup to protect the Key Vault content. To accomplish this, you can use the following guidance:
 
-[Integrate Key Vault with Azure Private Link](https://docs.microsoft.com/en-us/azure/key-vault/general/private-link-service?tabs=cli)
+- [Integrate Key Vault with Azure Private Link](https://docs.microsoft.com/azure/key-vault/general/private-link-service?tabs=cli).
 
 <details>
 <summary>hint</summary>
@@ -143,19 +144,19 @@ Once you have locked down the internet access to the MySQL database, you will pe
        --location $LOCATION
    ```
 
-1. In this case, just as before, you will need to create a private DNS zone, this time for **privatelink.vaultcore.azure.net**.
+1. In this case, just as before, you will need to create a private DNS zone, this time for `privatelink.vaultcore.azure.net`.
 
    ```bash
    az network private-dns zone create \
        --resource-group $RESOURCE_GROUP \
-       --name  "privatelink.vaultcore.azure.net" 
+       --name "privatelink.vaultcore.azure.net"
 
    az network private-dns link vnet create \
        --resource-group $RESOURCE_GROUP \
-       --zone-name  "privatelink.vaultcore.azure.net" \
+       --zone-name "privatelink.vaultcore.azure.net" \
        --name MyVaultDNSLink \
        --virtual-network $VIRTUAL_NETWORK_NAME \
-       --registration-enabled false 
+       --registration-enabled false
    ```
 
 1. As before, you need to create the A record to link the Azure Key Vault instance name to the IP address of the private endpoint.
@@ -167,14 +168,16 @@ Once you have locked down the internet access to the MySQL database, you will pe
    az network private-dns record-set a add-record -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net" -n $KEYVAULT_NAME -a $KEYVAULT_NIC_IPADDRESS
    az network private-dns record-set list -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net"
    ```
+
 </details>
 
 ### Test your setup
 
-As the last step of this exercise and the lab, test again your setup. You should still be able to navigate to your application through the custom domain that you configured on your Application Gateway and view the listing of owners and veterinarians.
+As the last step of this exercise and the lab, test your setup again. You should still be able to navigate to your application through the custom domain that you configured on your Application Gateway and view the listing of owners and veterinarians.
 
    > **Note**: In case you don't see any data when navigating the menu options in the application, try redeploying the customers, visits and vets apps again to Azure Spring Apps.
-    > **Note**: If things don’t work as expected, you can reconnect monitoring for your application and troubleshooting as described in the previous monitoring lab.
+
+   > **Note**: If things don't work as expected, you can reconnect monitoring for your application and troubleshooting as described in the previous monitoring lab.
 
 #### Review
 

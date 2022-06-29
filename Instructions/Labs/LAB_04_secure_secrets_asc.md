@@ -5,11 +5,12 @@ lab:
 ---
 
 # Challenge: Secure application secrets using Key Vault
-# Student guide
+
+# Student manual
 
 ## Challenge scenario
 
-Your team is now running a first version of the spring-petclinic microservice application in Azure. However you are concerned that your application secrets are stored directly in configuration code. As a matter of fact, GitHub has been generating notifications informing you about this vulnerability. You want to remediate this issue and implement a secure method of storing application secrets that are part of the database connection string. In this unit, you will step through implementing such method. 
+Your team is now running a first version of the `spring-petclinic` microservice application in Azure. However you are concerned that your application secrets are stored directly in configuration code. As a matter of fact, GitHub has been generating notifications informing you about this vulnerability. You want to remediate this issue and implement a secure method of storing application secrets that are part of the database connection string. In this unit, you will step through implementing such method.
 
 ## Objectives
 
@@ -28,7 +29,7 @@ After you complete this challenge, you will be able to:
 
 ## Instructions
 
-During this challenge, you'll:
+During this challenge, you will:
 
 - Create an Azure Key Vault instance
 - Store your connection string elements as Azure Key Vault secrets
@@ -41,9 +42,9 @@ During this challenge, you'll:
 
 ### Create an Azure Key Vault instance
 
-You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task.
+You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task:
 
-[Create Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+- [Create Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
 
 <details>
 <summary>hint</summary>
@@ -52,7 +53,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Apps service in the previous exercise of this lab.
 
    ```bash
-   KEYVAULT_NAME=springcloudkv$RANDOM
+   KEYVAULT_NAME=springappskv$UNIQUEID
    az keyvault create \
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \
@@ -66,9 +67,11 @@ You will start by creating an Azure Key Vault instance that will host your appli
 
 ### Store your connection string elements as Azure Key Vault secrets
 
-Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task.Tthese secrets should be called SPRING-DATASOURCE-USERNAME and SPRING-DATASOURCE-PASSWORD.
+Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task:
 
-[Add a secret to Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault)
+- [Add a secret to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
+
+These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOURCE-PASSWORD`.
 
 <details>
 <summary>hint</summary>
@@ -92,15 +95,15 @@ Now that your Key Vault provisioning is completed, you need to add to it a secre
 
 ### Create a managed identity for your microservices
 
-The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application.
+The apps deployed as the Spring Petclinic microservices will connect to the newly created Key Vault using a managed identity. The process of creating a managed identity will automatically create an Azure Active Directory service principal for your application. Managed identities minimize the overhead associated with managing service principals, since their secrets used for authentication are automatically rotated. You can use the following guidance to determine how to assign a managed identity to a Spring Apps service application:
 
-[Assign a Managed Identity](https://docs.microsoft.com/en-us/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity)
+- [Assign a Managed Identity](https://docs.microsoft.com/azure/spring-cloud/how-to-enable-system-assigned-managed-identity?tabs=azure-cli&pivots=sc-standard-tier#add-a-system-assigned-identity).
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so they will need to be assigned a managed identity:
 
-- spring-petclinic-customers-service
-- spring-petclinic-vets-service
-- spring-petclinic-visits-service
+- `customers-service`
+- `vets-service`
+- `visits-service`
 
 <details>
 <summary>hint</summary>
@@ -159,21 +162,19 @@ The following three apps of your application use the database hosted by the Azur
 
 ### Grant the managed identity permissions to access the Azure Key Vault secrets
 
-By now, you have created a managed identity for the spring-petclinic-customers-service, spring-petclinic-vets-service and spring-petclinic-visits-service. In this step, you need to grant these 3 managed identities access to the secrets your added to the Azure Key Vault instance. To accomplish this, you can use the following the guidance.
+By now, you have created a managed identity for the `customers-service`, `vets-service` and `visits-service`. In this step, you need to grant these 3 managed identities access to the secrets you added to the Azure Key Vault instance. To accomplish this, you can use the following the guidance: [Grant your app access to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#grant-your-app-access-to-key-vault).
 
-[Grant your app access to Key Vault](https://docs.microsoft.com/en-us/azure/spring-cloud/tutorial-managed-identities-key-vault#grant-your-app-access-to-key-vault)
+The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so their managed identities will need to be granted permissions to access the secrets:
 
-The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so their managed instances will need to be granted permissions to access the secrets:
-
-- spring-petclinic-customers-service
-- spring-petclinic-vets-service
-- spring-petclinic-visits-service
+- `customers-service`
+- `vets-service`
+- `visits-service`
 
 <details>
 <summary>hint</summary>
 <br/>
 
-1. Grant the get and list secrets permissions in the Azure Key Vault instance to each Spring Apps application managed identity by using Azure Key Vault access policy:
+1. Grant the `get` and `list` secrets permissions in the Azure Key Vault instance to each Spring Apps application's managed identity by using Azure Key Vault access policy:
 
    ```bash
    az keyvault set-policy \
@@ -199,7 +200,7 @@ The following three apps of your application use the database hosted by the Azur
 
 ### Update application config
 
-You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the **com.azure.spring:spring-cloud-azure-starter-keyvault-secrets** dependency. You can use the following guidance to accomplish this task.
+You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the `com.azure.spring:spring-cloud-azure-starter-keyvault-secrets` dependency. You can use the following guidance to accomplish this task:
 
 [Spring Cloud Azure Starter Key Vault Secrets](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/README.md)
 
@@ -207,9 +208,9 @@ You now have all relevant components in place to switch to the secrets stored in
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Remove the lines 82 and 83 that contain the values of the admin user account name and its password for target datasource endpoint. 
+1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the `application.yml` file. Remove the lines (normally 83 and 84) that contain the values of the admin user account name and its password for the target datasource endpoint.
 
-   > **Note**: The lines 82 and 83 should have the following content (where the <your-server-name> and <myadmin-password> represent the name of the Azure Database for MySQL Single Server instance and the password you assigned to the myadmin account during its provisioning, respectively):
+   > **Note**: These lines should have the following content (where the `<your-server-name>` and `<myadmin-password>` represent the name of the Azure Database for MySQL Single Server instance and the password you assigned to the `myadmin` account during its provisioning, respectively):
 
    ```yaml
     username: myadmin@<your-server-name>
@@ -230,7 +231,7 @@ You now have all relevant components in place to switch to the secrets stored in
                 credential.managed-identity-enabled: true
    ```
 
-   > **Note**: The properties start with _spring.cloud.azure.keyvault.secret_, so beware that you indent the _cloud_ property so it sits at the right indentation level of your config file.
+   > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
 
 1. Save the file and commit and push these changes to your remote config repository.
 
@@ -243,7 +244,7 @@ You now have all relevant components in place to switch to the secrets stored in
 
 ### Update, rebuild, and redeploy each app
 
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open **pom.xml** files of the customers, visits and vets services (within the spring-petclinic-customers-service, spring-petclinic-visits-service, and spring-petclinic-vets-service directories). For each, add the following dependencies (within the **<dependencies> </dependencies>** section) and save the change .
+1. From the Git Bash window, in the `spring-petclinic-microservices` repository you cloned locally, use your favorite text editor to open the `pom.xml` files of the customers, visits and vets services (within the `spring-petclinic-customers-service`, `spring-petclinic-visits-service`, and `spring-petclinic-vets-service` directories). For each, add the following dependencies (within the `<dependencies>...</dependencies>` section) and save the change.
 
    ```xml
            <dependency>
@@ -252,11 +253,11 @@ You now have all relevant components in place to switch to the secrets stored in
            </dependency>
    ```
 
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the pom.xml file in the root directory of the cloned repo. Add to the file a dependency to **com.azure.spring**. This should be added within the **<dependencies><dependencyManagement></dependencies></dependencyManagement>** section.
+1. From the Git Bash window, in the `spring-petclinic-microservices` repository you cloned locally, use your favorite text editor to open the `pom.xml` file in the root directory of the cloned repo. Add to the file a dependency to `com.azure.spring`. This should be added within the `<dependencyManagement><dependencies></dependencies></dependencyManagement>` section.
 
    ```xml
-       <dependencies>
-           <dependencyManagement>
+       <dependencyManagement>
+           <dependencies>
                //... existing dependencies
 
                <dependency>
@@ -271,13 +272,13 @@ You now have all relevant components in place to switch to the secrets stored in
        </dependencyManagement>
    ```
 
-1. In the same file, add a property for the **version.spring.cloud.azure**. This should be added within the **<properties></properties>** section.
+1. In the same file, add a property for `version.spring.cloud.azure`. This should be added within the `<properties></properties>` section.
 
    ```xml
    <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
    ```
 
-1. Save the changes to the **pom.xml** file and close it.
+1. Save the changes to the `pom.xml` file and close it.
 
 1. Rebuild the services by running the following command in the root directory of the application.
 
@@ -286,7 +287,7 @@ You now have all relevant components in place to switch to the secrets stored in
    mvn clean package -DskipTests
    ```
 
-1. Verify that the build succeeds by reviewing the output of the `mvn clean package -DskipTests` command, which should have the following format: 
+1. Verify that the build succeeds by reviewing the output of the `mvn clean package -DskipTests` command, which should have the following format:
 
    ```bash
    [INFO] Reactor Summary for spring-petclinic-microservices 2.6.3:
