@@ -36,14 +36,14 @@ During this challenge, you'll:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-   > **Note**: Your workstation should contain the following components:
+   > **Note**: Your workstation should contain the following components.
 
    - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
      - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
    - Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads)
    - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
    - Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
-   - Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
+   - In case you prefer to use IntelliJ IDEA as an IDE instead of Visual Studio Code: Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
    - Azure CLI version 2.37.0
    - jq command line tool available from [JQ Downloads](https://stedolan.github.io/jq/)
 
@@ -123,6 +123,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
    ```
 
    > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
+
+   > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you.
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
@@ -209,11 +211,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
 
-1. If prompted to confirm access, enter your GitHub account password and select **Confirm password**.
-
 1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
-
-1. Ensure that the value in the **Expiration** drop-down list is set to **30 days**.
 
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
@@ -402,7 +400,7 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. In case the version has changed you will need to update this command for all the next deploy steps.
 
 1. In the same way create an app for the admin-server microservice:
 
@@ -427,8 +425,6 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
-
 1. Next, you will create an app for the customers-service microservice:
 
    ```bash
@@ -451,9 +447,6 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
    ```
-
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
-
 
 1. Next, you will create an app for the visits-service microservice:
 
@@ -479,8 +472,6 @@ You now have the compute and data services available for deployment of the compo
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
-
 1. To conclude, you will create an app for the vets-service microservice:
 
 
@@ -504,8 +495,6 @@ You now have the compute and data services available for deployment of the compo
                --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
-
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the **<parent><version>** element and change the version number of the jar file if needed. 
 
 </details>
 
