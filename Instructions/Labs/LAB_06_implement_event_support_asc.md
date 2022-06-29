@@ -159,15 +159,6 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
        data: classpath*:db/mysql/data.sql
        url: jdbc:mysql://<your-database>.mysql.database.azure.com:3306/petclinic?useSSL=true
        initialization-mode: ALWAYS
-     cloud:
-       azure:
-         keyvault:
-           secret:
-             property-source-enabled: true
-             property-sources:
-             - name: key-vault-property-source-1
-               endpoint: https://<your-keyvault>.vault.azure.net/
-               credential.managed-identity-enabled: true
      kafka:
        bootstrap-servers: <eventhub-namespace>.servicebus.windows.net:9093
        client-id: first-service
@@ -177,8 +168,17 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
          sasl.mechanism: PLAIN
          security.protocol: SASL_SSL
          spring.json:
-           use.type.headers: false
-           value.default.type: com.targa.labs.dev.telemetrystation.Message
+         use.type.headers: false
+         value.default.type: com.targa.labs.dev.telemetrystation.Message
+     cloud:
+       azure:
+         keyvault:
+           secret:
+             property-source-enabled: true
+             property-sources:
+               - name: key-vault-property-souece-1
+                 endpoint: https://<your-keyvault>.vault.azure.net/
+                 credential.managed-identity-enabled: true
    ```
 
 1. Commit and push your changes to the remote repository.
