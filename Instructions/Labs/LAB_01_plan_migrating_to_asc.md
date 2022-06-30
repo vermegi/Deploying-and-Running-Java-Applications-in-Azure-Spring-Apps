@@ -72,7 +72,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
 
-1. In projects folder double check that the spring petclinic application got cloned correctly. You can use the repository to regularly push your changes to.
+1. In projects folder double check that the spring petclinic application got cloned correctly. You can use the repository in your projects folder to regularly push your changes to.
 
 </details>
 

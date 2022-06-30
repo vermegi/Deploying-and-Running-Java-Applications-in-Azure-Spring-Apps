@@ -196,10 +196,7 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
 
 You will now implement the functionality that will allow you to emulate sending events from a third party system to the telemetry Event Hub. You can find this third party system in the [azure-event-hubs-for-kafka on GitHub](https://github.com/Azure/azure-event-hubs-for-kafka) and use the `quickstart/java/producer`.
 
-Edit the **producer.config** file in the **extra/src/main/resources** folder:
-- change the **bootstrap.servers** config setting so it contains the name of the Event Hub namespace you provisioned earlier in this lab
-- change the **sasl.jaas.config** config setting so it contains the connection string to the **telemetry** event hub
-
+Edit the `producer.config` file in the `extra/src/main/resources` folder:
 - Change the `bootstrap.servers` config setting so it contains the name of the Event Hub namespace you provisioned earlier in this lab.
 - Change the `sasl.jaas.config` config setting so it contains the connection string to the `telemetry` event hub.
 
@@ -232,7 +229,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 
 1. Save the changes to the file.
 
-1. Open the `TestProducer.java` file in the `azure-event-hubs-for-kafka/quickstart/java/producer/src/main/java` directory. Verify that line 16 uses `telemetry` az topic name.
+1. Open the `TestProducer.java` file in the `azure-event-hubs-for-kafka/quickstart/java/producer/src/main/java` directory. Verify that line 16 uses `telemetry` as topic name.
 
    ```java
        private final static String TOPIC = "telemetry";

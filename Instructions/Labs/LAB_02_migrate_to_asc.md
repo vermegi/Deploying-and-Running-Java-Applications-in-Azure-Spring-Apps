@@ -116,7 +116,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    > **Note**: You can also add the spring extension with `az extension add --name spring`
 
-   > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you.
+   > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you. We will cover monitoring in depth in a next module.
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
