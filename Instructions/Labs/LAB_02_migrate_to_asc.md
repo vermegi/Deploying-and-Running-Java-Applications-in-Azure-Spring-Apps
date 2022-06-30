@@ -38,7 +38,7 @@ During this challenge, you will:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-> **Note**: Your workstation should contain the following components:
+> **Note**: This lab contains guidance for a Windows workstation. Your workstation should contain the following components:
 
 - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
   - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
@@ -48,7 +48,7 @@ During this challenge, you will:
   - **Note**: To install Apache Maven, extract the content of the .zip file by running `unzip apache-maven-3.8.5-bin.zip`. Next, add the path to the bin directory of the extracted content to the `PATH` environment variable. Assuming that you extracted the content directly into your home directory, you could accomplish this by running the following command from the Git Bash shell: `export PATH=~/apache-maven-3.8.5/bin:$PATH`.
 - Java 8 and the Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
   - **Note**: To install JDK on Windows, follow the instructions provided in [JDK Installation Guide](https://docs.oracle.com/en/java/javase/18/install/installation-jdk-microsoft-windows-platforms.html). Following the installation, ensure to set the JAVA_HOME environment variable to the location of the installation binaries by running the following command from the Git Bash shell: `export JAVA_HOME="/c/Program Files/Java/jdk-18.0.1.1"`.
-- Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
+- In case you prefer to use IntelliJ IDEA as an IDE instead of Visual Studio Code: Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
 - Azure CLI version 2.37.0
   - **Note**: If needed, upgrade the Azure CLI version by launching Command Prompt as administrator and running `az upgrade`.
 - jq command line tool available from [JQ Downloads](https://stedolan.github.io/jq/)
@@ -60,6 +60,8 @@ During this challenge, you will:
 git config --global user.email "<your-email-address>"
 git config --global user.name "<your-full-name>"
 ```
+
+> **Note**: Additionaly the repository containing this guidance contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
 
 ### Create an Azure Spring Apps service
 
@@ -111,6 +113,10 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
    ```
 
    > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
+
+   > **Note**: You can also add the spring extension with `az extension add --name spring`
+
+   > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you. We will cover monitoring in depth in a next module.
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
 
@@ -197,11 +203,7 @@ Once you completed the initial update of your git repository hosting the server 
 
 1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
 
-1. If prompted to confirm access, enter your GitHub account password and select **Confirm password**.
-
 1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
-
-1. Ensure that the value in the **Expiration** drop-down list is set to **30 days**.
 
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
@@ -228,6 +230,8 @@ Once you completed the initial update of your git repository hosting the server 
                            --password $GIT_PASSWORD \
                            --username $GIT_USERNAME 
    ```
+
+   > **Note**: In case you are using a branch other than `master` in your config repo, you can change the branch name with the `label` parameter.
 
    > **Note**: Wait for the operation to complete. This might take about 2 minutes.
 
@@ -390,7 +394,7 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed.
+   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed. In case the version has changed you will need to update this command for all the next deploy steps.
 
 1. In the same way create an app for the `admin-server` microservice:
 
@@ -415,8 +419,6 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed.
-
 1. Next, you will create an app for the `customers-service` microservice, without assigning an endpoint:
 
    ```bash
@@ -439,8 +441,6 @@ You now have the compute and data services available for deployment of the compo
             --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
    ```
-
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed.
 
 1. Next, you will create an app for the `visits-service` microservice, also without an endpoint assigned:
 
@@ -465,8 +465,6 @@ You now have the compute and data services available for deployment of the compo
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed.
-
 1. To conclude, you will create an app for the `vets-service` microservice, again without an endpoint assigned:
 
    ```bash
@@ -489,8 +487,6 @@ You now have the compute and data services available for deployment of the compo
                --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
-
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed.
 
 </details>
 

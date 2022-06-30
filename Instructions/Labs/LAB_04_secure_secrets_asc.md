@@ -217,16 +217,7 @@ You now have all relevant components in place to switch to the secrets stored in
     password: <myadmin-password>
    ```
 
-1. Save the changes and push the updates you made to the `application.yml` file to your private GitHub repo by running the following commands from the Git Bash prompt:
-
-   ```bash
-   cd ~/projects/spring-petclinic-microservices-config
-   git add .
-   git commit -m 'removed azure mysql credentials'
-   git push
-   ```
-
-1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open again the `application.yml` file and append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
+1. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
 
    ```yaml
     cloud:
@@ -242,9 +233,10 @@ You now have all relevant components in place to switch to the secrets stored in
 
    > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
 
-1. Commit and push these changes to your remote config repository.
+1. Save the file and commit and push these changes to your remote config repository.
 
    ```bash
+   cd ~/projects/spring-petclinic-microservices-config
    git add .
    git commit -m 'added key vault'
    git push

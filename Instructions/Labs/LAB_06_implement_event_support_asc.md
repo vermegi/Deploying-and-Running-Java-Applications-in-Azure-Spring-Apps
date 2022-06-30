@@ -194,12 +194,9 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
 
 ### Use an existing microservice to send events to the Event Hub resource
 
-You will now implement the functionality that will allow you to emulate sending events from a third party system to the `telemetry` Event Hub. You can find this third party system in the `Extra/events` folder of the lab repository.
+You will now implement the functionality that will allow you to emulate sending events from a third party system to the telemetry Event Hub. You can find this third party system in the [azure-event-hubs-for-kafka on GitHub](https://github.com/Azure/azure-event-hubs-for-kafka) and use the `quickstart/java/producer`.
 
-   > **Note**: This folder contains the contents of the [azure-event-hubs-for-kafka Java quickstart on GitHub](https://github.com/Azure/azure-event-hubs-for-kafka/tree/master/quickstart/java).
-
-Edit the `producer.config` file in the `producer/src/main/resources` folder:
-
+Edit the `producer.config` file in the `extra/src/main/resources` folder:
 - Change the `bootstrap.servers` config setting so it contains the name of the Event Hub namespace you provisioned earlier in this lab.
 - Change the `sasl.jaas.config` config setting so it contains the connection string to the `telemetry` event hub.
 
@@ -211,7 +208,14 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 <summary>hint</summary>
 <br/>
 
-1. In your projects folder, use your favorite text editor to open the `Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer/src/main/resources/producer.config` file. Change line 1 by replacing the `springappseh` placeholder with the name of the Event Hub namespace you provisioned earlier in this lab.
+1. From the Git Bash shell in the `projects` folder, clone the [azure-event-hubs-for-kafka on GitHub](https://github.com/Azure/azure-event-hubs-for-kafka) project.
+
+   ```bash
+   cd ~/projects
+   git clone https://github.com/Azure/azure-event-hubs-for-kafka
+   ```
+
+1. In your projects folder, use your favorite text editor to open the **azure-event-hubs-for-kafka/quickstart/java/producer/src/main/resources/producer.config** file. Change line 1 by replacing the `mynamespace` placeholder with the name of the Event Hub namespace you provisioned earlier in this lab.
 
    ```yaml
    bootstrap.servers=mynamespace.servicebus.windows.net:9093
@@ -225,16 +229,16 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 
 1. Save the changes to the file.
 
-1. Open the `TestProducer.java` file in the `Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps\Extra\events\producer\src\main\java` directory. Verify that line 16 uses `telemetry` as the topic name.
+1. Open the `TestProducer.java` file in the `azure-event-hubs-for-kafka/quickstart/java/producer/src/main/java` directory. Verify that line 16 uses `telemetry` as topic name.
 
    ```java
        private final static String TOPIC = "telemetry";
    ```
 
-1. From the Git Bash window, set the current working directory to the `Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps\Extra\events\producer` folder and run a maven build.
+1. From the Git Bash window, set the current working directory to the `azure-event-hubs-for-kafka/quickstart/java/producer` folder and run a maven build.
 
    ```bash
-   cd ~/projects/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer
+   cd ~/projects/azure-event-hubs-for-kafka/quickstart/java/producer
    mvn clean package
    ```
 
@@ -318,7 +322,7 @@ To conclude this lab, you will run the producer app to send 100 events to your e
 1. In the Git Bash window, set the current working directory to the `events` folder and run the `TestProducer` application.
 
    ```bash
-   cd ~/projects/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/events/producer
+   cd ~/projects/azure-event-hubs-for-kafka/quickstart/java/producer
    mvn exec:java -Dexec.mainClass="TestProducer"
    ```
 
