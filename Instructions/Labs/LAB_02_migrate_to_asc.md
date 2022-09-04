@@ -58,7 +58,7 @@ During this challenge, you will:
 
 ```bash
 git config --global user.email "<your-email-address>"
-git config --global user.name "<your-full-name>"
+git config --global user.name "<your-username>"
 ```
 
 > **Note**: Additionaly the repository containing this guidance contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
