@@ -231,7 +231,7 @@ Once you completed the initial update of your git repository hosting the server 
                            --username $GIT_USERNAME 
    ```
 
-   > **Note**: In case you are using a branch other than `master` in your config repo, you can change the branch name with the `label` parameter.
+   > **Note**: In case you are using a branch other than `main` in your config repo, you can change the branch name with the `label` parameter.
 
    > **Note**: Wait for the operation to complete. This might take about 2 minutes.
 
