@@ -170,11 +170,11 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
    curl -o admin-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/admin-server.yml
    curl -o api-gateway.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/api-gateway.yml
    curl -o application.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/application.yml
-   curl -o customer-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/customer-service.yml
+   curl -o customers-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/customers-service.yml
    curl -o discovery-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/discovery-server.yml
    curl -o tracing-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/tracing-server.yml
    curl -o vets-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/vets-service.yml
-   curl -o visit-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visit-service.yml
+   curl -o visits-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visits-service.yml
    ```
 
 1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
