@@ -233,6 +233,16 @@ You now have all relevant components in place to switch to the secrets stored in
 
    > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
 
+1. From the Git Bash window, in the spring-petclinic-microservices repository, use your text editor to open the `pom.xml` file. Update the spring-boot.version to 2.6.7 (where the `<version>2.6.7</version>` is displayed as seen below).
+
+   ```yaml
+    <groupId>org.springframework.samples</groupId>    
+    <artifactId>spring-petclinic-microservices</artifactId>    
+    <version>2.6.7</version>    
+    <name>${project.artifactId}</name>    
+    <packaging>pom</packaging>
+   ```
+    
 1. Save the file and commit and push these changes to your remote config repository.
 
    ```bash
