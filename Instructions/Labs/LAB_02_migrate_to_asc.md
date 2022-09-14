@@ -101,7 +101,12 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
    LOCATION=<azure-region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
+1. Run the following command to add the spring extension.
 
+   ```bash
+   az extension add --name spring
+   ``` 
+    
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
@@ -111,10 +116,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
                     --location $LOCATION \
                     --sku Standard
    ```
-
+    
    > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
-
-   > **Note**: You can also add the spring extension with `az extension add --name spring`
 
    > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you. We will cover monitoring in depth in a next module.
 
