@@ -145,11 +145,26 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
 ### Set up the config server
 
+
 Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in the [spring-petclinic-microservices-config repo](https://github.com/spring-petclinic/spring-petclinic-microservices-config). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
+
+As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server. It is important that you make note of the PAT after it has been created.
+
+- [Guidance for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 <details>
 <summary>hint</summary>
 <br/>
+
+1. To create a PAT, switch to the web browser window displaying your private GitHub repository, select the avatar icon in the upper right corner, and then select **Settings**.
+
+1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
+
+1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
+
+1. In the **Select scopes** section, select **repo** and then select **Generate token**.
+
+1. Record the generated token for later use.
 
 1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**.
 
@@ -192,25 +207,14 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 
 </details>
 
-Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server.
+Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. 
 
 - [Guidance on config server setup](https://docs.microsoft.com/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java).
 - [Guidance for a private repo with basic authentication](https://docs.microsoft.com/azure/spring-cloud/how-to-config-server#private-repository-with-basic-authentication).
-- [Guidance for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 <details>
 <summary>hint</summary>
 <br/>
-
-1. To create a PAT, switch to the web browser window displaying your private GitHub repository, select the avatar icon in the upper right corner, and then select **Settings**.
-
-1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
-
-1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
-
-1. In the **Select scopes** section, select **repo** and then select **Generate token**.
-
-1. Record the generated token. You will need it in the next step.
 
 1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
