@@ -116,8 +116,6 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
                     --location $LOCATION \
                     --sku Standard
    ```
-    
-   > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
 
    > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you. We will cover monitoring in depth in a next module.
 
@@ -164,7 +162,7 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
-1. Record the generated token for later use.
+1. Record the generated token. You will need it in this and subsequent labs.
 
 1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**.
 
@@ -174,14 +172,16 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
     > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
 
-1. From the Git Bash prompt, make sure you are no longer in the **spring-petclinic-microservices** folder and clone the **spring-petclinic-microservices-config** repo
+1. From the Git Bash prompt, change the current directory to the **projects** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`.
 
    ```bash
    cd ~/projects
-   git clone https://github.com/<your-github-username>/spring-petclinic-microservices-config.git
+   git clone https://github.com/<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
    ```
 
-1. From the Git Bash prompt, move to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
+    > **Note**: Make sure to replace the `<token>` and `<your-github-username>` placeholders in the URL listed above with the value of the GitHub PAT and your GitHub user name when running the `git clone` command.
+
+1. From the Git Bash prompt, change the current directory to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
 
    ```bash
    cd spring-petclinic-microservices-config
