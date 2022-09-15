@@ -188,11 +188,11 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
    curl -o admin-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/admin-server.yml
    curl -o api-gateway.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/api-gateway.yml
    curl -o application.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/application.yml
-   curl -o customer-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/customer-service.yml
+   curl -o customers-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/customers-service.yml
    curl -o discovery-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/discovery-server.yml
    curl -o tracing-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/tracing-server.yml
    curl -o vets-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/vets-service.yml
-   curl -o visit-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visit-service.yml
+   curl -o visits-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visits-service.yml
    ```
 
 1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
@@ -238,7 +238,7 @@ Once you completed the initial update of your git repository hosting the server 
                            --username $GIT_USERNAME 
    ```
 
-   > **Note**: In case you are using a branch other than `master` in your config repo, you can change the branch name with the `label` parameter.
+   > **Note**: In case you are using a branch other than `main` in your config repo, you can change the branch name with the `label` parameter.
 
    > **Note**: Wait for the operation to complete. This might take about 2 minutes.
 
@@ -342,13 +342,43 @@ You now have the compute and data services available for deployment of the compo
 <summary>hint</summary>
 <br/>
 
-1. In the main **pom.xml** file change the **spring-cloud.version** on line 33 from version **2021.0.2** t0 **2021.0.0** and save the file.
+1. In the main **pom.xml** file change the **spring-cloud.version** on line 33 from version **2021.0.2** to **2021.0.4**.
 
    ```xml
-   <spring-cloud.version>2021.0.0</spring-cloud.version>
+   <spring-cloud.version>2021.0.4</spring-cloud.version>
    ```
 
-   > **Note**: This version change is currently needed, since there is a bug when running version 2021.0.2.
+   > **Note**: We perform this version change to be on the latest version of Spring Cloud.
+
+1. In the same main **pom.xml** file change the **version** in the **parent** element on line 9 from version **2.6.7** to **2.6.11** and save the file.
+
+   ```xml
+   <parent>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter-parent</artifactId>
+       <version>2.6.11</version>
+   </parent>
+   ```
+
+1. In each of the microservices locate the **application.yml** file and comment out the **config import** lines. The **application.yml** file can be found in each **<microservice-name>/src/main/resources** folder. For each microservice these are lines 4 and 5 in the **application.yml** file. Do this for the admin-server, api-gateway, customers-service, vets-service and visits-service. The resulting application.yml file of the customers-service will look like below: 
+    
+    ```yml
+    spring:
+      application:
+        name: customers-service
+      # config:
+      #   import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
+
+
+    ---
+    spring:
+      config:
+        activate:
+          on-profile: docker
+        import: configserver:http://config-server:8888
+    ```
+    
+   > **Note**: We comment out the config import because when deploying these applications to Azure Spring Apps, the value for the config server will be set by Azure Spring Apps.    
 
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
