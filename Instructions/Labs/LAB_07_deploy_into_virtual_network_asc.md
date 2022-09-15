@@ -491,8 +491,9 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 
 ### Create the Application Gateway resources
 
-You are now ready to create an Application Gateway instance to expose your application to the internet. You can use the following guidance to perform this task:
+You are now ready to create an Application Gateway instance to expose your application to the internet. You will also need to create a WAF policy, when you use the **WAF_v2** sku for Application Gateway. You can use the following guidance to perform this task:
 
+- [Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/azure/web-application-firewall/ag/create-waf-policy-ag).
 - [Create the Application Gateway resources](https://docs.microsoft.com/azure/spring-cloud/expose-apps-gateway-end-to-end-tls?tabs=self-signed-cert%2Cself-signed-cert-2#create-network-resources).
 
 <details>
@@ -545,6 +546,15 @@ You are now ready to create an Application Gateway instance to expose your appli
    KEYVAULT_SECRET_ID_FOR_CERT=$(az keyvault certificate show --name $CERT_NAME_IN_KV --vault-name $KEYVAULT_NAME --query sid --output tsv)
    ```
 
+1. Before you can create the Application Gateway, you will also need to create the WAF policy for the gateway.
+
+    ```bash
+    WAF_POLICY_NAME=openlabWAFPolicy
+    az network application-gateway waf-policy create \
+        --name $WAF_POLICY_NAME \
+        --resource-group $RESOURCE_GROUP
+    ```
+    
 1. With all relevant information collected, you can now provision an instance of Application Gateway.
 
    ```bash
@@ -568,7 +578,8 @@ You are now ready to create an Application Gateway instance to expose your appli
        --servers $SPRING_APP_PRIVATE_FQDN \
        --key-vault-secret-id $KEYVAULT_SECRET_ID_FOR_CERT \
        --identity $APPGW_IDENTITY_NAME \
-       --priority "1"
+       --priority "1" \
+       --waf-policy $WAF_POLICY_NAME
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 5 minutes.
@@ -656,36 +667,15 @@ You now have completed all steps required to test whether your application is ac
 
 </details>
 
-### Configure WAF on Application Gateway
+### Enable the WAF policy
 
-Now that you have successfully deployed Application Gateway and you can connect to your application, you can additionally configure a Web Application Firewall on your Application Gateway. You can use the following guidance to perform this task:
+Now that you have successfully deployed Application Gateway and you can connect to your application, you can additionally enable the Web Application Firewall on your Application Gateway. By default your WAF policy will be disabled when you created it. You can use the following guidance to perform this task:
 
-- [Create Web Application Firewall policies for Application Gateway](https://docs.microsoft.com/azure/web-application-firewall/ag/create-waf-policy-ag).
 - [az network application-gateway waf-policy](https://docs.microsoft.com/cli/azure/network/application-gateway/waf-policy?view=azure-cli-latest).
-- [az network application-gateway http-listener](https://docs.microsoft.com/cli/azure/network/application-gateway/http-listener?view=azure-cli-latest).
 
 <details>
 <summary>hint</summary>
 <br/>
-
-1. Create a new WAF policy. By default a WAF policy has the OWASP ruleset associated with it.
-
-   ```bash
-   WAF_POLICY_NAME=openlabWAFPolicy
-   az network application-gateway waf-policy create \
-       --name $WAF_POLICY_NAME \
-       --resource-group $RESOURCE_GROUP
-   ```
-
-1. You can now link this WAF policy to the HTTP listener for the incoming requests.
-
-   ```bash
-   az network application-gateway http-listener update \
-       -g $RESOURCE_GROUP \
-       --gateway-name $APPGW_NAME \
-       -n appGatewayHttpListener \
-       --waf-policy $WAF_POLICY_NAME
-   ```
 
 1. To conclude the setup, enable the WAF policy. This will automatically start flagging noncompliant requests. To avoid blocking any requests at this point, configure it in detection mode.
 
