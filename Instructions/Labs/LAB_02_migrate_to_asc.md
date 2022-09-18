@@ -207,6 +207,8 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
 </details>
 
+### Set up the config server for Azure Spring Apps
+    
 Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. 
 
 - [Guidance on config server setup](https://docs.microsoft.com/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java).
