@@ -4,7 +4,7 @@ lab:
     module: 'Module 2: Migrate a Spring Apps application to Azure'
 ---
 
-# Challenge: Migrate a Spring Apps application to Azure
+# Challenge 02: Migrate a Spring Apps application to Azure
 
 # Student manual
 
