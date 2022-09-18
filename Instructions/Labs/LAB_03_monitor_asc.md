@@ -4,7 +4,7 @@ lab:
     module: 'Module 3: Enable monitoring and end-to-end tracing'
 ---
 
-# Challenge: Enable monitoring and end-to-end tracing
+# Challenge 03: Enable monitoring and end-to-end tracing
 
 # Student manual
 
