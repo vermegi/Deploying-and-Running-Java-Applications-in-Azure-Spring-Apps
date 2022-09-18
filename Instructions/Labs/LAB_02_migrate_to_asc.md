@@ -387,7 +387,8 @@ You now have the compute and data services available for deployment of the compo
         <parent>        
             <groupId>org.springframework.samples</groupId>
             <artifactId>spring-petclinic-microservices</artifactId>
-            <version>2.6.11</version>    </parent>
+            <version>2.6.11</version>    
+        </parent>
     ```
     
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
