@@ -1,6 +1,6 @@
 ---
 lab:
-    Title: 'Challenge: Enable monitoring and end-to-end tracing'
+    Title: 'Challenge 03: Enable monitoring and end-to-end tracing'
     Learn module: 'Learn Module 3: Enable monitoring and end-to-end tracing'
 ---
 
