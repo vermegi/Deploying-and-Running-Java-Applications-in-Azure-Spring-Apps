@@ -4,7 +4,7 @@ lab:
     module: 'Module 7: Protect endpoints using Web Application Firewall'
 ---
 
-# Challenge: Protect endpoints using Web Application Firewall
+# Challenge 07: Protect endpoints using Web Application Firewall
 
 # Student manual
 
