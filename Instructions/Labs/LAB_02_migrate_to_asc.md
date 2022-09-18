@@ -382,7 +382,7 @@ You now have the compute and data services available for deployment of the compo
     
    > **Note**: We comment out the config import because when deploying these applications to Azure Spring Apps, the value for the config server will be set by Azure Spring Apps.    
 
-1. For each of the microservices (seven in total) locate the **pom.xml** file and update the 'spring-petclinic-microservices' to version '2.6.11'.   
+1. For each of the microservices (seven in total) locate the **pom.xml** file and update the `spring-petclinic-microservices` to version `2.6.11`.   
     ```bash
         <parent>        
             <groupId>org.springframework.samples</groupId>
