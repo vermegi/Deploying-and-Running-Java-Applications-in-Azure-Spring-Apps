@@ -1,7 +1,7 @@
 ---
 lab:
-    title: 'Challenge: Secure application secrets using Key Vault'
-    module: 'Learn module 4: Secure application secrets using Key Vaults'
+    Title: 'Challenge 04: Secure application secrets using Key Vault'
+    Learn module: 'Learn module 4: Secure application secrets using Key Vaults'
 ---
 
 # Challenge 04: Secure application secrets using Key Vault
