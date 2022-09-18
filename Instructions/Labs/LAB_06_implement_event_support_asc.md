@@ -4,7 +4,7 @@ lab:
     module: 'Module 6: Configure Azure Event Hubs for Azure Spring Apps'
 ---
 
-# Challenge: Configure Azure Event Hubs for Azure Spring Apps
+# Challenge 06: Configure Azure Event Hubs for Azure Spring Apps
 
 # Student manual
 
