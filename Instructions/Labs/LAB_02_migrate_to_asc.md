@@ -430,7 +430,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name api-gateway \
             --no-wait \
-            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
+            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.11.jar
    ```
 
    > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed. In case the version has changed you will need to update this command for all the next deploy steps.
@@ -455,7 +455,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name app-admin \
             --no-wait \
-            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
+            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.11.jar
    ```
 
 1. Next, you will create an app for the `customers-service` microservice, without assigning an endpoint:
@@ -477,7 +477,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name customers-service \
             --no-wait \
-            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -500,7 +500,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name visits-service \
                --no-wait \
-               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -523,7 +523,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name vets-service \
                --no-wait \
-               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.11.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
