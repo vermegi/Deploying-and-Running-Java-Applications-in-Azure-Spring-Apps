@@ -363,21 +363,10 @@ You now have the compute and data services available for deployment of the compo
    ```
 1. In the same main **pom.xml** file change the **spring-boot.version** in the **properties** element on line 32 from version **2.6.7** to **2.6.11** and save the file.
 
-    ```bash
-    <properties>        
-        <java.version>1.8</java.version>        
-        <assertj.version>3.17.1</assertj.version>  
-        
-        <spring-boot.version>*2.6.11*</spring-boot.version>        
+    ```bash        
+        <spring-boot.version>2.6.11</spring-boot.version>        
         <spring-cloud.version>2021.0.4</spring-cloud.version>        
         <chaos-monkey-spring-boot.version>2.3.10</chaos-monkey-spring-boot.version>    
-        
-        <docker.image.prefix>springcommunity</docker.image.prefix>        
-        <docker.image.exposed.port>9090</docker.image.exposed.port>        
-        <docker.image.dockerfile.dir>${basedir}</docker.image.dockerfile.dir>        
-        <docker.image.dockerize.version>v0.6.1</docker.image.dockerize.version>        
-        <docker.plugin.version>1.2.0</docker.plugin.version>    
-    </properties>
     ```
     
 1. In each of the microservices locate the **application.yml** file and comment out the **config import** lines. The **application.yml** file can be found in each **<microservice-name>/src/main/resources** folder. For each microservice these are lines 4 and 5 in the **application.yml** file. Do this for the admin-server, api-gateway, customers-service, vets-service and visits-service. The resulting application.yml file of the customers-service will look like below: 
