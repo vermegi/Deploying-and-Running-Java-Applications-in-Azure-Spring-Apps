@@ -4,7 +4,7 @@ lab:
     module: 'Module 4: Secure application secrets using Key Vaults'
 ---
 
-# Challenge: Secure application secrets using Key Vault
+# Challenge 04: Secure application secrets using Key Vault
 
 # Student manual
 
