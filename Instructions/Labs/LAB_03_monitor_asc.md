@@ -168,7 +168,7 @@ Use this guidance to review such Application Insights features as:
 
 1. In the navigation menu, in the **Investigate** section, select **Availability**.
 
-1. In the toolbar of the **Availability** page, select **+ Add Standard (preview) test** in order to configure an availability test for your app.
+1. In the toolbar of the **Availability** page, select **+ Add Standard test** in order to configure an availability test for your app.
 
 1. Fill out the following details and select **Create**:
 
