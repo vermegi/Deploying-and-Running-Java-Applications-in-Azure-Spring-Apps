@@ -4,7 +4,7 @@ lab:
     module: 'Module 5: Create and configure Azure Service Bus for Azure Spring Apps'
 ---
 
-# Challenge: Create and configure Azure Service Bus for Azure Spring Apps
+# Challenge 05: Create and configure Azure Service Bus for Azure Spring Apps
 
 # Student manual
 
