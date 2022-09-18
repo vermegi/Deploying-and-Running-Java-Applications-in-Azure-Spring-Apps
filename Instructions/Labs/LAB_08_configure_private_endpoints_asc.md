@@ -1,7 +1,7 @@
 ---
 lab:
-    title: 'Lab: Secure MySQL database and Key Vault using a Private Endpoint'
-    module: 'Module 8: Secure MySQL database and Key Vault using a Private Endpoint'
+    Title: 'Challenge 08: Secure MySQL database and Key Vault using a Private Endpoint'
+    Learn module: 'Learn module 8: Secure MySQL database and Key Vault using a Private Endpoint'
 ---
 
 # Challenge 08: Secure MySQL database and Key Vault using a Private Endpoint
