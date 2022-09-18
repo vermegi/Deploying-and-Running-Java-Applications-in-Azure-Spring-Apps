@@ -1,7 +1,7 @@
 ---
 lab:
-    title: 'Lab: Plan a Java application migration to Azure Spring Apps'
-    module: 'Module 1: Plan a Java application migration to Azure Spring Apps'
+    Title: 'Challenge 01: Plan a Java application migration to Azure Spring Apps'
+    Learn module: 'Module 1: Plan a Java application migration to Azure Spring Apps'
 ---
 
 # Challenge 01: Plan a Java application migration to Azure Spring Apps
