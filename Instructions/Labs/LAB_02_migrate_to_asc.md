@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Migrate a Spring Apps application to Azure'
-    module: 'Module 2: Migrate a Spring Apps application to Azure'
+    Title: 'Challenge 02: Migrate a Spring Apps application to Azure'
+    Learn module: 'Learn Module 2: Migrate a Spring Apps application to Azure'
 ---
 
-# Challenge: Migrate a Spring Apps application to Azure
+# Challenge 02: Migrate a Spring Apps application to Azure
 
 # Student manual
 
@@ -101,7 +101,12 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
    LOCATION=<azure-region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
+1. Run the following command to add the spring extension.
 
+   ```bash
+   az extension add --name spring
+   ``` 
+    
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
@@ -111,10 +116,6 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
                     --location $LOCATION \
                     --sku Standard
    ```
-
-   > **Note**: This will automatically register the spring extension if needed. Confirm the extension installation with _Y_.
-
-   > **Note**: You can also add the spring extension with `az extension add --name spring`
 
    > **Note**: This will also create for you an Application Insights resource. This Application Insights resource is created still in `classic` mode and not in the newer `workspace` mode. If the region you are deploying to doesn't support this `classic` mode anymore, the CLI will show a warning to say it skipped App Insights creation and you should assign it manually. Don't worry in case you see this message though, it will not influence the rest of the lab for you. We will cover monitoring in depth in a next module.
 
@@ -142,11 +143,26 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
 ### Set up the config server
 
+
 Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in the [spring-petclinic-microservices-config repo](https://github.com/spring-petclinic/spring-petclinic-microservices-config). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
+
+As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server. It is important that you make note of the PAT after it has been created.
+
+- [Guidance for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 <details>
 <summary>hint</summary>
 <br/>
+
+1. To create a PAT, switch to the web browser window displaying your private GitHub repository, select the avatar icon in the upper right corner, and then select **Settings**.
+
+1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
+
+1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
+
+1. In the **Select scopes** section, select **repo** and then select **Generate token**.
+
+1. Record the generated token. You will need it in this and subsequent labs.
 
 1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**.
 
@@ -154,16 +170,18 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 
 1. On the newly created repository page, select the copy icon in the  **Quick setup** section.
 
-    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
 
-1. From the Git Bash prompt, make sure you are no longer in the **spring-petclinic-microservices** folder and clone the **spring-petclinic-microservices-config** repo
+1. From the Git Bash prompt, change the current directory to the **projects** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`.
 
    ```bash
    cd ~/projects
-   git clone https://github.com/<your-github-username>/spring-petclinic-microservices-config.git
+   git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
    ```
 
-1. From the Git Bash prompt, move to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
+    > **Note**: Make sure to replace the `<token>` and `<your-github-username>` placeholders in the URL listed above with the value of the GitHub PAT and your GitHub user name when running the `git clone` command.
+
+1. From the Git Bash prompt, change the current directory to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
 
    ```bash
    cd spring-petclinic-microservices-config
@@ -189,25 +207,16 @@ Azure Spring Apps service provides a config server for the use of Spring apps. A
 
 </details>
 
-Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server.
+### Set up the config server for Azure Spring Apps
+    
+Once you completed the initial update of your git repository hosting the server configuration, you need to set up the config server for your Azure Spring Apps instance. 
 
 - [Guidance on config server setup](https://docs.microsoft.com/azure/spring-cloud/quickstart-setup-config-server?tabs=Azure-CLI&pivots=programming-language-java).
 - [Guidance for a private repo with basic authentication](https://docs.microsoft.com/azure/spring-cloud/how-to-config-server#private-repository-with-basic-authentication).
-- [Guidance for creating a PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 
 <details>
 <summary>hint</summary>
 <br/>
-
-1. To create a PAT, switch to the web browser window displaying your private GitHub repository, select the avatar icon in the upper right corner, and then select **Settings**.
-
-1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
-
-1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
-
-1. In the **Select scopes** section, select **repo** and then select **Generate token**.
-
-1. Record the generated token. You will need it in the next step.
 
 1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
@@ -342,6 +351,23 @@ You now have the compute and data services available for deployment of the compo
    ```
 
    > **Note**: We perform this version change to be on the latest version of Spring Cloud.
+   
+  
+1. In the main **pom.xml** file change the **spring-petclinic-microservices** on line 14 from version **2021.6.7** to **2021.6.11**.
+
+   ```xml
+    <groupId>org.springframework.samples</groupId>    
+    <artifactId>spring-petclinic-microservices</artifactId>    
+    <version>2.6.11</version>
+   ```  
+    
+1. In the same main **pom.xml** file change the **spring-boot.version** in the **properties** element on line 32 from version **2.6.7** to **2.6.11** and save the file.
+
+    ```bash        
+        <spring-boot.version>2.6.11</spring-boot.version>        
+        <spring-cloud.version>2021.0.4</spring-cloud.version>        
+        <chaos-monkey-spring-boot.version>2.3.10</chaos-monkey-spring-boot.version>    
+    ```
 
 1. In the same main **pom.xml** file change the **version** in the **parent** element on line 9 from version **2.6.7** to **2.6.11** and save the file.
 
@@ -352,7 +378,7 @@ You now have the compute and data services available for deployment of the compo
        <version>2.6.11</version>
    </parent>
    ```
-
+    
 1. In each of the microservices locate the **application.yml** file and comment out the **config import** lines. The **application.yml** file can be found in each **<microservice-name>/src/main/resources** folder. For each microservice these are lines 4 and 5 in the **application.yml** file. Do this for the admin-server, api-gateway, customers-service, vets-service and visits-service. The resulting application.yml file of the customers-service will look like below: 
     
     ```yml
@@ -373,6 +399,15 @@ You now have the compute and data services available for deployment of the compo
     
    > **Note**: We comment out the config import because when deploying these applications to Azure Spring Apps, the value for the config server will be set by Azure Spring Apps.    
 
+1. For each of the microservices (seven in total) locate the **pom.xml** file and update the `spring-petclinic-microservices` to version `2.6.11`.   
+    ```bash
+        <parent>        
+            <groupId>org.springframework.samples</groupId>
+            <artifactId>spring-petclinic-microservices</artifactId>
+            <version>2.6.11</version>    
+        </parent>
+    ```
+    
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
@@ -421,7 +456,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name api-gateway \
             --no-wait \
-            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.7.jar
+            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.11.jar
    ```
 
    > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed. In case the version has changed you will need to update this command for all the next deploy steps.
@@ -446,7 +481,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name app-admin \
             --no-wait \
-            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.7.jar
+            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.11.jar
    ```
 
 1. Next, you will create an app for the `customers-service` microservice, without assigning an endpoint:
@@ -468,7 +503,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name customers-service \
             --no-wait \
-            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -491,7 +526,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name visits-service \
                --no-wait \
-               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.7.jar \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -514,7 +549,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name vets-service \
                --no-wait \
-               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.7.jar \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.11.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

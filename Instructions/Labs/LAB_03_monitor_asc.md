@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Enable monitoring and end-to-end tracing'
-    module: 'Module 3: Enable monitoring and end-to-end tracing'
+    Title: 'Challenge 03: Enable monitoring and end-to-end tracing'
+    Learn module: 'Learn Module 3: Enable monitoring and end-to-end tracing'
 ---
 
-# Challenge: Enable monitoring and end-to-end tracing
+# Challenge 03: Enable monitoring and end-to-end tracing
 
 # Student manual
 
@@ -75,6 +75,12 @@ You now know how to live stream any logs to your console. Next, you will configu
 <details>
 <summary>hint</summary>
 <br/>
+
+1. Run the following command to allow automatic installation of the Azure CLI extension required for this lab.
+
+   ```bash
+   az config set extension.use_dynamic_install=yes_without_prompt
+   ```
 
 1. Run the following command to check whether Application Insights is linked to your Spring Apps Service.
 
@@ -168,7 +174,7 @@ Use this guidance to review such Application Insights features as:
 
 1. In the navigation menu, in the **Investigate** section, select **Availability**.
 
-1. In the toolbar of the **Availability** page, select **+ Add Standard (preview) test** in order to configure an availability test for your app.
+1. In the toolbar of the **Availability** page, select **+ Add Standard test** in order to configure an availability test for your app.
 
 1. Fill out the following details and select **Create**:
 

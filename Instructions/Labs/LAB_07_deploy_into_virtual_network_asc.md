@@ -1,10 +1,10 @@
 ---
 lab:
-    title: 'Lab: Protect endpoints using Web Application Firewalls'
-    module: 'Module 7: Protect endpoints using Web Application Firewall'
+    Title: 'Challenge 07: Protect endpoints using Web Application Firewalls'
+    Learn module: 'Learn module 7: Protect endpoints using Web Application Firewall'
 ---
 
-# Challenge: Protect endpoints using Web Application Firewall
+# Challenge 07: Protect endpoints using Web Application Firewall
 
 # Student manual
 
