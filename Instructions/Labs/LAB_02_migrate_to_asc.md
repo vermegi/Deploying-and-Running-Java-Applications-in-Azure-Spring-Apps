@@ -170,13 +170,13 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
 1. On the newly created repository page, select the copy icon in the  **Quick setup** section.
 
-    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
+    > **Note**: This will copy the clone URL of the newly created GitHub repository. The value should be in the format `https://<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name).
 
 1. From the Git Bash prompt, change the current directory to the **projects** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`.
 
    ```bash
    cd ~/projects
-   git clone https://github.com/<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
+   git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
    ```
 
     > **Note**: Make sure to replace the `<token>` and `<your-github-username>` placeholders in the URL listed above with the value of the GitHub PAT and your GitHub user name when running the `git clone` command.
