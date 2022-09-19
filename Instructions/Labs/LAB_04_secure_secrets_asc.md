@@ -226,7 +226,7 @@ You now have all relevant components in place to switch to the secrets stored in
           secret:
             property-source-enabled: true
             property-sources:
-              - name: key-vault-property-souece-1
+              - name: key-vault-property-source-1
                 endpoint: https://<key-vault-name>.vault.azure.net/
                 credential.managed-identity-enabled: true
    ```
