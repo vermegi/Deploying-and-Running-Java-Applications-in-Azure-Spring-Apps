@@ -221,7 +221,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
    bootstrap.servers=mynamespace.servicebus.windows.net:9093
    ```
 
-1. Change line 4 by replacing the password value with the value of the connection string to the `telemetry` event hub. This value should match the output of the `$EVENTHUB_CONNECTIONSTRING` environment variable.
+1. Change line 4 by replacing the password value with the value of the connection string to the `telemetry` event hub. This value should match the content of the `$EVENTHUB_CONNECTIONSTRING` environment variable.
 
    ```yaml
    sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="$ConnectionString" password="Endpoint=sb://mynamespace.servicebus.windows.net/;SharedAccessKeyName=XXXXXX;SharedAccessKey=XXXXXX;EntityPath=telemetry";
@@ -229,7 +229,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 
 1. Save the changes to the file.
 
-1. Open the `TestProducer.java` file in the `azure-event-hubs-for-kafka/quickstart/java/producer/src/main/java` directory. Verify that line 16 uses `telemetry` as topic name.
+1. Open the `TestProducer.java` file in the `azure-event-hubs-for-kafka/quickstart/java/producer/src/main/java` directory. In line 16, set the topic name to `telemetry`.
 
    ```java
        private final static String TOPIC = "telemetry";
@@ -337,6 +337,8 @@ To conclude this lab, you will run the producer app to send 100 events to your e
        --resource-group $RESOURCE_GROUP \
        --name customers-service
    ```
+
+   > **Note**: You might need to press Ctrl+C if you don't see any log messages being displayed.
 
 1. Review the output and verify that it contains the output that has the following format:
 
