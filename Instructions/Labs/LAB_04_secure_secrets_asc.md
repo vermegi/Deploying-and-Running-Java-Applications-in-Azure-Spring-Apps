@@ -277,7 +277,16 @@ You now have all relevant components in place to switch to the secrets stored in
    ```xml
    <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
    ```
+1. In the same file, make sure the version for the `spring-boot-starter-parent` is set to 2.6.11 within the `<parent></parent>` section.
 
+   ```xml
+       <parent>        
+           <groupId>org.springframework.boot</groupId>        
+           <artifactId>spring-boot-starter-parent</artifactId>        
+           <version>2.6.11</version>    
+        </parent>
+   ```    
+    
 1. Save the changes to the `pom.xml` file and close it.
 
 1. Rebuild the services by running the following command in the root directory of the application.
