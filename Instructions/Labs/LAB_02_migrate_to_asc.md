@@ -351,6 +351,15 @@ You now have the compute and data services available for deployment of the compo
    ```
 
    > **Note**: We perform this version change to be on the latest version of Spring Cloud.
+   
+  
+1. In the main **pom.xml** file change the **spring-petclinic-microservices** on line 14 from version **2021.6.7** to **2021.6.11**.
+
+   ```xml
+    <groupId>org.springframework.samples</groupId>    
+    <artifactId>spring-petclinic-microservices</artifactId>    
+    <version>2.6.11</version>
+   ```  
     
 1. In the same main **pom.xml** file change the **spring-boot.version** in the **properties** element on line 32 from version **2.6.7** to **2.6.11** and save the file.
 
