@@ -353,7 +353,7 @@ You now have the compute and data services available for deployment of the compo
    > **Note**: We perform this version change to be on the latest version of Spring Cloud.
    
   
-1. In the main **pom.xml** file change the **spring-petclinic-microservices** on line 14 from version **2021.6.7** to **2021.6.11**.
+1. In the main **pom.xml** file change the **spring-petclinic-microservices** on line 14 from version **2.6.7** to **2.6.11**.
 
    ```xml
     <groupId>org.springframework.samples</groupId>    
@@ -458,8 +458,6 @@ You now have the compute and data services available for deployment of the compo
             --no-wait \
             --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.11.jar
    ```
-
-   > **Note**: The version of the Spring Petclinic application may have changed in the mean time. In the main **pom.xml** file, double check what the current version is in the `<parent><version>` element and change the version number of the jar file if needed. In case the version has changed you will need to update this command for all the next deploy steps.
 
 1. In the same way create an app for the `admin-server` microservice:
 
