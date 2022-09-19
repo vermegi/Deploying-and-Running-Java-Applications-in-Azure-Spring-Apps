@@ -304,6 +304,11 @@ Use this guidance to:
 <summary>hint</summary>
 <br/>
 
+   > **Note**: Before you start reviewing logs, generate some log entries by navigating to the api-gateway URL and, from the PetClinic home page, performing the following tasks:
+
+   - Navigate to the Owners page, select a few names from the list
+   - For a few owners you selected, use the **Edit Owner** button to attempt modifying their information (for example, try setting the telephone number to an invalid value) and use the **Add New Pet** button to attempt to add a pet (for example, select the Submit button without providing the pet name).
+
 1. Go to the Azure portal and navigate to the page displaying the Log Analytics workspace you created in the previous task.
 
 1. Select **Logs** and, if needed, close the default **Queries** pane.
