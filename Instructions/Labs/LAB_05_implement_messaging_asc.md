@@ -165,6 +165,27 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
     <module>spring-petclinic-messaging-emulator</module>
     ```
 
+1. Navigate to the `spring-petclinic-messaging-emulator` directory, locate the **pom.xml** file, and update the reference to `spring-petclinic-microservices` to version `2.6.11`.   
+
+    ```bash
+      <parent>
+        <artifactId>spring-petclinic-microservices</artifactId>
+        <groupId>org.springframework.samples</groupId>
+        <version>2.6.11</version>
+      </parent>
+    ```
+
+1. In the `spring-petclinic-messaging-emulator` directory, navigate to the **<microservice-name>/src/main/resources** subdirectory and locate the **application.yml** file. In the **application.yml** file, comment out the **config import** lines. The resulting section of the application.yml file of the customers-service will look like below: 
+    
+    ```yml
+    spring:
+      application:
+        name: customers-service
+      # config:
+      #   import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
+
+    ```
+
 1. Update the compiled version of the microservices available by running an additional build.
 
    ```bash
