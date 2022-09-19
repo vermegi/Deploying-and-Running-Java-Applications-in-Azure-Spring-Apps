@@ -76,6 +76,12 @@ You now know how to live stream any logs to your console. Next, you will configu
 <summary>hint</summary>
 <br/>
 
+1. Run the following command to allow automatic installation of the Azure CLI extension required for this lab.
+
+   ```bash
+   az config set extension.use_dynamic_install=yes_without_prompt
+   ```
+
 1. Run the following command to check whether Application Insights is linked to your Spring Apps Service.
 
    ```bash
