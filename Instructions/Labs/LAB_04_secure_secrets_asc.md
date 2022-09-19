@@ -220,15 +220,15 @@ You now have all relevant components in place to switch to the secrets stored in
 1. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
 
    ```yaml
-    cloud:
-      azure:
-        keyvault:
-          secret:
-            property-source-enabled: true
-            property-sources:
-              - name: key-vault-property-source-1
-                endpoint: https://<key-vault-name>.vault.azure.net/
-                credential.managed-identity-enabled: true
+     cloud:
+       azure:
+         keyvault:
+           secret:
+             property-source-enabled: true
+             property-sources:
+               - name: key-vault-property-source-1
+                 endpoint: https://<key-vault-name>.vault.azure.net/
+                 credential.managed-identity-enabled: true
    ```
 
    > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
