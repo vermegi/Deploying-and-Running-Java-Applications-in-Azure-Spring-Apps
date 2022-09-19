@@ -303,7 +303,7 @@ In this task, you will update the customers microservice to receive events from 
      --resource-group $RESOURCE_GROUP \
      --name customers-service \
      --no-wait \
-     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.7.jar \
+     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
      --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
