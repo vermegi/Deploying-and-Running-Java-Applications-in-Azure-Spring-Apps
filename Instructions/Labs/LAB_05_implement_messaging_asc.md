@@ -180,7 +180,7 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
     ```yml
     spring:
       application:
-        name: customers-service
+        name: messaging-emulator
       # config:
       #   import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
 
