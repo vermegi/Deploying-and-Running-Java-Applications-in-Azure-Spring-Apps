@@ -172,7 +172,12 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
    ```bash
    cd ~/projects
+   # Clone config repo
    git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
+    
+   # Clone source code repo
+   git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices.git
+
    ```
 
     > **Note**: Make sure to replace the `<token>` and `<your-github-username>` placeholders in the URL listed above with the value of the GitHub PAT and your GitHub user name when running the `git clone` command.
