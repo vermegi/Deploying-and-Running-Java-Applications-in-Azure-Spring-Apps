@@ -169,6 +169,15 @@ Once you have locked down the internet access to the MySQL database, you will pe
    az network private-dns record-set list -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net"
    ```
 
+1. You can now disable all public access towards your Key Vault.
+
+   ```bash
+   az keyvault update \
+      --name $KEYVAULT_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --public-network-access Disabled
+   ```
+
 </details>
 
 ### Test your setup
