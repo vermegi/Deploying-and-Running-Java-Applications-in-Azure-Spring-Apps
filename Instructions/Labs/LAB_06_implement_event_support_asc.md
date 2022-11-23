@@ -249,6 +249,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 In this task, you will update the customers microservice to receive events from the telemetry event hub. You can use the following guidance to implement these changes:
 
 - [Spring for Apache Kafka](https://docs.spring.io/spring-kafka/reference/html/).
+- [Use Java to send events to or receive events from Azure Event Hubs (azure-messaging-eventhubs)](https://learn.microsoft.com/azure/event-hubs/event-hubs-java-get-started-send)
 
 <details>
 <summary>hint</summary>
@@ -262,6 +263,8 @@ In this task, you will update the customers microservice to receive events from 
                <artifactId>spring-kafka</artifactId>
            </dependency>
    ```
+
+   > **Note**: In this lab we are using the spring-kafka library from the spring framework. Another option would be to use the Azure EventHubs library provided by Microsoft which has additional features. More info can be found in the [Use Java to send events to or receive events from Azure Event Hubs (azure-messaging-eventhubs)](https://learn.microsoft.com/azure/event-hubs/event-hubs-java-get-started-send) article.
 
 1. In the `spring-petclinic-microservices/spring-petclinic-customers-service/src/main/java/org/springframework/samples/petclinic/customers` folder, create a directory named `services`. Next, in this directory, create an `EventHubListener.java` class file with the following code:
 
