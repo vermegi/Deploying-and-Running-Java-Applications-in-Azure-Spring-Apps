@@ -270,12 +270,13 @@ You will also need to update the config for your applications to use the newly p
 
    ```bash
    MYSQL_SERVER_NAME=mysql-$APPNAME-$UNIQUEID
-   SQL_ADMIN_PASSWORD=<myadmin-password>
+   MYSQL_ADMIN_USERNAME=myadmin
+   MYSQL_ADMIN_PASSWORD=<myadmin-password>
    DATABASE_NAME=petclinic
 
    az mysql server create \
-         --admin-user myadmin \
-         --admin-password ${SQL_ADMIN_PASSWORD} \
+         --admin-user ${MYSQL_ADMIN_USERNAME} \
+         --admin-password ${MYSQL_ADMIN_PASSWORD} \
          --name ${MYSQL_SERVER_NAME} \
          --resource-group ${RESOURCE_GROUP}  \
          --sku-name GP_Gen5_2  \
