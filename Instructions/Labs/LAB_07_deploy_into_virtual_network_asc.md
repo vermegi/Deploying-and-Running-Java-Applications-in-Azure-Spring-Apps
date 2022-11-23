@@ -348,6 +348,8 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --ipv4-address $IP_ADDRESS
    ```
 
+    > **Note**: In case you don't want to use a wildcard `*` record for the `A` DNS record, you will need to create 3 `A` DNS records. The 3 records need to be created for `asaInstanceName.private.azuremicroservices.io`, `asaInstanceName-yourAppName.private.azuremicroservices.io` and `asaInstanceName.svc.private.azuremicroservices.io` with the load balancer IP address for each as the IP.
+
 1. Lastly you need to update your `api-gateway` and `admin-service` apps to retrieve the fully qualified domain name (FQDN) on your private DNS zone.
 
    ```bash
