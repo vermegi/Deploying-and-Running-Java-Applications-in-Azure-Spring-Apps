@@ -139,7 +139,7 @@ Once you have locked down the internet access to the MySQL database, you will pe
        --subnet $PRIVATE_ENDPOINTS_SUBNET_NAME \
        --name pe-openlab-keyvault \
        --private-connection-resource-id "$KEYVAULT_RESOURCE_ID" \
-       --group-ids vault \
+       --group-id vault \
        --connection-name openlab-keyvault-connection \
        --location $LOCATION
    ```
