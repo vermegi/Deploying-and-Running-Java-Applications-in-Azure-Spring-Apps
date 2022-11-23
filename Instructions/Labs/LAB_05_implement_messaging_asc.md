@@ -154,7 +154,7 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
     cp -R Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/spring-petclinic-messaging-emulator spring-petclinic-microservices 
     ```
 
-1. In the main `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
+1. In the parent `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
 
     ```xml
     <module>spring-petclinic-messaging-emulator</module>
