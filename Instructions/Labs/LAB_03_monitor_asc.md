@@ -58,8 +58,6 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
        --follow
    ```
 
-   > **Note**: This may take up to 20 minutes for the command to complete.
-
 1. Switch to the web browser displaying the Spring Petclinic application and navigate through its interface. Note that your actions trigger display of new log entries in the console output.
 
 1. Switch back to the Git Bash prompt and press `Ctrl+C` to stop streaming the logs.
