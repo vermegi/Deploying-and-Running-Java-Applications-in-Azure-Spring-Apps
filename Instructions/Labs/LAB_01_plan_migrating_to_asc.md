@@ -119,6 +119,8 @@ Given the above constraints and feature sets, in the case of the Spring Petclini
 
 </details>
 
+  > **Note**: An additional option would be [Azure Red Hat OpenShift](https://learn.microsoft.com/en-us/azure/openshift/intro-openshift). This would provide you a similar set of advantages and disadvantages as an Azure Kubernetes Service, but with added functionality provided by Red Hat.
+
 ### Consider the Azure services most suitable for storing data of your application
 
 Now that you identified the viable compute platforms, you need to decide which Azure service could be used to store the applications data.
