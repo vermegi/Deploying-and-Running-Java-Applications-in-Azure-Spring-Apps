@@ -80,7 +80,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 Now that you have familiarized yourself with the application you will be migrating to Azure, as the next step, you will need to consider different compute options you have at your disposal for hosting this application.
 
-The four primary options you will take into account are [Azure App Sevice](https://docs.microsoft.com/azure/app-service/overview), [Azure Kubernetes Sevice](https://docs.microsoft.com/azure/aks/intro-kubernetes), [Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/) and [Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/overview). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
+The four primary options you will take into account are [Azure App Sevice](https://docs.microsoft.com/azure/app-service/overview), [Azure Kubernetes Sevice](https://docs.microsoft.com/azure/aks/intro-kubernetes), [Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/) and [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/overview). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
 
 * The Spring Petclinic application should be accessible via a public endpoint to any user (anonymously).
 * The new implementation of Spring Petclinic should eliminate the need to manually upgrade and manage the underlying infrastructure. Instead, the application should use the platform-as-a-service (PaaS) model.
@@ -119,7 +119,9 @@ Given the above constraints and feature sets, in the case of the Spring Petclini
 
 </details>
 
-  > **Note**: An additional option would be [Azure Red Hat OpenShift](https://learn.microsoft.com/en-us/azure/openshift/intro-openshift). This would provide you a similar set of advantages and disadvantages as an Azure Kubernetes Service, but with added functionality provided by Red Hat.
+  > **Note**: An additional option would be [Azure Red Hat OpenShift](https://learn.microsoft.com/azure/openshift/intro-openshift). This would provide you a similar set of advantages and disadvantages as an Azure Kubernetes Service, but with added functionality provided by Red Hat.
+
+  > **Note**: You can find additional guidance on possible Azure services to migrate Java workloads to in the [Compare Java application hosting options on Azure](https://learn.microsoft.com/azure/architecture/guide/technology-choices/service-for-java-comparison) architecture center article.
 
 ### Consider the Azure services most suitable for storing data of your application
 
