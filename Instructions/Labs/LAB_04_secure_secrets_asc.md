@@ -82,7 +82,7 @@ These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOUR
    ```bash
    az keyvault secret set \
        --name SPRING-DATASOURCE-USERNAME \
-       --value myadmin@$SQL_SERVER_NAME \
+       --value myadmin@$MYSQL_SERVER_NAME \
        --vault-name $KEYVAULT_NAME
 
    az keyvault secret set \

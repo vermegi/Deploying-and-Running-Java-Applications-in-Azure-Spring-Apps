@@ -264,14 +264,14 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create an instance of Azure Database for MySQL Single Server. Note that the name of the server must be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. In addition, replace the `<myadmin-password>` placeholder with a complex password and record its value.
 
    ```bash
-   SQL_SERVER_NAME=springappsmysql$UNIQUEID
+   MYSQL_SERVER_NAME=springappsmysql$UNIQUEID
    SQL_ADMIN_PASSWORD=<myadmin-password>
    DATABASE_NAME=petclinic
 
    az mysql server create \
          --admin-user myadmin \
          --admin-password ${SQL_ADMIN_PASSWORD} \
-         --name ${SQL_SERVER_NAME} \
+         --name ${MYSQL_SERVER_NAME} \
          --resource-group ${RESOURCE_GROUP}  \
          --sku-name GP_Gen5_2  \
          --version 5.7 \
@@ -286,7 +286,7 @@ You will also need to update the config for your applications to use the newly p
 
    ```bash
    az mysql db create \
-         --server-name $SQL_SERVER_NAME \
+         --server-name $MYSQL_SERVER_NAME \
          --resource-group $RESOURCE_GROUP \
          --name $DATABASE_NAME
    ```
@@ -296,7 +296,7 @@ You will also need to update the config for your applications to use the newly p
    ```bash
    az mysql server firewall-rule create \
        --name allAzureIPs \
-       --server ${SQL_SERVER_NAME} \
+       --server ${MYSQL_SERVER_NAME} \
        --resource-group ${RESOURCE_GROUP} \
        --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
    ```

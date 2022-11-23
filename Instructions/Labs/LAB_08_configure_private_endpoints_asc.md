@@ -59,7 +59,7 @@ To start, you need to lock down access to your MySQL database by using a private
 1. Next, in the same subnet, create the private endpoint corresponding to the Azure Database for MySQL Single Server instance.
 
    ```bash
-   MYSQL_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${SQL_SERVER_NAME} --resource-type "Microsoft.DBforMySQL/servers" --query "id" -o tsv)
+   MYSQL_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${MYSQL_SERVER_NAME} --resource-type "Microsoft.DBforMySQL/servers" --query "id" -o tsv)
 
    az network private-endpoint create \
        --name pe-openlab-mysql \
@@ -97,12 +97,12 @@ To start, you need to lock down access to your MySQL database by using a private
    NIC_IPADDRESS=$(az resource show --ids $NIC_ID --api-version 2019-04-01 -o json | jq -r '.properties.ipConfigurations[0].properties.privateIPAddress')
 
    az network private-dns record-set a create \
-       --name $SQL_SERVER_NAME \
+       --name $MYSQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
        --resource-group $RESOURCE_GROUP
 
    az network private-dns record-set a add-record \
-       --record-set-name $SQL_SERVER_NAME \
+       --record-set-name $MYSQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
        --resource-group $RESOURCE_GROUP \
         -a $NIC_IPADDRESS
@@ -112,7 +112,7 @@ To start, you need to lock down access to your MySQL database by using a private
 
    ```bash
    az mysql server update \
-       --name $SQL_SERVER_NAME \
+       --name $MYSQL_SERVER_NAME \
        -g $RESOURCE_GROUP \
        --public Disabled
    ```
