@@ -22,6 +22,10 @@ After you complete this challenge, you will be able to:
 - Configure diagnostics settings
 - Analyze logs
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 3 architecture](./images/asa-openlab-3.png)
+
 ## Lab Duration
 
 - **Estimated Time**: 60 minutes

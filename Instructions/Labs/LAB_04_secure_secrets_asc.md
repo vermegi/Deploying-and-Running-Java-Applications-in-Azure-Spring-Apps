@@ -23,6 +23,10 @@ After you complete this challenge, you will be able to:
 - Update application config
 - Update, rebuild, and redeploy each app
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 4 architecture](./images/asa-openlab-4.png)
+
 ## Lab Duration
 
 - **Estimated Time**: 60 minutes

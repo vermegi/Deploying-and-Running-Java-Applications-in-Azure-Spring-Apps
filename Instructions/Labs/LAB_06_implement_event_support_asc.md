@@ -21,6 +21,10 @@ After you complete this challenge, you will be able to:
 - Update an existing microservice to receive Event Hub events
 - Inspect telemetry data being received
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 6 architecture](./images/asa-openlab-6.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes

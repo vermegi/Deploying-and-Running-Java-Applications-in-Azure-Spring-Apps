@@ -21,6 +21,10 @@ After you complete this challenge, you will be able to:
 - Update the remaining microservice to use the message queues
 - Add the message producers and listeners
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 5 architecture](./images/asa-openlab-5.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
