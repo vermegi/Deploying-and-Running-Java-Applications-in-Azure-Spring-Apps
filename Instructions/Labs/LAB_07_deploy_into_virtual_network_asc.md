@@ -61,7 +61,7 @@ In later exercises you will be creating the private endpoints for the backend se
 1. From the Git Bash prompt, run the following command to create a virtual network.
 
    ```bash
-   VIRTUAL_NETWORK_NAME=springappsvnet
+   VIRTUAL_NETWORK_NAME=vnet-$APPNAME-$UNIQUEID
    az network vnet create --resource-group $RESOURCE_GROUP \
        --name $VIRTUAL_NETWORK_NAME \
        --location $LOCATION \
@@ -145,7 +145,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=springappssvcvnet$UNIQUEID
+   SPRING_APPS_SERVICE=sa-vnet-$APPNAME-$UNIQUEID
    az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
    az spring create  \
        --resource-group $RESOURCE_GROUP \
@@ -470,11 +470,11 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 1. Next, configure TLS using the certificate.
 
    ```bash
-   CERT_NAME_IN_ASC=openlab-certificate
+   CERT_NAME_IN_ASA=openlab-certificate
    az spring certificate add \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
-       --name $CERT_NAME_IN_ASC \
+       --name $CERT_NAME_IN_ASA \
        --vault-certificate-name $CERT_NAME_IN_KV \
        --vault-uri $VAULTURI
    ```
@@ -482,13 +482,12 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 1. To conclude this procedure, you need to bind the custom domain to the `api-gateway` app.
 
    ```bash
-   APPNAME=api-gateway
    az spring app custom-domain bind \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
        --domain-name $DNS_NAME \
-       --certificate $CERT_NAME_IN_ASC \
-       --app $APPNAME
+       --certificate $CERT_NAME_IN_ASA \
+       --app api-gateway
    ```
 
 </details>
@@ -509,7 +508,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. An Application Gateway instance also needs a public IP address, which you will create next by running the following commands from the Git Bash shell:
 
    ```bash
-   APPLICATION_GATEWAY_PUBLIC_IP_NAME=app-gw-openlab-public-ip
+   APPLICATION_GATEWAY_PUBLIC_IP_NAME=pip-$APPNAME-app-gw
    az network public-ip create \
        --resource-group $RESOURCE_GROUP \
        --location $LOCATION \
@@ -522,7 +521,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. In addition, an Application Gateway instance also needs to have access to the self-signed certificate in your Key Vault. To accomplish this, you will create a managed identity associated with the Application Gateway instance and retrieve the object ID of this identity.
 
    ```bash
-   APPGW_IDENTITY_NAME=msi-appgw-openlab
+   APPGW_IDENTITY_NAME=id-$APPNAME-appgw
    az identity create \
        --resource-group $RESOURCE_GROUP \
        --name $APPGW_IDENTITY_NAME
@@ -553,7 +552,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. Before you can create the Application Gateway, you will also need to create the WAF policy for the gateway.
 
     ```bash
-    WAF_POLICY_NAME=openlabWAFPolicy
+    WAF_POLICY_NAME=waf-$APPNAME-$UNIQUEID
     az network application-gateway waf-policy create \
         --name $WAF_POLICY_NAME \
         --resource-group $RESOURCE_GROUP
@@ -562,9 +561,9 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. With all relevant information collected, you can now provision an instance of Application Gateway.
 
    ```bash
-   APPGW_NAME=appgw-openlab
-   APPNAME=$SPRING_APPS_SERVICE-api-gateway
-   SPRING_APP_PRIVATE_FQDN=${APPNAME}.private.azuremicroservices.io
+   APPGW_NAME=agw-$APPNAME-$UNIQUEID
+   APIGW_NAME=$SPRING_APPS_SERVICE-api-gateway
+   SPRING_APP_PRIVATE_FQDN=${APIGW_NAME}.private.azuremicroservices.io
 
    az network application-gateway create \
        --name $APPGW_NAME \

@@ -150,6 +150,20 @@ For information on how to organize your cloud-based resources to secure, manage,
 
 </details>
 
+- How will you name the Azure resources?
+
+<details>
+<summary>hint</summary>
+<br/>
+In Azure you can make use of a naming convention for naming the resources you'll be creating. A naming convention can create clarity about:
+
+- The type of resource
+- The application the resource belongs to
+- The region the resource is deployed to
+
+For information on possible naming conventions you can use on the Azure platform, see [Define your naming convention](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming) and [Abbreviation examples for Azure resources](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
+</details>
+
 - How will you configure networking for the application components?
 
 <details>

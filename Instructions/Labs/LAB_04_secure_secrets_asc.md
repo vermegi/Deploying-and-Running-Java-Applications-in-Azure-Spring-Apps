@@ -53,7 +53,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Apps service in the previous exercise of this lab.
 
    ```bash
-   KEYVAULT_NAME=springappskv$UNIQUEID
+   KEYVAULT_NAME=kv-$APPNAME-$UNIQUEID
    az keyvault create \
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \

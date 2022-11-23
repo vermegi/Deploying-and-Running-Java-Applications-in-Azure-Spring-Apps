@@ -97,7 +97,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    ```bash
    UNIQUEID=$(openssl rand -hex 3)
-   RESOURCE_GROUP=springappslab_rg_$UNIQUEID
+   APPNAME=petclinic
+   RESOURCE_GROUP=rg-$APPNAME-$UNIQUEID
    LOCATION=<azure-region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
@@ -110,7 +111,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
-   SPRING_APPS_SERVICE=springappssvc$UNIQUEID
+   SPRING_APPS_SERVICE=sa-$APPNAME-$UNIQUEID
    az spring create --name $SPRING_APPS_SERVICE \
                     --resource-group $RESOURCE_GROUP \
                     --location $LOCATION \
@@ -264,7 +265,7 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create an instance of Azure Database for MySQL Single Server. Note that the name of the server must be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. In addition, replace the `<myadmin-password>` placeholder with a complex password and record its value.
 
    ```bash
-   MYSQL_SERVER_NAME=springappsmysql$UNIQUEID
+   MYSQL_SERVER_NAME=mysql-$APPNAME-$UNIQUEID
    SQL_ADMIN_PASSWORD=<myadmin-password>
    DATABASE_NAME=petclinic
 
