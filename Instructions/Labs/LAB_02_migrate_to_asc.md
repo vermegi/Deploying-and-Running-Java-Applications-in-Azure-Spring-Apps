@@ -221,14 +221,14 @@ Once you completed the initial update of your git repository hosting the server 
 <summary>hint</summary>
 <br/>
 
-1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
+1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-PAT>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
    > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name.
 
    ```bash
    GIT_REPO=<git-repository>
    GIT_USERNAME=<git-username>
-   GIT_PASSWORD=<git-password>
+   GIT_PASSWORD=<git-PAT>
    ```
 
 1. To set up the config server such that it points to your GitHub repository, from the Git Bash prompt, run the following command.
