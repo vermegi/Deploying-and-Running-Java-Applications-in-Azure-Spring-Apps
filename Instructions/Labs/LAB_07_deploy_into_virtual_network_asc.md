@@ -151,6 +151,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
    ```bash
    SPRING_APPS_SERVICE=sa-vnet-$APPNAME-$UNIQUEID
    az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
+   az provider register --namespace Microsoft.ContainerService
    az spring create  \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
