@@ -559,7 +559,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 
    ```bash
    APPGW_NAME=appgw-openlab
-   APPNAME=api-gateway
+   APPNAME=$SPRING_APPS_SERVICE-api-gateway
    SPRING_APP_PRIVATE_FQDN=${APPNAME}.private.azuremicroservices.io
 
    az network application-gateway create \
