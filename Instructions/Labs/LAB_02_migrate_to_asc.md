@@ -23,6 +23,10 @@ After you complete this challenge, you will be able to:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 2 architecture](./images/asa-openlab-2.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 120 minutes
