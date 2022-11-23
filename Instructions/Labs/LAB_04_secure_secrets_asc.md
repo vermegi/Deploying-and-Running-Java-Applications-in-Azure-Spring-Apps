@@ -203,6 +203,7 @@ The following three apps of your application use the database hosted by the Azur
 You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the `com.azure.spring:spring-cloud-azure-starter-keyvault-secrets` dependency. You can use the following guidance to accomplish this task:
 
 [Spring Cloud Azure Starter Key Vault Secrets](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/README.md)
+[Build a sample Spring Boot app with Spring Boot starter](https://learn.microsoft.com/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=system-assigned-managed-identity#build-a-sample-spring-boot-app-with-spring-boot-starter)
 
 <details>
 <summary>hint</summary>
@@ -217,7 +218,7 @@ You now have all relevant components in place to switch to the secrets stored in
     password: <myadmin-password>
    ```
 
-1. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
+2. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
 
    ```yaml
      cloud:
@@ -233,7 +234,7 @@ You now have all relevant components in place to switch to the secrets stored in
 
    > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
     
-1. Save the file and commit and push these changes to your remote config repository.
+3. Save the file and commit and push these changes to your remote config repository.
 
    ```bash
    cd ~/projects/spring-petclinic-microservices-config
