@@ -20,6 +20,10 @@ After you complete this challenge, you will be able to:
 - Lock down the Key Vault instance by using a private endpoint
 - Test your setup
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 8 architecture](./images/asa-openlab-8.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes

@@ -25,6 +25,10 @@ After you complete this challenge, you will be able to:
 - Access the application by DNS name
 - Configure WAF on Application Gateway
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 7 architecture](./images/asa-openlab-7.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
