@@ -38,7 +38,7 @@ During this challenge, you will:
 
 ### Create Azure Service Bus resources
 
-First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create two queues named `visits-requests` and `visits-confirmations`. You can use the following guidance to implement these changes:
+First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create a queue named `visits-requests`. You can use the following guidance to implement these changes:
 
 - [Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-cli).
 - [Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
@@ -86,11 +86,6 @@ This translates the secret in Key Vault to the correct application property for 
        --resource-group $RESOURCE_GROUP \
        --namespace-name $SERVICEBUS_NAMESPACE \
        --name visits-requests
-
-   az servicebus queue create \
-       --resource-group $RESOURCE_GROUP \
-       --namespace-name $SERVICEBUS_NAMESPACE \
-       --name visits-confirmations
    ```
 
 1. Retrieve the value of the connection string to the newly created Service Bus namespace:
