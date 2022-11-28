@@ -21,6 +21,10 @@ After you complete this challenge, you will be able to:
 - Update an existing microservice to receive Event Hub events
 - Inspect telemetry data being received
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 6 architecture](./images/asa-openlab-6.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
@@ -53,7 +57,7 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
 1. On your lab computer, in the Git Bash window, from the Git Bash prompt, run the following command to create an Event Hub namespace. The name you use for your namespace should be globally unique, so adjust it accordingly in case the randomly generated name is already in use.
 
    ```bash
-   EVENTHUBS_NAMESPACE=springappseh$UNIQUEID
+   EVENTHUBS_NAMESPACE=evhns-$APPNAME-$UNIQUEID
 
    az eventhubs namespace create \
      --resource-group $RESOURCE_GROUP \
@@ -249,6 +253,7 @@ Compile the producer app. You will use it at the end of this lab to send 100 eve
 In this task, you will update the customers microservice to receive events from the telemetry event hub. You can use the following guidance to implement these changes:
 
 - [Spring for Apache Kafka](https://docs.spring.io/spring-kafka/reference/html/).
+- [Use Java to send events to or receive events from Azure Event Hubs (azure-messaging-eventhubs)](https://learn.microsoft.com/azure/event-hubs/event-hubs-java-get-started-send)
 
 <details>
 <summary>hint</summary>
@@ -262,6 +267,8 @@ In this task, you will update the customers microservice to receive events from 
                <artifactId>spring-kafka</artifactId>
            </dependency>
    ```
+
+   > **Note**: In this lab we are using the spring-kafka library from the spring framework. Another option would be to use the Azure EventHubs library provided by Microsoft which has additional features. More info can be found in the [Use Java to send events to or receive events from Azure Event Hubs (azure-messaging-eventhubs)](https://learn.microsoft.com/azure/event-hubs/event-hubs-java-get-started-send) article.
 
 1. In the `spring-petclinic-microservices/spring-petclinic-customers-service/src/main/java/org/springframework/samples/petclinic/customers` folder, create a directory named `services`. Next, in this directory, create an `EventHubListener.java` class file with the following code:
 

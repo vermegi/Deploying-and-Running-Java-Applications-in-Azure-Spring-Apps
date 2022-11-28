@@ -21,6 +21,10 @@ After you complete this challenge, you will be able to:
 - Update the remaining microservice to use the message queues
 - Add the message producers and listeners
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 5 architecture](./images/asa-openlab-5.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
@@ -38,7 +42,7 @@ During this challenge, you will:
 
 ### Create Azure Service Bus resources
 
-First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create two queues named `visits-requests` and `visits-confirmations`. You can use the following guidance to implement these changes:
+First, you need to create an Azure Service Bus namespace and one or more queues to send messages to. In your implementation, you will create a queue named `visits-requests`. You can use the following guidance to implement these changes:
 
 - [Use the Azure CLI to create a Service Bus namespace and a queue](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-quickstart-cli).
 - [Use Azure CLI to create a Service Bus topic and subscriptions to the topic](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli).
@@ -68,7 +72,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. On your lab computer, in Git Bash window, from the Git Bash prompt, run the following command to create a Service Bus namespace. Note that the name of the namespace needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. You will need to create the namespace with the **Premium** sku. This is needed to use JMS 2.0 messaging later on in the lab.
 
    ```bash
-   SERVICEBUS_NAMESPACE=springappsns$UNIQUEID
+   SERVICEBUS_NAMESPACE=sb-$APPNAME-$UNIQUEID
 
    az servicebus namespace create \
        --resource-group $RESOURCE_GROUP \
@@ -86,11 +90,6 @@ This translates the secret in Key Vault to the correct application property for 
        --resource-group $RESOURCE_GROUP \
        --namespace-name $SERVICEBUS_NAMESPACE \
        --name visits-requests
-
-   az servicebus queue create \
-       --resource-group $RESOURCE_GROUP \
-       --namespace-name $SERVICEBUS_NAMESPACE \
-       --name visits-confirmations
    ```
 
 1. Retrieve the value of the connection string to the newly created Service Bus namespace:
@@ -159,7 +158,7 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
     cp -R Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/spring-petclinic-messaging-emulator spring-petclinic-microservices 
     ```
 
-1. In the main `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
+1. In the parent `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
 
     ```xml
     <module>spring-petclinic-messaging-emulator</module>

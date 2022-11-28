@@ -22,6 +22,10 @@ After you complete this challenge, you will be able to:
 - Configure diagnostics settings
 - Analyze logs
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 3 architecture](./images/asa-openlab-3.png)
+
 ## Lab Duration
 
 - **Estimated Time**: 60 minutes
@@ -57,8 +61,6 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
        --service $SPRING_APPS_SERVICE \
        --follow
    ```
-
-   > **Note**: This may take up to 20 minutes for the command to complete.
 
 1. Switch to the web browser displaying the Spring Petclinic application and navigate through its interface. Note that your actions trigger display of new log entries in the console output.
 
@@ -227,7 +229,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 1. To create a Log Analytics Workspace to send the logs to, run the following command.
 
    ```bash
-   WORKSPACE=springappsworkspace$UNIQUEID
+   WORKSPACE=log-$APPNAME-$UNIQUEID
    az monitor log-analytics workspace create \
        --resource-group $RESOURCE_GROUP \
        --workspace-name $WORKSPACE
@@ -275,7 +277,7 @@ Application Insights allows you to monitor app-specific logs. To retrieve additi
 
    ```bash
    az monitor diagnostic-settings create \
-       --name springappslogs \
+       --name asa-logs \
        --resource $SPRING_APPS_SERVICE \
        --resource-type Microsoft.AppPlatform/Spring \
        --resource-group $RESOURCE_GROUP \

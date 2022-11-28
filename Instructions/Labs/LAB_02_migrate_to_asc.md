@@ -23,6 +23,10 @@ After you complete this challenge, you will be able to:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 2 architecture](./images/asa-openlab-2.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 120 minutes
@@ -97,7 +101,8 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 
    ```bash
    UNIQUEID=$(openssl rand -hex 3)
-   RESOURCE_GROUP=springappslab_rg_$UNIQUEID
+   APPNAME=petclinic
+   RESOURCE_GROUP=rg-$APPNAME-$UNIQUEID
    LOCATION=<azure-region>
    az group create -g $RESOURCE_GROUP -l $LOCATION
    ```
@@ -110,7 +115,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 1. Run the following commands to create an instance of the standard SKU of the Azure Spring Apps service. Note that the name of the service needs to be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens.
 
    ```bash
-   SPRING_APPS_SERVICE=springappssvc$UNIQUEID
+   SPRING_APPS_SERVICE=sa-$APPNAME-$UNIQUEID
    az spring create --name $SPRING_APPS_SERVICE \
                     --resource-group $RESOURCE_GROUP \
                     --location $LOCATION \
@@ -154,19 +159,21 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 <summary>hint</summary>
 <br/>
 
-1. To create a PAT, switch to the web browser window displaying your private GitHub repository, select the avatar icon in the upper right corner, and then select **Settings**.
+1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**.
+
+   > **Note**: Make sure to configure the repository as private.
+
+1. To create a PAT, select the avatar icon in the upper right corner, and then select **Settings**.
 
 1. At the bottom of the vertical navigation menu, select **Developer settings**, select **Personal access tokens**, and then select **Generate new token**.
 
 1. On the **New personal access token** page, in the **Note** text box, enter a descriptive name, such as **spring-petclinic-config-server-token**.
 
+   > **Note**: There is a new **Beta** experience available on GitHub for more fine-grained access tokens. This experience will create a token with a more limited scope than full repository scope (which basically gives access to all your repositories). The lab will work as well with a more fine-grained token, in that case, in the **Fine-grained tokens (Beta)** token creation page, choose for **Only select repositories** and select your config repository. For the **Repository permissions** select for the **Contents** the **Read-only** access level. You can use this fine-grained token when you configure your config-server on Azure Spring Apps. We recommend you create a second token in case you also need a personal access token for interacting with the repositories from the Git Bash prompt.
+
 1. In the **Select scopes** section, select **repo** and then select **Generate token**.
 
 1. Record the generated token. You will need it in this and subsequent labs.
-
-1. On your lab computer, in your web browser, navigate to your GitHub account, navigate to the **Repositories** page and create a new private repository named **spring-petclinic-microservices-config**.
-
-   > **Note**: Make sure to configure the repository as private.
 
 1. From the Git Bash prompt, change the current directory to the **projects** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`.
 
@@ -219,14 +226,14 @@ Once you completed the initial update of your git repository hosting the server 
 <summary>hint</summary>
 <br/>
 
-1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-password>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
+1. Switch to the Git Bash prompt and run the following commands to set the environment variables hosting your GitHub repository and GitHub credentials (replace the `<git-repository>`, `<git-username>`, and `<git-PAT>` placeholders with the URL of your GitHub repository, the name of your GitHub user account, and the newly generated PAT value, respectively).
 
    > **Note**: The URL of the GitHub repository should be in the format `https://github.com/<your-github-username>/spring-petclinic-microservices-config.git`, where the `<your-github-username>` placeholder represents your GitHub user name.
 
    ```bash
    GIT_REPO=<git-repository>
    GIT_USERNAME=<git-username>
-   GIT_PASSWORD=<git-password>
+   GIT_PASSWORD=<git-PAT>
    ```
 
 1. To set up the config server such that it points to your GitHub repository, from the Git Bash prompt, run the following command.
@@ -262,14 +269,15 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create an instance of Azure Database for MySQL Single Server. Note that the name of the server must be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. In addition, replace the `<myadmin-password>` placeholder with a complex password and record its value.
 
    ```bash
-   SQL_SERVER_NAME=springappsmysql$UNIQUEID
-   SQL_ADMIN_PASSWORD=<myadmin-password>
+   MYSQL_SERVER_NAME=mysql-$APPNAME-$UNIQUEID
+   MYSQL_ADMIN_USERNAME=myadmin
+   MYSQL_ADMIN_PASSWORD=<myadmin-password>
    DATABASE_NAME=petclinic
 
    az mysql server create \
-         --admin-user myadmin \
-         --admin-password ${SQL_ADMIN_PASSWORD} \
-         --name ${SQL_SERVER_NAME} \
+         --admin-user ${MYSQL_ADMIN_USERNAME} \
+         --admin-password ${MYSQL_ADMIN_PASSWORD} \
+         --name ${MYSQL_SERVER_NAME} \
          --resource-group ${RESOURCE_GROUP}  \
          --sku-name GP_Gen5_2  \
          --version 5.7 \
@@ -284,7 +292,7 @@ You will also need to update the config for your applications to use the newly p
 
    ```bash
    az mysql db create \
-         --server-name $SQL_SERVER_NAME \
+         --server-name $MYSQL_SERVER_NAME \
          --resource-group $RESOURCE_GROUP \
          --name $DATABASE_NAME
    ```
@@ -294,7 +302,7 @@ You will also need to update the config for your applications to use the newly p
    ```bash
    az mysql server firewall-rule create \
        --name allAzureIPs \
-       --server ${SQL_SERVER_NAME} \
+       --server ${MYSQL_SERVER_NAME} \
        --resource-group ${RESOURCE_GROUP} \
        --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
    ```

@@ -23,6 +23,10 @@ After you complete this challenge, you will be able to:
 - Update application config
 - Update, rebuild, and redeploy each app
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 4 architecture](./images/asa-openlab-4.png)
+
 ## Lab Duration
 
 - **Estimated Time**: 60 minutes
@@ -53,7 +57,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 1. From the Git Bash prompt, run the following command to create an Azure Key Vault instance. Note that the name of the service should be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. The `$LOCATION` and `$RESOURCE_GROUP` variables contain the name of the Azure region and the resource group into which you deployed the Azure Spring Apps service in the previous exercise of this lab.
 
    ```bash
-   KEYVAULT_NAME=springappskv$UNIQUEID
+   KEYVAULT_NAME=kv-$APPNAME-$UNIQUEID
    az keyvault create \
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \
@@ -82,7 +86,7 @@ These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOUR
    ```bash
    az keyvault secret set \
        --name SPRING-DATASOURCE-USERNAME \
-       --value myadmin@$SQL_SERVER_NAME \
+       --value $MYSQL_ADMIN_USERNAME@$MYSQL_SERVER_NAME \
        --vault-name $KEYVAULT_NAME
 
    az keyvault secret set \
@@ -203,6 +207,7 @@ The following three apps of your application use the database hosted by the Azur
 You now have all relevant components in place to switch to the secrets stored in Azure Key Vault and remove them from your config repo. To complete your configuration, you now need to set the config repository to reference the Azure Key Vault instance. You also need to update the **pom.xml** file to ensure that the visits, vets and customers services use the `com.azure.spring:spring-cloud-azure-starter-keyvault-secrets` dependency. You can use the following guidance to accomplish this task:
 
 [Spring Cloud Azure Starter Key Vault Secrets](https://github.com/Azure/azure-sdk-for-java/blob/main/sdk/spring/README.md)
+[Build a sample Spring Boot app with Spring Boot starter](https://learn.microsoft.com/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=system-assigned-managed-identity#build-a-sample-spring-boot-app-with-spring-boot-starter)
 
 <details>
 <summary>hint</summary>
@@ -217,7 +222,7 @@ You now have all relevant components in place to switch to the secrets stored in
     password: <myadmin-password>
    ```
 
-1. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
+2. In the same file append the following lines to it (where the `<key-vault-name>` placeholder represents the name of the Azure Key Vault you provisioned earlier in this exercise):
 
    ```yaml
      cloud:
@@ -233,7 +238,7 @@ You now have all relevant components in place to switch to the secrets stored in
 
    > **Note**: The properties start with `spring.cloud.azure.keyvault.secret`, so beware that you indent the `cloud` property so it sits at the right indentation level of your config file, which is at the same indentation level as `config` and `datasource`.
     
-1. Save the file and commit and push these changes to your remote config repository.
+3. Save the file and commit and push these changes to your remote config repository.
 
    ```bash
    cd ~/projects/spring-petclinic-microservices-config

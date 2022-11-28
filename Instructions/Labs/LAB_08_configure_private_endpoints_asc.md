@@ -20,6 +20,10 @@ After you complete this challenge, you will be able to:
 - Lock down the Key Vault instance by using a private endpoint
 - Test your setup
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 8 architecture](./images/asa-openlab-8.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
@@ -59,7 +63,7 @@ To start, you need to lock down access to your MySQL database by using a private
 1. Next, in the same subnet, create the private endpoint corresponding to the Azure Database for MySQL Single Server instance.
 
    ```bash
-   MYSQL_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${SQL_SERVER_NAME} --resource-type "Microsoft.DBforMySQL/servers" --query "id" -o tsv)
+   MYSQL_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${MYSQL_SERVER_NAME} --resource-type "Microsoft.DBforMySQL/servers" --query "id" -o tsv)
 
    az network private-endpoint create \
        --name pe-openlab-mysql \
@@ -97,12 +101,12 @@ To start, you need to lock down access to your MySQL database by using a private
    NIC_IPADDRESS=$(az resource show --ids $NIC_ID --api-version 2019-04-01 -o json | jq -r '.properties.ipConfigurations[0].properties.privateIPAddress')
 
    az network private-dns record-set a create \
-       --name $SQL_SERVER_NAME \
+       --name $MYSQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
        --resource-group $RESOURCE_GROUP
 
    az network private-dns record-set a add-record \
-       --record-set-name $SQL_SERVER_NAME \
+       --record-set-name $MYSQL_SERVER_NAME \
        --zone-name privatelink.mysql.database.azure.com \
        --resource-group $RESOURCE_GROUP \
         -a $NIC_IPADDRESS
@@ -112,7 +116,7 @@ To start, you need to lock down access to your MySQL database by using a private
 
    ```bash
    az mysql server update \
-       --name $SQL_SERVER_NAME \
+       --name $MYSQL_SERVER_NAME \
        -g $RESOURCE_GROUP \
        --public Disabled
    ```
@@ -139,7 +143,7 @@ Once you have locked down the internet access to the MySQL database, you will pe
        --subnet $PRIVATE_ENDPOINTS_SUBNET_NAME \
        --name pe-openlab-keyvault \
        --private-connection-resource-id "$KEYVAULT_RESOURCE_ID" \
-       --group-ids vault \
+       --group-id vault \
        --connection-name openlab-keyvault-connection \
        --location $LOCATION
    ```
@@ -167,6 +171,15 @@ Once you have locked down the internet access to the MySQL database, you will pe
 
    az network private-dns record-set a add-record -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net" -n $KEYVAULT_NAME -a $KEYVAULT_NIC_IPADDRESS
    az network private-dns record-set list -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net"
+   ```
+
+1. You can now disable all public access towards your Key Vault.
+
+   ```bash
+   az keyvault update \
+      --name $KEYVAULT_NAME \
+      --resource-group $RESOURCE_GROUP \
+      --public-network-access Disabled
    ```
 
 </details>

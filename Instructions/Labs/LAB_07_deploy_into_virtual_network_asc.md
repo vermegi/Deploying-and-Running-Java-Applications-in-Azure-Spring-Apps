@@ -25,6 +25,10 @@ After you complete this challenge, you will be able to:
 - Access the application by DNS name
 - Configure WAF on Application Gateway
 
+The below image illustrates the end state you will be building in this challenge.
+
+![Challenge 7 architecture](./images/asa-openlab-7.png)
+
 ## Challenge Duration
 
 - **Estimated Time**: 60 minutes
@@ -61,7 +65,7 @@ In later exercises you will be creating the private endpoints for the backend se
 1. From the Git Bash prompt, run the following command to create a virtual network.
 
    ```bash
-   VIRTUAL_NETWORK_NAME=springappsvnet
+   VIRTUAL_NETWORK_NAME=vnet-$APPNAME-$UNIQUEID
    az network vnet create --resource-group $RESOURCE_GROUP \
        --name $VIRTUAL_NETWORK_NAME \
        --location $LOCATION \
@@ -145,8 +149,9 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=springappssvcvnet$UNIQUEID
+   SPRING_APPS_SERVICE=sa-vnet-$APPNAME-$UNIQUEID
    az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
+   az provider register --namespace Microsoft.ContainerService
    az spring create  \
        --resource-group $RESOURCE_GROUP \
        --name $SPRING_APPS_SERVICE \
@@ -348,6 +353,8 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
        --ipv4-address $IP_ADDRESS
    ```
 
+    > **Note**: In case you don't want to use a wildcard `*` record for the `A` DNS record, you will need to create 3 `A` DNS records. The 3 records need to be created for `asaInstanceName.private.azuremicroservices.io`, `asaInstanceName-yourAppName.private.azuremicroservices.io` and `asaInstanceName.svc.private.azuremicroservices.io` with the load balancer IP address for each as the IP.
+
 1. Lastly you need to update your `api-gateway` and `admin-service` apps to retrieve the fully qualified domain name (FQDN) on your private DNS zone.
 
    ```bash
@@ -457,6 +464,8 @@ You will only create a custom domain for the `api-gateway` service. This is the 
    ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query id --output tsv)
    ```
 
+   > **Note**: The Guid used in the second statement refers to the `Azure Spring Cloud Domain-Management` Enterprise Application in your Azure Active Directory.
+
 1. Once you have the Key Vault URI and the Spring Apps object ID, you can grant the permissions to access Key Vault certificates to the Spring Apps service:
 
    ```bash
@@ -466,11 +475,11 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 1. Next, configure TLS using the certificate.
 
    ```bash
-   CERT_NAME_IN_ASC=openlab-certificate
+   CERT_NAME_IN_ASA=openlab-certificate
    az spring certificate add \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
-       --name $CERT_NAME_IN_ASC \
+       --name $CERT_NAME_IN_ASA \
        --vault-certificate-name $CERT_NAME_IN_KV \
        --vault-uri $VAULTURI
    ```
@@ -478,13 +487,12 @@ You will only create a custom domain for the `api-gateway` service. This is the 
 1. To conclude this procedure, you need to bind the custom domain to the `api-gateway` app.
 
    ```bash
-   APPNAME=api-gateway
    az spring app custom-domain bind \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
        --domain-name $DNS_NAME \
-       --certificate $CERT_NAME_IN_ASC \
-       --app $APPNAME
+       --certificate $CERT_NAME_IN_ASA \
+       --app api-gateway
    ```
 
 </details>
@@ -505,7 +513,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. An Application Gateway instance also needs a public IP address, which you will create next by running the following commands from the Git Bash shell:
 
    ```bash
-   APPLICATION_GATEWAY_PUBLIC_IP_NAME=app-gw-openlab-public-ip
+   APPLICATION_GATEWAY_PUBLIC_IP_NAME=pip-$APPNAME-app-gw
    az network public-ip create \
        --resource-group $RESOURCE_GROUP \
        --location $LOCATION \
@@ -518,7 +526,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. In addition, an Application Gateway instance also needs to have access to the self-signed certificate in your Key Vault. To accomplish this, you will create a managed identity associated with the Application Gateway instance and retrieve the object ID of this identity.
 
    ```bash
-   APPGW_IDENTITY_NAME=msi-appgw-openlab
+   APPGW_IDENTITY_NAME=id-$APPNAME-appgw
    az identity create \
        --resource-group $RESOURCE_GROUP \
        --name $APPGW_IDENTITY_NAME
@@ -549,7 +557,7 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. Before you can create the Application Gateway, you will also need to create the WAF policy for the gateway.
 
     ```bash
-    WAF_POLICY_NAME=openlabWAFPolicy
+    WAF_POLICY_NAME=waf-$APPNAME-$UNIQUEID
     az network application-gateway waf-policy create \
         --name $WAF_POLICY_NAME \
         --resource-group $RESOURCE_GROUP
@@ -558,9 +566,9 @@ You are now ready to create an Application Gateway instance to expose your appli
 1. With all relevant information collected, you can now provision an instance of Application Gateway.
 
    ```bash
-   APPGW_NAME=appgw-openlab
-   APPNAME=api-gateway
-   SPRING_APP_PRIVATE_FQDN=${APPNAME}.private.azuremicroservices.io
+   APPGW_NAME=agw-$APPNAME-$UNIQUEID
+   APIGW_NAME=$SPRING_APPS_SERVICE-api-gateway
+   SPRING_APP_PRIVATE_FQDN=${APIGW_NAME}.private.azuremicroservices.io
 
    az network application-gateway create \
        --name $APPGW_NAME \
