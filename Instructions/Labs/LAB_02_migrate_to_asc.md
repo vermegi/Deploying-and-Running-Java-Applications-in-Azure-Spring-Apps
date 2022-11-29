@@ -42,7 +42,9 @@ During this challenge, you will:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-> **Note**: This lab contains guidance for a Windows workstation. Your workstation should contain the following components:
+> **Note**: The labstarter branch of the Azure-Samples/spring-petclinic-microservices repository contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
+
+> **Note**: In case you want to run this lab on your own workstation, this lab contains guidance for a Windows workstation. Your workstation should contain the following components:
 
 - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
   - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
@@ -64,8 +66,6 @@ During this challenge, you will:
 git config --global user.email "<your-email-address>"
 git config --global user.name "<your-username>"
 ```
-
-> **Note**: Additionaly the labstarter branch of the Azure-Samples/spring-petclinic-microservices repository contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
 
 ### Create an Azure Spring Apps service
 
