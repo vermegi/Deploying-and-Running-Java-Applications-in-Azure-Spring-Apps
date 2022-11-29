@@ -266,23 +266,22 @@ You will also need to update the config for your applications to use the newly p
 <summary>hint</summary>
 <br/>
 
-1. Run the following commands to create an instance of Azure Database for MySQL Single Server. Note that the name of the server must be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. In addition, replace the `<myadmin-password>` placeholder with a complex password and record its value.
+1. Run the following commands to create an instance of MySQL Flexible server. Note that the name of the server must be globally unique, so adjust it accordingly in case the randomly generated name is already in use. Keep in mind that the name can contain only lowercase letters, numbers and hyphens. In addition, replace the `<myadmin-password>` placeholder with a complex password and record its value.
 
    ```bash
    MYSQL_SERVER_NAME=mysql-$APPNAME-$UNIQUEID
    MYSQL_ADMIN_USERNAME=myadmin
    MYSQL_ADMIN_PASSWORD=<myadmin-password>
    DATABASE_NAME=petclinic
-
-   az mysql server create \
-         --admin-user ${MYSQL_ADMIN_USERNAME} \
-         --admin-password ${MYSQL_ADMIN_PASSWORD} \
-         --name ${MYSQL_SERVER_NAME} \
-         --resource-group ${RESOURCE_GROUP}  \
-         --sku-name GP_Gen5_2  \
-         --version 5.7 \
-         --storage-size 5120
+   
+    az mysql flexible-server create \
+        --admin-user myadmin \
+        --admin-password ${MYSQL_ADMIN_PASSWORD} \
+        --name ${MYSQL_SERVER_NAME} \
+        --resource-group ${RESOURCE_GROUP} 
    ```
+
+   > **Note**: During the creation you will be asked whether access for your IP address should be added and whether access for all IP's should be added. Answer `n` for no on both questions.
 
    > **Note**: Wait for the provisioning to complete. This might take about 3 minutes.
 
@@ -291,20 +290,20 @@ You will also need to update the config for your applications to use the newly p
 1. Run the following commands to create a database in the Azure Database for MySQL Single Server instance.
 
    ```bash
-   az mysql db create \
-         --server-name $MYSQL_SERVER_NAME \
-         --resource-group $RESOURCE_GROUP \
-         --name $DATABASE_NAME
+    az mysql flexible-server db create \
+        --server-name $MYSQL_SERVER_NAME \
+        --resource-group $RESOURCE_GROUP \
+        -d $DATABASE_NAME
    ```
 
 1. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance.
 
    ```bash
-   az mysql server firewall-rule create \
-       --name allAzureIPs \
-       --server ${MYSQL_SERVER_NAME} \
-       --resource-group ${RESOURCE_GROUP} \
-       --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+    az mysql flexible-server firewall-rule create \
+        --rule-name allAzureIPs \
+        --name ${MYSQL_SERVER_NAME} \
+        --resource-group ${RESOURCE_GROUP} \
+        --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
    ```
 
 1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Change the entries in lines 82, 83, and 84 that contain the values of the target datasource endpoint, the corresponding admin user account, and its password. Set these values by using the information in the Azure Database for MySQL Single Server connection string you recorded earlier in this task. Your configuration should look like this:
@@ -321,7 +320,7 @@ You will also need to update the config for your applications to use the newly p
 
    ```yaml
        url: jdbc:mysql://<mysql-server-name>.mysql.database.azure.com:3306/<mysql-database-name>?useSSL=true
-       username: myadmin@<mysql-server-name>
+       username: myadmin
        password: <myadmin-password>
    ```
 
@@ -386,7 +385,7 @@ You now have the compute and data services available for deployment of the compo
 1. From the Git Bash window, set a `VERSION` environment variable to this version number `2.7.6`.
 
    ```bash
-   VERSION=1.7.6
+   VERSION=2.7.6
    ```
 
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
