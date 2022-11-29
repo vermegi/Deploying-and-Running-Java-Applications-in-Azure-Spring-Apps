@@ -237,7 +237,7 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --no-wait \
-       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-2.6.11.jar \
+       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-$VERSION.jar \
        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -500,7 +500,7 @@ This `VisitsReceiver` service is listening to the `visits-requests` queue. Each 
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
+                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

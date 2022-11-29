@@ -352,42 +352,7 @@ You now have the compute and data services available for deployment of the compo
 <details>
 <summary>hint</summary>
 <br/>
-
-1. In the main **pom.xml** file change the **spring-cloud.version** on line 33 from version **2021.0.2** to **2021.0.4**.
-
-   ```xml
-   <spring-cloud.version>2021.0.4</spring-cloud.version>
-   ```
-
-   > **Note**: We perform this version change to be on the latest version of Spring Cloud.
-   
-  
-1. In the main **pom.xml** file change the **spring-petclinic-microservices** on line 14 from version **2.6.7** to **2.6.11**.
-
-   ```xml
-    <groupId>org.springframework.samples</groupId>    
-    <artifactId>spring-petclinic-microservices</artifactId>    
-    <version>2.6.11</version>
-   ```  
-    
-1. In the same main **pom.xml** file change the **spring-boot.version** in the **properties** element on line 32 from version **2.6.7** to **2.6.11** and save the file.
-
-    ```bash        
-        <spring-boot.version>2.6.11</spring-boot.version>        
-        <spring-cloud.version>2021.0.4</spring-cloud.version>        
-        <chaos-monkey-spring-boot.version>2.3.10</chaos-monkey-spring-boot.version>    
-    ```
-
-1. In the same main **pom.xml** file change the **version** in the **parent** element on line 9 from version **2.6.7** to **2.6.11** and save the file.
-
-   ```xml
-   <parent>
-       <groupId>org.springframework.boot</groupId>
-       <artifactId>spring-boot-starter-parent</artifactId>
-       <version>2.6.11</version>
-   </parent>
-   ```
-    
+          
 1. In each of the microservices locate the **application.yml** file and comment out the **config import** lines. The **application.yml** file can be found in each **<microservice-name>/src/main/resources** folder. For each microservice these are lines 4 and 5 in the **application.yml** file. Do this for the admin-server, api-gateway, customers-service, vets-service and visits-service. The resulting application.yml file of the customers-service will look like below: 
     
     ```yml
@@ -408,15 +373,22 @@ You now have the compute and data services available for deployment of the compo
     
    > **Note**: We comment out the config import because when deploying these applications to Azure Spring Apps, the value for the config server will be set by Azure Spring Apps.    
 
-1. For each of the microservices (seven in total) locate the **pom.xml** file and update the `spring-petclinic-microservices` to version `2.6.11`.   
+1. In the parent **pom.xml** file double check the version number on line 9.
+
     ```bash
         <parent>        
             <groupId>org.springframework.samples</groupId>
             <artifactId>spring-petclinic-microservices</artifactId>
-            <version>2.6.11</version>    
+            <version>2.7.6</version>    
         </parent>
     ```
-    
+
+1. From the Git Bash window, set a `VERSION` environment variable to this version number `2.7.6`.
+
+   ```bash
+   VERSION=1.7.6
+   ```
+
 1. You will start by building all the microservice of the spring petclinic application. To accomplish this, run `mvn clean package` in the root directory of the application.
 
    ```bash
@@ -427,21 +399,22 @@ You now have the compute and data services available for deployment of the compo
 1. Verify that the build succeeds by reviewing the output of the `mvn clean package -DskipTests` command, which should have the following format:
 
    ```bash
-   [INFO] Reactor Summary for spring-petclinic-microservices 2.6.3:
-   [INFO]
-   [INFO] spring-petclinic-microservices ..................... SUCCESS [  0.224 s]
-   [INFO] spring-petclinic-admin-server ...................... SUCCESS [  5.665 s]
-   [INFO] spring-petclinic-customers-service ................. SUCCESS [  4.231 s]
-   [INFO] spring-petclinic-vets-service ...................... SUCCESS [  3.152 s]
-   [INFO] spring-petclinic-visits-service .................... SUCCESS [  2.902 s]
-   [INFO] spring-petclinic-config-server ..................... SUCCESS [  1.030 s]
-   [INFO] spring-petclinic-discovery-server .................. SUCCESS [  1.429 s]
-   [INFO] spring-petclinic-api-gateway ....................... SUCCESS [  8.277 s]
+   [INFO] ------------------------------------------------------------------------
+   [INFO] Reactor Summary for spring-petclinic-microservices 2.7.6:
+   [INFO] 
+   [INFO] spring-petclinic-microservices ..................... SUCCESS [  0.274 s]
+   [INFO] spring-petclinic-admin-server ...................... SUCCESS [  6.462 s]
+   [INFO] spring-petclinic-customers-service ................. SUCCESS [  4.486 s]
+   [INFO] spring-petclinic-vets-service ...................... SUCCESS [  1.943 s]
+   [INFO] spring-petclinic-visits-service .................... SUCCESS [  2.026 s]
+   [INFO] spring-petclinic-config-server ..................... SUCCESS [  0.885 s]
+   [INFO] spring-petclinic-discovery-server .................. SUCCESS [  0.960 s]
+   [INFO] spring-petclinic-api-gateway ....................... SUCCESS [  6.022 s]
    [INFO] ------------------------------------------------------------------------
    [INFO] BUILD SUCCESS
    [INFO] ------------------------------------------------------------------------
-   [INFO] Total time:  27.310 s
-   [INFO] Finished at: 2022-05-12T18:43:06Z
+   [INFO] Total time:  24.584 s
+   [INFO] Finished at: 2022-11-29T13:31:17Z
    [INFO] ------------------------------------------------------------------------
    ```
 
@@ -465,7 +438,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name api-gateway \
             --no-wait \
-            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.11.jar
+            --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-$VERSION.jar
    ```
 
 1. In the same way create an app for the `admin-server` microservice:
@@ -488,7 +461,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name app-admin \
             --no-wait \
-            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.11.jar
+            --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-$VERSION.jar
    ```
 
 1. Next, you will create an app for the `customers-service` microservice, without assigning an endpoint:
@@ -510,7 +483,7 @@ You now have the compute and data services available for deployment of the compo
             --resource-group $RESOURCE_GROUP \
             --name customers-service \
             --no-wait \
-            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -533,7 +506,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name visits-service \
                --no-wait \
-               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
@@ -556,7 +529,7 @@ You now have the compute and data services available for deployment of the compo
                --resource-group $RESOURCE_GROUP \
                --name vets-service \
                --no-wait \
-               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.11.jar \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-$VERSION.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

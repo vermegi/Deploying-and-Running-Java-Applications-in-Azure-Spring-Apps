@@ -261,21 +261,21 @@ When you recreate your Spring Apps instance in the virtual network, you will als
         --resource-group $RESOURCE_GROUP \
         --name api-gateway \
         --no-wait \
-        --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-2.6.11.jar
+        --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-$VERSION.jar
 
    az spring app deploy \
         --service $SPRING_APPS_SERVICE \
         --resource-group $RESOURCE_GROUP \
         --name admin-service \
         --no-wait \
-        --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-2.6.11.jar
+        --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-$VERSION.jar
                         
    az spring app deploy \
         --service $SPRING_APPS_SERVICE \
         --resource-group $RESOURCE_GROUP \
         --name customers-service \
         --no-wait \
-        --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
+        --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar \
         --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring app deploy \
@@ -283,7 +283,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
         --resource-group $RESOURCE_GROUP \
         --name visits-service \
         --no-wait \
-        --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
+        --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
         --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring app deploy \
@@ -291,7 +291,7 @@ When you recreate your Spring Apps instance in the virtual network, you will als
         --resource-group $RESOURCE_GROUP \
         --name vets-service \
         --no-wait \
-        --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.11.jar \
+        --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-$VERSION.jar \
         --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
