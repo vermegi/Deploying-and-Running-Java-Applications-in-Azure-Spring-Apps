@@ -48,7 +48,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. In the web browser displaying the GitHub repo, navigate to each folder containing the code of the individual spring-petclinic-* services and review their content. You don't need to know their full details, but you should understand their basic structure.
 
-1. Make sure you create a local copy of this project for you to work in during the lab. You may also want to push this local copy to a git repository you own.
+1. Make sure you create a local copy of this project for you to work in during the lab. You may also want to push this local copy to a git repository you own. You will be using the labstarter branch of this repo.
 
 <details>
 <summary>hint</summary>
