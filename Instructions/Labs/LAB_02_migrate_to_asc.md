@@ -50,8 +50,8 @@ During this challenge, you will:
   - **Note**: If needed, reinstall Git and, during installation, ensure that the Git Credential Manager is enabled.
 - [Apache Maven 3.8.5](apache-maven-3.8.5-bin.zip) available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
   - **Note**: To install Apache Maven, extract the content of the .zip file by running `unzip apache-maven-3.8.5-bin.zip`. Next, add the path to the bin directory of the extracted content to the `PATH` environment variable. Assuming that you extracted the content directly into your home directory, you could accomplish this by running the following command from the Git Bash shell: `export PATH=~/apache-maven-3.8.5/bin:$PATH`.
-- Java 8 and the Java Development Kit (JDK) available from [JDK downloads](https://download.oracle.com/java/18/latest/jdk-18_windows-x64_bin.msi)
-  - **Note**: To install JDK on Windows, follow the instructions provided in [JDK Installation Guide](https://docs.oracle.com/en/java/javase/18/install/installation-jdk-microsoft-windows-platforms.html). Following the installation, ensure to set the JAVA_HOME environment variable to the location of the installation binaries by running the following command from the Git Bash shell: `export JAVA_HOME="/c/Program Files/Java/jdk-18.0.1.1"`.
+- Java 8 and the Java Development Kit (JDK) available from [JDK downloads](https://aka.ms/download-jdk/microsoft-jdk-17.0.5-windows-x64.msi)
+  - **Note**: To install JDK on Windows, follow the instructions provided in [JDK Installation Guide](https://learn.microsoft.com/en-us/java/openjdk/install#install-on-windows). Make sure to use the `FeatureJavaHome` feature during the install to update the `JAVA_HOME` environment variable.
 - In case you prefer to use IntelliJ IDEA as an IDE instead of Visual Studio Code: Azure Toolkit for IntelliJ IDEA 3.51.0 from the IntelliJ Plugins UI from [IntelliJ IDEA](https://www.jetbrains.com/idea/download/#section=windows)
 - Azure CLI version 2.37.0
   - **Note**: If needed, upgrade the Azure CLI version by launching Command Prompt as administrator and running `az upgrade`.
@@ -65,7 +65,7 @@ git config --global user.email "<your-email-address>"
 git config --global user.name "<your-username>"
 ```
 
-> **Note**: Additionaly the repository containing this guidance contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
+> **Note**: Additionaly the labstarter branch of the Azure-Samples/spring-petclinic-microservices repository contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
 
 ### Create an Azure Spring Apps service
 
