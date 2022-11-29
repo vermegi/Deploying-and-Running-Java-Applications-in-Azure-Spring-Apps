@@ -316,7 +316,7 @@ You will also need to update the config for your applications to use the newly p
        password: petclinic
    ```
 
-   > **Note**: The updated content of these three lines in the application.yml file should have the following format (where the `<mysql-server-name>`, `<myadmin-password>` and `<mysql-database-name>` placeholders represent the name of the Azure Database for MySQL Single Server instance, the password you assigned to the myadmin account during its provisioning, and the name of the database i.e. `petclinic`, respectively):
+   > **Note**: The updated content of these three lines in the **application.yml** file should have the following format (where the `<mysql-server-name>`, `<myadmin-password>` and `<mysql-database-name>` placeholders represent the name of the Azure Database for MySQL Single Server instance, the password you assigned to the myadmin account during its provisioning, and the name of the database i.e. `petclinic`, respectively):
 
    ```yaml
        url: jdbc:mysql://<mysql-server-name>.mysql.database.azure.com:3306/<mysql-database-name>?useSSL=true
@@ -325,6 +325,13 @@ You will also need to update the config for your applications to use the newly p
    ```
 
    > **Note**: Ensure to change the value of the `useSSL` parameter to `true`, since this is enforced by default by Azure Database for MySQL Single Server.
+
+1. In the same **application.yml** file, at the bottom of the file, add the below 2 lines. They should be at the same indentation level as the `config` and `datasource` statements.
+
+   ```yaml
+     sql.init.mode: always
+     sql.init.platform: mysql
+   ```
 
 1. Save the changes and push the updates you made to the **application.yml** file to your private GitHub repo by running the following commands from the Git Bash prompt:
 
