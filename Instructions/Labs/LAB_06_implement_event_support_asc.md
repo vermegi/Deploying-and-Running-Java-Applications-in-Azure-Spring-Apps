@@ -153,6 +153,8 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
      config:
        activate:
          on-profile: mysql
+     sql.init.mode: always
+     sql.init.platform: mysql
      jms:
        servicebus:
          connection-string: ${spring.jms.servicebus.connection-string}
