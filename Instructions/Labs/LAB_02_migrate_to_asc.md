@@ -149,7 +149,7 @@ As the next step, you will create an Azure Spring Apps Service instance. You wil
 ### Set up the config server
 
 
-Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to git repo. The current configuration used by the Spring microservices resides in the [spring-petclinic-microservices-config repo](https://github.com/spring-petclinic/spring-petclinic-microservices-config). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
+Azure Spring Apps service provides a config server for the use of Spring apps. As part of its setup, you need to link it to a git repo. The current configuration used by the Spring microservices resides in the [labstarter branch of the spring-petclinic-microservices-config repo](https://github.com/Azure-Samples/spring-petclinic-microservices-config/tree/labstarter). You will need to create your own private git repo in this exercise, since, in one of its steps, you will be changing some of the configuration settings.
 
 As part of the setup process, you need to create a Personal Access Token (PAT) in your GitHub repo and make it available to the config server. It is important that you make note of the PAT after it has been created.
 
@@ -189,18 +189,18 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
     > **Note**: Make sure to replace the `<token>` and `<your-github-username>` placeholders in the URL listed above with the value of the GitHub PAT and your GitHub user name when running the `git clone` command.
 
-1. From the Git Bash prompt, change the current directory to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from [spring-petclinic-microservices-config](https://github.com/spring-petclinic/spring-petclinic-microservices-config) to the local folder on your lab computer.
+1. From the Git Bash prompt, change the current directory to the newly created **spring-petclinic-microservices-config** folder and run the following commands to copy all the config server configuration yaml files from the [labstarter branch of the spring-petclinic-microservices-config repo](https://github.com/Azure-Samples/spring-petclinic-microservices-config/tree/labstarter) to the local folder on your lab computer.
 
    ```bash
    cd spring-petclinic-microservices-config
-   curl -o admin-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/admin-server.yml
-   curl -o api-gateway.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/api-gateway.yml
-   curl -o application.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/application.yml
-   curl -o customers-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/customers-service.yml
-   curl -o discovery-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/discovery-server.yml
-   curl -o tracing-server.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/tracing-server.yml
-   curl -o vets-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/vets-service.yml
-   curl -o visits-service.yml https://raw.githubusercontent.com/spring-petclinic/spring-petclinic-microservices-config/main/visits-service.yml
+   curl -o admin-server.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/admin-server.yml
+   curl -o api-gateway.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/api-gateway.yml
+   curl -o application.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/application.yml
+   curl -o customers-service.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/customers-service.yml
+   curl -o discovery-server.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/discovery-server.yml
+   curl -o tracing-server.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/tracing-server.yml
+   curl -o vets-service.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/vets-service.yml
+   curl -o visits-service.yml https://raw.githubusercontent.com/Azure-Samples/spring-petclinic-microservices-config/labstarter/visits-service.yml
    ```
 
 1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
