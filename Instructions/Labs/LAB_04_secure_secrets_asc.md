@@ -280,7 +280,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. In the same file, add a property for `version.spring.cloud.azure`. This should be added within the `<properties></properties>` section.
 
    ```xml
-   <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
+   <version.spring.cloud.azure>4.4.1</version.spring.cloud.azure>
    ```
     
 1. Save the changes to the `pom.xml` file and close it.
