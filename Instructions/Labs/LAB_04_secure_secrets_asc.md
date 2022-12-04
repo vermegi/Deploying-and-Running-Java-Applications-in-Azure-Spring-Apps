@@ -86,12 +86,12 @@ These secrets should be called `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOUR
    ```bash
    az keyvault secret set \
        --name SPRING-DATASOURCE-USERNAME \
-       --value $MYSQL_ADMIN_USERNAME@$MYSQL_SERVER_NAME \
+       --value $MYSQL_ADMIN_USERNAME \
        --vault-name $KEYVAULT_NAME
 
    az keyvault secret set \
        --name SPRING-DATASOURCE-PASSWORD \
-       --value $SQL_ADMIN_PASSWORD \
+       --value $MYSQL_ADMIN_PASSWORD \
        --vault-name $KEYVAULT_NAME
    ```
 
@@ -280,17 +280,8 @@ You now have all relevant components in place to switch to the secrets stored in
 1. In the same file, add a property for `version.spring.cloud.azure`. This should be added within the `<properties></properties>` section.
 
    ```xml
-   <version.spring.cloud.azure>4.2.0</version.spring.cloud.azure>
+   <version.spring.cloud.azure>4.4.1</version.spring.cloud.azure>
    ```
-1. In the same file, make sure the version for the `spring-boot-starter-parent` is set to 2.6.11 within the `<parent></parent>` section.
-
-   ```xml
-       <parent>        
-           <groupId>org.springframework.boot</groupId>        
-           <artifactId>spring-boot-starter-parent</artifactId>        
-           <version>2.6.11</version>    
-        </parent>
-   ```    
     
 1. Save the changes to the `pom.xml` file and close it.
 
@@ -330,7 +321,7 @@ You now have all relevant components in place to switch to the secrets stored in
             --resource-group $RESOURCE_GROUP \
             --name customers-service \
             --no-wait \
-            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
+            --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar \
             --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring app deploy \
@@ -338,7 +329,7 @@ You now have all relevant components in place to switch to the secrets stored in
                --resource-group $RESOURCE_GROUP \
                --name visits-service \
                --no-wait \
-               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
+               --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
 
    az spring app deploy \
@@ -346,7 +337,7 @@ You now have all relevant components in place to switch to the secrets stored in
                --resource-group $RESOURCE_GROUP \
                --name vets-service \
                --no-wait \
-               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-2.6.11.jar \
+               --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-$VERSION.jar \
                --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

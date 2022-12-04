@@ -153,6 +153,8 @@ The connection to the event hub needs to be stored in the `spring.kafka.properti
      config:
        activate:
          on-profile: mysql
+     sql.init.mode: always
+     sql.init.platform: mysql
      jms:
        servicebus:
          connection-string: ${spring.jms.servicebus.connection-string}
@@ -310,7 +312,7 @@ In this task, you will update the customers microservice to receive events from 
      --resource-group $RESOURCE_GROUP \
      --name customers-service \
      --no-wait \
-     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-2.6.11.jar \
+     --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar \
      --env SPRING_PROFILES_ACTIVE=mysql
    ```
 

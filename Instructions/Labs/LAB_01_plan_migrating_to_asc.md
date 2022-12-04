@@ -42,13 +42,13 @@ This first challenge will be mainly a conceptual exercise that does not involve 
 
 To start, you will learn about the existing Spring Petclinic application.
 
-1. Navigate to the [GitHub repo hosting the Spring Petclinic application code](https://github.com/spring-petclinic/spring-petclinic-microservices) and review the README.md file.
+1. Navigate to the [labstarter branch of the GitHub repo hosting the Spring Petclinic application code](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter) and review the README.md file.
 
-1. Examine the information about [starting services locally without Docker](https://github.com/spring-petclinic/spring-petclinic-microservices#starting-services-locally-without-docker), [Starting services locally with docker-compose](https://github.com/spring-petclinic/spring-petclinic-microservices#starting-services-locally-with-docker-compose), and [Starting services locally with docker-compose and Java](https://github.com/spring-petclinic/spring-petclinic-microservices#starting-services-locally-with-docker-compose-and-java). If time permits, consider launching the application locally using either of these methods.
+1. Examine the information about [starting services locally without Docker](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-without-docker), [Starting services locally with docker-compose](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-with-docker-compose), and [Starting services locally with docker-compose and Java](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-with-docker-compose-and-java). If time permits, consider launching the application locally using either of these methods.
 
 1. In the web browser displaying the GitHub repo, navigate to each folder containing the code of the individual spring-petclinic-* services and review their content. You don't need to know their full details, but you should understand their basic structure.
 
-1. Make sure you create a local copy of this project for you to work in during the lab. You may also want to push this local copy to a git repository you own.
+1. Make sure you create a local copy of this project for you to work in during the lab. You may also want to push this local copy to a git repository you own. You will be using the labstarter branch of this repo.
 
 <details>
 <summary>hint</summary>
@@ -56,9 +56,11 @@ To start, you will learn about the existing Spring Petclinic application.
 
 1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
 
-1. Navigate to the [spring-petclinic-microservices project](https://github.com/spring-petclinic/spring-petclinic-microservices) and select **Fork**.
+1. Navigate to the [spring-petclinic-microservices project](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter) and select **Fork**.
 
 1. Make sure your own username is indicated as the fork `Owner` and select **Create fork**. This will create a copy or fork of this project in your own account.
+
+1. Make sure you uncheck the `Copy the azure branch only` checkbox. You will be using the labstarter branch in this repository, so your fork should contain all the branches from this repo and not only the default azure branch.
 
 1. On your lab computer, in the Git Bash window, run the following commands to clone your fork of the spring-petclinic-microservices project to your workstation. Make sure to replace `<your-github-account>` in the below command:
 
@@ -71,6 +73,12 @@ To start, you will learn about the existing Spring Petclinic application.
 1. When prompted to sign in to GitHub, select the **Sign in with your browser** option. This will automatically open a new tab in the web browser window, prompting you to provide your GitHub username and password.
 
 1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
+
+1. On your lab computer, in the Git Bash window, run the following command to checkout the labstarter folder.
+
+   ```bash
+   git checkout labstarter
+   ```
 
 1. In projects folder double check that the spring petclinic application got cloned correctly. You can use the repository in your projects folder to regularly push your changes to.
 

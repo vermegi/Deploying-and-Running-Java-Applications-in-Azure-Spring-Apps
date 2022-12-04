@@ -83,7 +83,7 @@ This translates the secret in Key Vault to the correct application property for 
 
    > **Note**: Wait for the operation to complete. This might take about 5 minutes.
 
-1. Next, create two queues in this namespace named `visits-requests` and `visits-confirmations`.
+1. Next, create a queue in this namespace named `visits-requests`.
 
    ```bash
    az servicebus queue create \
@@ -124,7 +124,7 @@ This translates the secret in Key Vault to the correct application property for 
 
     > **Note**: Particular attention to indentation as shown above is important: `jms` should be at the same indentation level as `config`, `datasource` and `cloud`.
 
-1. Commit and push your changes to the remote repository.
+6. Commit and push your changes to the remote repository.
 
    ```bash
    cd ~/projects/spring-petclinic-microservices-config
@@ -137,7 +137,7 @@ This translates the secret in Key Vault to the correct application property for 
 
 ### Test the messaging functionality
 
-In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/Extra), the `messaging-emulator` microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project, deploy it as an extra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the `visits-requests` queue. You can use the following guidance to implement these changes:
+In the spring-petclinic-microservices repository, the `spring-petclinic-messaging-emulator` microservice is already prepared to send messages to an Azure Service Bus namespace. You can add this microservice to your current Spring Petclinic project in the parent `pom.xml` file, deploy it as an extra microservice in your Azure Spring Apps service and use this microservice's public endpoint to send messages to your Service Bus namespace. Test this functionality and inspect whether messages end up in the Service Bus namespace you just created by using the Service Bus Explorer for the `visits-requests` queue. You can use the following guidance to implement these changes:
 
 - [Use Service Bus Explorer to run data operations on Service Bus (Preview)](https://docs.microsoft.com/azure/service-bus-messaging/explorer).
 
@@ -145,44 +145,10 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
 <summary>hint</summary>
 <br/>
 
-1. As a first step you will need to clone the [Lab repository](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps). From the Git Bash window, execute the following statement.
-
-    ```bash
-    cd ~/projects
-    git clone https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps.git
-    ```
-
-1. From the Git Bash window copy the `spring-petclinic-messaging-emulator` to the `spring-petclinic-microservices` directory.
-
-    ```bash
-    cp -R Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/Extra/spring-petclinic-messaging-emulator spring-petclinic-microservices 
-    ```
-
-1. In the parent `pom.xml` file, add an extra module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
+1. As a first step in the parent `pom.xml` file, you'll have to uncomment the module for the `spring-petclinic-messaging-emulator` in the `<modules>` element at line 26.
 
     ```xml
     <module>spring-petclinic-messaging-emulator</module>
-    ```
-
-1. Navigate to the `spring-petclinic-messaging-emulator` directory, locate the **pom.xml** file, and update the reference to `spring-petclinic-microservices` to version `2.6.11`.   
-
-    ```bash
-      <parent>
-        <artifactId>spring-petclinic-microservices</artifactId>
-        <groupId>org.springframework.samples</groupId>
-        <version>2.6.11</version>
-      </parent>
-    ```
-
-1. In the `spring-petclinic-messaging-emulator` directory, navigate to the **<microservice-name>/src/main/resources** subdirectory and locate the **application.yml** file. In the **application.yml** file, comment out the **config import** lines. The resulting section of the application.yml file of the customers-service will look like below: 
-    
-    ```yml
-    spring:
-      application:
-        name: messaging-emulator
-      # config:
-      #   import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
-
     ```
 
 1. Update the compiled version of the microservices available by running an additional build.
@@ -237,17 +203,17 @@ In the [Lab repository Extra folder](https://github.com/MicrosoftLearning/Deploy
        --resource-group $RESOURCE_GROUP \
        --name messaging-emulator \
        --no-wait \
-       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-2.6.11.jar \
+       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-$VERSION.jar \
        --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
 1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
 
-1. In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the `messaging-emulator` app changes to **Succeeded**, and then select the `messaging-emulator` app entry.
+1.  In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the `messaging-emulator` app changes to **Succeeded**, and then select the `messaging-emulator` app entry.
 
    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-1. On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
+1.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
 1. In the Azure Portal, navigate to your resource group and select the Service Bus namespace you deployed in the previous task.
 
@@ -500,7 +466,7 @@ This `VisitsReceiver` service is listening to the `visits-requests` queue. Each 
                               --resource-group $RESOURCE_GROUP \
                               --name visits-service \
                               --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-2.6.11.jar \
+                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
                               --env SPRING_PROFILES_ACTIVE=mysql
    ```
 
