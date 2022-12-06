@@ -351,26 +351,6 @@ You now have the compute and data services available for deployment of the compo
 <details>
 <summary>hint</summary>
 <br/>
-          
-1. In each of the microservices locate the **application.yml** file and comment out the **config import** lines. The **application.yml** file can be found in each **<microservice-name>/src/main/resources** folder. For each microservice these are lines 4 and 5 in the **application.yml** file. Do this for the admin-server, api-gateway, customers-service, vets-service and visits-service. The resulting application.yml file of the customers-service will look like below: 
-    
-    ```yml
-    spring:
-      application:
-        name: customers-service
-      # config:
-      #   import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888/}
-
-
-    ---
-    spring:
-      config:
-        activate:
-          on-profile: docker
-        import: configserver:http://config-server:8888
-    ```
-    
-   > **Note**: We comment out the config import because when deploying these applications to Azure Spring Apps, the value for the config server will be set by Azure Spring Apps.    
 
 1. In the parent **pom.xml** file double check the version number on line 9.
 
