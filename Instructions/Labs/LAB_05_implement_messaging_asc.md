@@ -314,7 +314,7 @@ You will next add the code required to send and receive messages to the `visits`
    }
    ```
 
-2. In the same directory, add a `VisitResponse.java` class containing the following code:
+1. In the same directory, add a `VisitResponse.java` class containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.entities;
@@ -359,7 +359,7 @@ You will next add the code required to send and receive messages to the `visits`
    }
    ```
 
-3. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/config` subdirectory and add a `MessagingConfig.java` class file containing the following code:
+1. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/config` subdirectory and add a `MessagingConfig.java` class file containing the following code:
 
    ```java
     package org.springframework.samples.petclinic.visits.config;
@@ -391,7 +391,7 @@ You will next add the code required to send and receive messages to the `visits`
     }
    ```
 
-4. In the same directory, add a `QueueConfig.java` class file containing the following code:
+1. In the same directory, add a `QueueConfig.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.config;
@@ -408,7 +408,7 @@ You will next add the code required to send and receive messages to the `visits`
    }
    ```
 
-5. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/service` subdirectory and add a `VisitsReceiver.java` class file containing the following code:
+1. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/service` subdirectory and add a `VisitsReceiver.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.service;
