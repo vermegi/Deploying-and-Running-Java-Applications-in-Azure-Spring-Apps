@@ -285,9 +285,9 @@ You will also need to update the config for your applications to use the newly p
 
    > **Note**: Wait for the provisioning to complete. This might take about 3 minutes.
 
-2. Once the Azure Database for MySQL Single Server instance gets created, it will output details about its settings. In the output, you will find the server connection string. Record its value since you will need it later in this exercise.
+1. Once the Azure Database for MySQL Single Server instance gets created, it will output details about its settings. In the output, you will find the server connection string. Record its value since you will need it later in this exercise.
 
-3. Run the following commands to create a database in the Azure Database for MySQL Single Server instance.
+1. Run the following commands to create a database in the Azure Database for MySQL Single Server instance.
 
    ```bash
     az mysql flexible-server db create \
@@ -296,7 +296,7 @@ You will also need to update the config for your applications to use the newly p
         -d $DATABASE_NAME
    ```
 
-4. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance.
+1. You will also need to allow connections to the server from Azure Spring Apps. For now, to accomplish this, you will create a server firewall rule to allow inbound traffic from all Azure Services. This way your apps running in Azure Spring Apps will be able to reach the MySQL database providing them with persistent storage. In one of the upcoming exercises, you will restrict this connectivity to limit it exclusively to the apps hosted by your Azure Spring Apps instance.
 
    ```bash
     az mysql flexible-server firewall-rule create \
@@ -306,7 +306,7 @@ You will also need to update the config for your applications to use the newly p
         --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
    ```
 
-5. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Change the entries in lines 82, 83, and 84 that contain the values of the target datasource endpoint, the corresponding admin user account, and its password. Set these values by using the information in the Azure Database for MySQL Single Server connection string you recorded earlier in this task. Your configuration should look like this:
+1. From the Git Bash window, in the config repository you cloned locally, use your favorite text editor to open the application.yml file. Change the entries in lines 82, 83, and 84 that contain the values of the target datasource endpoint, the corresponding admin user account, and its password. Set these values by using the information in the Azure Database for MySQL Single Server connection string you recorded earlier in this task. Your configuration should look like this:
 
    > **Note**: The original content of these three lines in the application.yml file have the following format:
 
@@ -326,7 +326,7 @@ You will also need to update the config for your applications to use the newly p
 
    > **Note**: Ensure to change the value of the `useSSL` parameter to `true`, since this is enforced by default by Azure Database for MySQL Single Server.
 
-6. Save the changes and push the updates you made to the **application.yml** file to your private GitHub repo by running the following commands from the Git Bash prompt:
+1. Save the changes and push the updates you made to the **application.yml** file to your private GitHub repo by running the following commands from the Git Bash prompt:
 
    ```bash
    git add .

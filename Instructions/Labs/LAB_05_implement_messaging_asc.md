@@ -263,7 +263,8 @@ To start, you will need to add the necessary dependencies.
 
 ### Add the message producers and listeners
 
-You will next add the code required to send and receive messages to the `visits` service. The `message-emulator` will send a `PetClinicMessageRequest` to the `visits-requests` queue. The `visits` service will need to listen to this queue and each time a `VisitRequest` message is submitted, it will create a new `Visit` for the pet ID referenced in the message. The `visits` service will also send back a `VisitResponse` as a confirmation to the `visits-confirmations` queue. This is the queue the `message-emulator` is listening to.
+
+You will next add the code required to send and receive messages to the `visits` service. The `message-emulator` will send a `PetClinicMessageRequest` to the `visits-requests` queue. The `visits` service will need to listen to this queue and each time a `VisitRequest` message is submitted, it will create a new `Visit` for the pet ID referenced in the message. 
 
 <details>
 <summary>hint</summary>
