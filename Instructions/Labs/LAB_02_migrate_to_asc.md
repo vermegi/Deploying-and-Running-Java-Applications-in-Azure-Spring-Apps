@@ -42,7 +42,7 @@ During this challenge, you will:
 - Provide a publicly available endpoint for the Spring Petclinic application
 - Test the application through the publicly available endpoint
 
-> **Note**: The labstarter branch of the Azure-Samples/spring-petclinic-microservices repository contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
+> **Note**: [The labstarter branch of the Azure-Samples/spring-petclinic-microservices repository](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter) contains a dev container for Java development. This container contains all the needed tools for running this lab. In case you want to use this dev container you can either use a [GitHub CodeSpace](https://github.com/features/codespaces) in case your GitHub account is enabled for Codespaces. Or you can use the [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers).
 
 > **Note**: In case you want to run this lab on your own workstation, this lab contains guidance for a Windows workstation. Your workstation should contain the following components:
 
