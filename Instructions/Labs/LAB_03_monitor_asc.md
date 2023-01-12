@@ -52,11 +52,11 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
 <summary>hint</summary>
 <br/>
 
-1. From the Git Bash prompt, run the following command to live stream the logs of the `api-gateway` service, you can use the below statement:
+1. From the Git Bash prompt, run the following command to live stream the logs of the `customers-service` app, you can use the below statement:
 
    ```bash
    az spring app logs \
-       --name api-gateway \
+       --name customers-service \
        --resource-group $RESOURCE_GROUP \
        --service $SPRING_APPS_SERVICE \
        --follow
