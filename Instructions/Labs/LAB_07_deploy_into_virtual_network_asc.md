@@ -126,7 +126,7 @@ In later exercises you will be creating the private endpoints for the backend se
    export MSYS_NO_PATHCONV=1
 
    az role assignment create \
-       --role "lOD Owner" \
+       --role "LOD Owner" \
        --scope $VIRTUAL_NETWORK_RESOURCE_ID \
        --assignee e8de9221-a19c-4c81-b814-fd37c6caf9d2
    ```
