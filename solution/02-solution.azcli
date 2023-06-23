@@ -1,0 +1,193 @@
+az login --use-device-code
+
+az account list -o table
+
+UNIQUEID=$(openssl rand -hex 3)
+APPNAME=petclinic
+RESOURCE_GROUP=rg-$APPNAME-$UNIQUEID
+LOCATION=northeurope
+az group create -g $RESOURCE_GROUP -l $LOCATION
+
+#changed!!!
+#az extension add --name spring
+
+az extension add --upgrade --name spring
+az extension list
+az extension remove --name spring-cloud
+# add note: might give error message that the extension is not installed: "The extension spring-cloud is not installed. Please install the extension via `az extension add -n spring-cloud`."
+
+
+az spring --help
+
+az provider register --namespace Microsoft.SaaS
+# This could take about 2 mins
+az provider show -n Microsoft.SaaS --query registrationState
+az term accept \
+    --publisher vmware-inc \
+    --product azure-spring-cloud-vmware-tanzu-2 \
+    --plan asa-ent-hr-mtr
+
+SPRING_APPS_SERVICE=sa-$APPNAME-$UNIQUEID
+
+#Can probably omit GW
+az spring create \
+    --resource-group $RESOURCE_GROUP \
+    --name $SPRING_APPS_SERVICE \
+    --sku enterprise \
+    --enable-application-configuration-service \
+    --enable-service-registry \
+    --enable-gateway \
+    --enable-api-portal
+
+#OUTPUT:
+ - Creating Service ..
+Start configure Application Insights
+Application Insights "sa-petclinic-592faa" was created for this Azure Spring Apps. You can visit https://portal.azure.com/#resource/subscriptions/xxx/resourceGroups/rg-petclinic-592faa/providers/microsoft.insights/components/sa-petclinic-592faa/overview to view your Application Insights component
+ - Creating Application Configuration Service ..
+Default generation will be Gen1
+ - Creating Service Registry ..
+ - Creating Spring Cloud Gateway ..
+ - Creating API portal ..
+
+az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
+
+#See AKS guidance for repo setup and config upload!!!
+
+GIT_REPO=<git-repository>
+GIT_USERNAME=<git-username>
+GIT_PASSWORD=<git-PAT>
+
+az spring application-configuration-service git repo add --help
+
+#az spring application-configuration-service git repo update \
+az spring application-configuration-service git repo update \
+    --resource-group $RESOURCE_GROUP \
+    --name spring-petclinic-config \
+    --service $SPRING_APPS_SERVICE \
+    --label asa-solution-3.0 \
+    --patterns "api-gateway,customers-service,vets-service,,visits-service,admin-server" \
+    --uri $GIT_REPO \
+    --password $GIT_PASSWORD \
+    --username $GIT_USERNAME
+
+API_GATEWAY=api-gateway
+ADMIN_SERVER=admin-server
+CUSTOMERS_SERVICE=customers-service
+VETS_SERVICE=vets-service
+VISITS_SERVICE=visits-service
+
+az spring app create \
+    --name $API_GATEWAY
+
+az spring app create \
+    --name $ADMIN_SERVER
+
+az spring app create \
+    --name $CUSTOMERS_SERVICE
+
+az spring app create \
+    --name $VETS_SERVICE
+
+az spring app create \
+    --name $VISITS_SERVICE
+
+az spring application-configuration-service bind --app ${API_GATEWAY}
+az spring application-configuration-service bind --app ${ADMIN_SERVER}
+az spring application-configuration-service bind --app ${CUSTOMERS_SERVICE}
+az spring application-configuration-service bind --app ${VETS_SERVICE}
+az spring application-configuration-service bind --app ${VISITS_SERVICE}
+
+az spring service-registry bind --app ${API_GATEWAY}
+az spring service-registry bind --app ${ADMIN_SERVER}
+az spring service-registry bind --app ${CUSTOMERS_SERVICE}
+az spring service-registry bind --app ${VETS_SERVICE}
+az spring service-registry bind --app ${VISITS_SERVICE}
+
+MYSQL_SERVER_NAME=mysql-$APPNAME-$UNIQUEID
+MYSQL_ADMIN_USERNAME=myadmin
+MYSQL_ADMIN_PASSWORD=<myadmin-password>
+DATABASE_NAME=petclinic
+      
+az mysql flexible-server create \
+    --admin-user myadmin \
+    --admin-password ${MYSQL_ADMIN_PASSWORD} \
+    --name ${MYSQL_SERVER_NAME} \
+    --resource-group ${RESOURCE_GROUP} 
+
+az mysql flexible-server db create \
+    --server-name $MYSQL_SERVER_NAME \
+    --resource-group $RESOURCE_GROUP \
+    -d $DATABASE_NAME
+
+az mysql flexible-server firewall-rule create \
+    --rule-name allAzureIPs \
+    --name ${MYSQL_SERVER_NAME} \
+    --resource-group ${RESOURCE_GROUP} \
+    --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
+#Edit application.yml --> see AKS steps --> 02-application.yml
+
+cd src
+mvn clean package -DskipTests
+
+VERSION=3.0.2
+API_GATEWAY_JAR=spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-$VERSION.jar
+ADMIN_SERVER_JAR=spring-petclinic-admin-server/target/spring-petclinic-admin-server-$VERSION.jar
+CUSTOMERS_SERVICE_JAR=spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar
+VETS_SERVICE_JAR=spring-petclinic-vets-service/target/spring-petclinic-vets-service-$VERSION.jar
+VISITS_SERVICE_JAR=spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar
+
+az spring app deploy --name ${API_GATEWAY} \
+    --config-file-patterns ${API_GATEWAY} \
+    --artifact-path ${API_GATEWAY_JAR} \
+    --assign-endpoint true
+
+az spring app --help
+
+az spring app update --name ${API_GATEWAY} \
+    --assign-endpoint true
+
+
+az spring app deploy --name ${ADMIN_SERVER} \
+    --config-file-patterns ${ADMIN_SERVER} \
+    --artifact-path ${ADMIN_SERVER_JAR} \
+    --assign-endpoint true
+
+az spring app update --name ${ADMIN_SERVER} \
+    --assign-endpoint true
+
+az spring app deploy --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+
+az spring app logs --name ${CUSTOMERS_SERVICE} --follow
+
+az spring app deploy --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}  \
+    --artifact-path ${VETS_SERVICE_JAR} 
+    
+az spring app deploy --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} 
+
+az spring app logs --name ${VETS_SERVICE} --follow
+
+az spring app show --name ${API_GATEWAY} | grep url
+
+az spring app update --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} 
+
+az spring app update --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE}
+
+az spring app update --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}
+
+
+az spring app show --name ${VETS_SERVICE}
+
+mvn clean package -DskipTests -rf :spring-petclinic-vets-service
+
+az spring app list --service $SPRING_APPS_SERVICE \
+                   --resource-group $RESOURCE_GROUP \
+                   --output table
