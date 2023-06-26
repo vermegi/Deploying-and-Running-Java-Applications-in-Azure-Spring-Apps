@@ -1,0 +1,31 @@
+az spring app logs \
+    --name customers-service \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --follow
+
+az spring build-service builder buildpack-binding --help
+az spring build-service builder buildpack-binding show --name default
+
+#This shows info about app insights and the instrumentation key
+
+
+az monitor diagnostic-settings categories list \
+    --resource $SPRING_APPS_SERVICE \
+    -g $RESOURCE_GROUP \
+    --resource-type Microsoft.AppPlatform/Spring \
+    --query value[].name
+
+WORKSPACE=log-$APPNAME-$UNIQUEID
+az monitor log-analytics workspace create \
+    --resource-group $RESOURCE_GROUP \
+    --workspace-name $WORKSPACE
+
+az monitor diagnostic-settings create \
+    --name asa-logs \
+    --resource $SPRING_APPS_SERVICE \
+    --resource-type Microsoft.AppPlatform/Spring \
+    --resource-group $RESOURCE_GROUP \
+    --workspace $WORKSPACE \
+    --logs @logs.json \
+    --metrics @metrics.json

@@ -1,0 +1,22 @@
+[
+    {
+      "category": "ApplicationConsole",
+      "enabled": true
+    },
+    {
+      "category": "SystemLogs",
+      "enabled": true
+    },
+    {
+      "category": "IngressLogs",
+      "enabled": true
+    },
+    {
+      "category": "BuildLogs",
+      "enabled": true
+    },
+    {
+      "category": "ContainerEventLogs",
+      "enabled": true
+    }
+]

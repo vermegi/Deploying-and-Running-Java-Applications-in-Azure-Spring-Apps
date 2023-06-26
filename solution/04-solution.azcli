@@ -1,0 +1,195 @@
+#Create Key Vault
+KEYVAULT_NAME=kv-$APPNAME-$UNIQUEID
+az keyvault create \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --location $LOCATION \
+    --sku standard
+
+#Create secrets
+az keyvault secret set \
+    --name SPRING-DATASOURCE-URL \
+    --value "jdbc:mysql://$MYSQL_SERVER_NAME.mysql.database.azure.com:3306/$DATABASE_NAME?useSSL=true&serverTimezone=UTC" \
+    --vault-name $KEYVAULT_NAME
+
+
+#CHANGE THIS TO 1 UID and not 3 seperate ones! --> NOT needed, env variables get injected by the service connection
+#Create a user assigned managed identity for your microservices
+CUSTOMERS_SERVICE_ID=$(az identity create -g $RESOURCE_GROUP -n customers-svc-uid --query id -o tsv)
+
+VISITS_SERVICE_ID=$(az identity create -g $RESOURCE_GROUP -n visits-svc-uid --query id -o tsv)
+
+VETS_SERVICE_ID=$(az identity create -g $RESOURCE_GROUP -n vets-svc-uid --query id -o tsv)
+
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $CUSTOMERS_SERVICE \
+    --user-assigned $CUSTOMERS_SERVICE_ID
+
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $VISITS_SERVICE \
+    --user-assigned $VISITS_SERVICE_ID
+
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $VETS_SERVICE \
+    --user-assigned $VETS_SERVICE_ID
+
+
+#Grant the managed identity permissions to access the Azure Key Vault secrets
+CUSTOMERS_SERVICE_UID=$(az identity show -g $RESOURCE_GROUP -n customers-svc-uid --query principalId -o tsv)
+VISITS_SERVICE_UID=$(az identity show -g $RESOURCE_GROUP -n visits-svc-uid --query principalId -o tsv)
+VETS_SERVICE_UID=$(az identity show -g $RESOURCE_GROUP -n vets-svc-uid --query principalId -o tsv)
+
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --secret-permissions get list  \
+    --object-id $CUSTOMERS_SERVICE_UID
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --secret-permissions get list  \
+    --object-id $VETS_SERVICE_UID
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --secret-permissions get list  \
+    --object-id $VISITS_SERVICE_UID
+
+
+#Update application config
+#Update pom files
+#Update application.yml
+
+cd src
+
+mvn clean package -DskipTests
+
+#Update, rebuild, and redeploy each app
+az spring app deploy --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+
+az spring app logs --name ${CUSTOMERS_SERVICE} --follow
+
+az spring app deploy --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}  \
+    --artifact-path ${VETS_SERVICE_JAR} 
+    
+az spring app deploy --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} 
+
+#NEW:
+#Connect to the database without using username and password
+https://learn.microsoft.com/en-us/azure/spring-apps/how-to-bind-mysql?tabs=Service-Connector
+
+az extension add --name serviceconnector-passwordless --upgrade
+
+DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME=uid-dbadmin-$APPNAME-$UNIQUEID
+
+ADMIN_IDENTITY_RESOURCE_ID=$(az identity create \
+ --name $DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME \
+ --resource-group $RESOURCE_GROUP \
+ --query id \
+ --output tsv)
+
+SUBID=$(az account show --query id -o tsv)
+
+CUSTOMERS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n customers-svc-uid --query clientId -o tsv)
+VISITS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n visits-svc-uid --query clientId -o tsv)
+VETS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n vets-svc-uid --query clientId -o tsv)
+
+echo $CUSTOMERS_SERVICE_CID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --app $CUSTOMERS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --system-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID
+#    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --app $VISITS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VISITS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --app $VETS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VETS_SERVICE_CID subs-id=$SUBID
+
+#The behavior of this command has been altered by the following extension: serviceconnector-passwordless
+#Connection name is not specified, use generated one: --connection mysqlflexible_rqmuy
+#Client type is not specified, use detected one: --client-type springBoot
+#Connecting to database...
+#Adding new AAD user aad_mysqlflexible_rqmuy to database...
+
+#az spring connection delete --id /subscriptions/xxx/resourceGroups/rg-petclinic-592faa/providers/Microsoft.AppPlatform/Spring/sa-petclinic-592faa/apps/customers-service/deployments/default/providers/Microsoft.ServiceLinker/linkers/mysqlflexible_2br1j
+
+mvn clean package -DskipTests
+
+#Update, rebuild, and redeploy each app
+az spring app deploy --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+
+az spring app logs --name ${CUSTOMERS_SERVICE} --follow
+
+az spring app deploy --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}  \
+    --artifact-path ${VETS_SERVICE_JAR} 
+
+az spring app logs --name ${VETS_SERVICE} --follow
+
+az spring app deploy --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} 
+
+
+RDBMS_ACCESS_TOKEN=$(az account get-access-token \
+    --resource-type oss-rdbms \
+    --query accessToken \
+    --output tsv) 
+echo $RDBMS_ACCESS_TOKEN
+
+CURRENT_USER=$(az account show --query user.name --output tsv)
+echo $CURRENT_USER
+CURRENT_USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
+echo $CURRENT_USER_OBJECTID
+
+IDENTITY_LOGIN_NAME="mysql_conn_customers"
+   
+cat <<EOF >createuser_cust.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+DROP USER IF EXISTS '${IDENTITY_LOGIN_NAME}'@'%';
+CREATE AADUSER '${IDENTITY_LOGIN_NAME}' IDENTIFIED BY '${CUSTOMERS_SERVICE_CID}';
+GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${IDENTITY_LOGIN_NAME}'@'%';
+FLUSH privileges;
+EOF
+
+az mysql flexible-server execute \
+    --name ${MYSQL_SERVER_NAME} \
+    --admin-user ${CURRENT_USER} \
+    --admin-password ${RDBMS_ACCESS_TOKEN} \
+    --file-path "createuser_cust.sql"   
+
+#The command requires the extension rdbms-connect. Do you want to install it now? The command will continue to run after the extension is installed. (Y/n): Y
+
+

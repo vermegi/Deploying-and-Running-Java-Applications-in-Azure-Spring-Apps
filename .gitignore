@@ -36,3 +36,4 @@ src/create_ad_user.sql
 src/secretfile.txt
 src/kubernetes/createuser.sql
 src/staging-acr/*.jar
+src/createuser_cust.sql
