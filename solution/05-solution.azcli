@@ -1,0 +1,90 @@
+SERVICEBUS_NAMESPACE=sb-$APPNAME-$UNIQUEID
+
+az servicebus namespace create \
+    --resource-group $RESOURCE_GROUP \
+    --name $SERVICEBUS_NAMESPACE \
+    --location $LOCATION \
+    --sku Premium
+
+az servicebus queue create \
+    --resource-group $RESOURCE_GROUP \
+    --namespace-name $SERVICEBUS_NAMESPACE \
+    --name visits-requests
+
+SERVICEBUS_CONNECTIONSTRING=$(az servicebus namespace authorization-rule keys list \
+    --resource-group $RESOURCE_GROUP \
+    --namespace-name $SERVICEBUS_NAMESPACE \
+    --name RootManageSharedAccessKey \
+    --query primaryConnectionString \
+    --output tsv)
+
+az keyvault secret set \
+    --name SPRING-JMS-SERVICEBUS-CONNECTIONSTRING \
+    --value $SERVICEBUS_CONNECTIONSTRING \
+    --vault-name $KEYVAULT_NAME
+
+cd src
+
+mvn clean package -DskipTests -rf :spring-petclinic-messaging-emulator
+
+MESSAGING_EMULATOR=messaging-emulator
+
+az spring app create \
+    --name $MESSAGING_EMULATOR \
+    --assign-endpoint true
+
+#Make sure messaging-emulator.yml file is created BEFORE updating config service! --> still not working though, defaulting to customer-service config
+
+az spring application-configuration-service git repo update \
+    --resource-group $RESOURCE_GROUP \
+    --name spring-petclinic-config \
+    --service $SPRING_APPS_SERVICE \
+    --label asa-solution-3.0 \
+    --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server,messaging-emulator" \
+    --uri $GIT_REPO \
+    --password $GIT_PASSWORD \
+    --username $GIT_USERNAME
+
+az spring application-configuration-service bind --app ${MESSAGING_EMULATOR}
+
+az spring service-registry bind --app ${MESSAGING_EMULATOR}
+
+MESSAGING_EMULATOR_JAR=spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-$VERSION.jar
+
+MESSAGING_EMULATOR_ID=$(az identity create -g $RESOURCE_GROUP -n messaging-svc-uid --query id -o tsv)
+
+echo $MESSAGING_EMULATOR_ID
+
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $MESSAGING_EMULATOR \
+    --user-assigned $MESSAGING_EMULATOR_ID
+
+MESSAGING_EMULATOR_UID=$(az identity show -g $RESOURCE_GROUP -n messaging-svc-uid --query principalId -o tsv)
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --secret-permissions get list  \
+    --object-id $MESSAGING_EMULATOR_UID
+
+az spring app deploy --name ${MESSAGING_EMULATOR} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${MESSAGING_EMULATOR_JAR}
+
+az spring app logs --name ${MESSAGING_EMULATOR} --follow
+
+MESSAGING_EMULATOR_CID=$(az identity show -g $RESOURCE_GROUP -n messaging-svc-uid --query clientId -o tsv)
+
+#Not executed yet: 
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --app $MESSAGING_EMULATOR \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$MESSAGING_EMULATOR_CID subs-id=$SUBID
+
+
+

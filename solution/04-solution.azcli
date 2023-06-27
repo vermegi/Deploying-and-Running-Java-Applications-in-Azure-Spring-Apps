@@ -81,6 +81,8 @@ az spring app deploy --name ${VETS_SERVICE} \
     --config-file-patterns ${VETS_SERVICE}  \
     --artifact-path ${VETS_SERVICE_JAR} 
     
+az spring app logs --name ${VETS_SERVICE} --follow
+
 az spring app deploy --name ${VISITS_SERVICE} \
     --config-file-patterns ${VISITS_SERVICE} \
     --artifact-path ${VISITS_SERVICE_JAR} 
@@ -114,8 +116,8 @@ az spring connection create mysql-flexible \
     --target-resource-group $RESOURCE_GROUP \
     --server $MYSQL_SERVER_NAME \
     --database $DATABASE_NAME \
-    --system-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID
-#    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+#    --system-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID
 
 az spring connection create mysql-flexible \
     --resource-group $RESOURCE_GROUP \
@@ -162,7 +164,7 @@ az spring app deploy --name ${VISITS_SERVICE} \
     --config-file-patterns ${VISITS_SERVICE} \
     --artifact-path ${VISITS_SERVICE_JAR} 
 
-
+#Trying manual setup ...
 RDBMS_ACCESS_TOKEN=$(az account get-access-token \
     --resource-type oss-rdbms \
     --query accessToken \

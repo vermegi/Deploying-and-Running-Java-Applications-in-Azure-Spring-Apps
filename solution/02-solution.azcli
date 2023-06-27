@@ -65,7 +65,7 @@ az spring application-configuration-service git repo update \
     --name spring-petclinic-config \
     --service $SPRING_APPS_SERVICE \
     --label asa-solution-3.0 \
-    --patterns "api-gateway,customers-service,vets-service,,visits-service,admin-server" \
+    --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server" \
     --uri $GIT_REPO \
     --password $GIT_PASSWORD \
     --username $GIT_USERNAME
@@ -77,10 +77,12 @@ VETS_SERVICE=vets-service
 VISITS_SERVICE=visits-service
 
 az spring app create \
-    --name $API_GATEWAY
+    --name $API_GATEWAY \
+    --assign-endpoint true
 
 az spring app create \
-    --name $ADMIN_SERVER
+    --name $ADMIN_SERVER \
+    --assign-endpoint true
 
 az spring app create \
     --name $CUSTOMERS_SERVICE
@@ -139,22 +141,12 @@ VISITS_SERVICE_JAR=spring-petclinic-visits-service/target/spring-petclinic-visit
 
 az spring app deploy --name ${API_GATEWAY} \
     --config-file-patterns ${API_GATEWAY} \
-    --artifact-path ${API_GATEWAY_JAR} \
-    --assign-endpoint true
-
+    --artifact-path ${API_GATEWAY_JAR}
 az spring app --help
-
-az spring app update --name ${API_GATEWAY} \
-    --assign-endpoint true
-
 
 az spring app deploy --name ${ADMIN_SERVER} \
     --config-file-patterns ${ADMIN_SERVER} \
-    --artifact-path ${ADMIN_SERVER_JAR} \
-    --assign-endpoint true
-
-az spring app update --name ${ADMIN_SERVER} \
-    --assign-endpoint true
+    --artifact-path ${ADMIN_SERVER_JAR}
 
 az spring app deploy --name ${CUSTOMERS_SERVICE} \
     --config-file-patterns ${CUSTOMERS_SERVICE} \
