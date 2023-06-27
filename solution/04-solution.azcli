@@ -119,6 +119,18 @@ az spring connection create mysql-flexible \
     --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
 #    --system-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID
 
+CONNECTION=$(az spring connection list \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE \
+    --app $CUSTOMERS_SERVICE \
+    --query [].id -o tsv)
+
+az spring connection validate \
+    --resource-group ${RESOURCE_GROUP} \
+    --service ${SPRING_APPS_SERVICE} \
+    --app ${CUSTOMERS_SERVICE} \
+    --id $CONNECTION
+
 az spring connection create mysql-flexible \
     --resource-group $RESOURCE_GROUP \
     --service $SPRING_APPS_SERVICE \
