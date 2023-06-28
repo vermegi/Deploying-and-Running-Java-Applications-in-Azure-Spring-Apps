@@ -1,0 +1,57 @@
+EVENTHUBS_NAMESPACE=evhns-$APPNAME-$UNIQUEID
+echo $EVENTHUBS_NAMESPACE
+
+az eventhubs namespace create \
+  --resource-group $RESOURCE_GROUP \
+  --name $EVENTHUBS_NAMESPACE \
+  --location $LOCATION
+
+EVENTHUB_NAME=telemetry
+
+az eventhubs eventhub create \
+  --name $EVENTHUB_NAME \
+  --resource-group $RESOURCE_GROUP \
+  --namespace-name $EVENTHUBS_NAMESPACE
+
+az eventhubs namespace show --name $EVENTHUBS_NAMESPACE --resource-group $RESOURCE_GROUP --query id -o tsv
+   
+EVENTHUB_ID=$(az eventhubs namespace show --name $EVENTHUBS_NAMESPACE --resource-group $RESOURCE_GROUP --query id -o tsv)
+echo $EVENTHUB_ID
+
+echo $CUSTOMERS_SERVICE_CID
+echo $VETS_SERVICE_CID
+
+az role assignment create --assignee $CUSTOMERS_SERVICE_CID --role 'Azure Event Hubs Data Owner' --scope $EVENTHUB_ID
+az role assignment create --assignee $VETS_SERVICE_CID --role 'Azure Event Hubs Data Owner' --scope $EVENTHUB_ID
+
+#Code steps: see AKS repo
+#Yml cnfig steps: see AKS repo
+
+mvn clean package -DskipTests -rf :spring-petclinic-customers-service
+
+az spring app deploy --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+
+az spring app logs --name ${CUSTOMERS_SERVICE} --follow
+
+#Update an existing microservice to receive Event Hub events
+#Steps from AKS
+
+STORAGE_ACCOUNT_NAME=stg$APPNAME$UNIQUEID
+echo $STORAGE_ACCOUNT_NAME
+az storage account create --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --location $LOCATION --sku "Standard_LRS" 
+az storage account show --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query id -o tsv
+STORAGE_ACCOUNT_ID=$(az storage account show --name $STORAGE_ACCOUNT_NAME --resource-group $RESOURCE_GROUP --query id -o tsv)
+echo $STORAGE_ACCOUNT_ID
+
+STORAGE_CONTAINER=eventhubs-binder
+az storage container create --name $STORAGE_CONTAINER --account-name $STORAGE_ACCOUNT_NAME --public-access container --auth-mode login --debug
+az storage account show -n $STORAGE_ACCOUNT_NAME --query networkRuleSet
+
+
+az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Account Contributor' --scope $STORAGE_ACCOUNT_ID
+az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Blob Data Contributor' --scope $STORAGE_ACCOUNT_ID
+az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Blob Data Owner' --scope $STORAGE_ACCOUNT_ID/containers/$STORAGE_CONTAINER
+
+
