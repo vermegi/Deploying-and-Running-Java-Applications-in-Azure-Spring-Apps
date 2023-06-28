@@ -46,12 +46,21 @@ STORAGE_ACCOUNT_ID=$(az storage account show --name $STORAGE_ACCOUNT_NAME --reso
 echo $STORAGE_ACCOUNT_ID
 
 STORAGE_CONTAINER=eventhubs-binder
-az storage container create --name $STORAGE_CONTAINER --account-name $STORAGE_ACCOUNT_NAME --public-access container --auth-mode login --debug
-az storage account show -n $STORAGE_ACCOUNT_NAME --query networkRuleSet
 
+CURRENT_USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
+az role assignment create --assignee $CURRENT_USER_OBJECTID --role 'Storage Account Contributor' --scope $STORAGE_ACCOUNT_ID
+az role assignment create --assignee $CURRENT_USER_OBJECTID --role 'Storage Blob Data Contributor' --scope $STORAGE_ACCOUNT_ID
+
+az storage container create --name $STORAGE_CONTAINER --account-name $STORAGE_ACCOUNT_NAME --public-access container --auth-mode login
 
 az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Account Contributor' --scope $STORAGE_ACCOUNT_ID
 az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Blob Data Contributor' --scope $STORAGE_ACCOUNT_ID
 az role assignment create --assignee $VETS_SERVICE_CID --role 'Storage Blob Data Owner' --scope $STORAGE_ACCOUNT_ID/containers/$STORAGE_CONTAINER
 
+mvn clean package -DskipTests -rf :spring-petclinic-vets-service
 
+az spring app deploy --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}  \
+    --artifact-path ${VETS_SERVICE_JAR} 
+
+az spring app logs --name ${VETS_SERVICE} --follow
