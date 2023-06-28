@@ -89,6 +89,13 @@ az spring connection create mysql-flexible \
     --database $DATABASE_NAME \
     --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$MESSAGING_EMULATOR_CID subs-id=$SUBID
 
+#Code changes
 
+cd src
+mvn clean package -DskipTests -rf :spring-petclinic-visits-service
 
+az spring app deploy --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} 
 
+az spring app logs --name ${VISITS_SERVICE} --follow
