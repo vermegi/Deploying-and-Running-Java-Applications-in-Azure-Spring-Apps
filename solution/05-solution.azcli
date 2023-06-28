@@ -39,7 +39,7 @@ az spring application-configuration-service git repo update \
     --resource-group $RESOURCE_GROUP \
     --name spring-petclinic-config \
     --service $SPRING_APPS_SERVICE \
-    --label asa-solution-3.0 \
+    --label asa-solution-3.0b \
     --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server,messaging-emulator" \
     --uri $GIT_REPO \
     --password $GIT_PASSWORD \
@@ -71,6 +71,9 @@ az keyvault set-policy \
 az spring app deploy --name ${MESSAGING_EMULATOR} \
     --config-file-patterns ${CUSTOMERS_SERVICE} \
     --artifact-path ${MESSAGING_EMULATOR_JAR}
+
+# When deployed with messaging-emulator pattern. No idea why ... 
+# 112264: Application configuration service failed to fetch configuration from Git repository. 
 
 az spring app logs --name ${MESSAGING_EMULATOR} --follow
 

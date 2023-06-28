@@ -157,7 +157,7 @@ az spring connection create mysql-flexible \
 
 #az spring connection delete --id /subscriptions/xxx/resourceGroups/rg-petclinic-592faa/providers/Microsoft.AppPlatform/Spring/sa-petclinic-592faa/apps/customers-service/deployments/default/providers/Microsoft.ServiceLinker/linkers/mysqlflexible_2br1j
 
-mvn clean package -DskipTests
+mvn clean package -DskipTests -rf :spring-petclinic-customers-service
 
 #Update, rebuild, and redeploy each app
 az spring app deploy --name ${CUSTOMERS_SERVICE} \
