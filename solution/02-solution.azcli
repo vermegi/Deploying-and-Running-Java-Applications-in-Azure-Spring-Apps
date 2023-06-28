@@ -60,7 +60,7 @@ GIT_PASSWORD=<git-PAT>
 az spring application-configuration-service git repo add --help
 
 #az spring application-configuration-service git repo update \
-az spring application-configuration-service git repo update \
+az spring application-configuration-service git repo add \
     --resource-group $RESOURCE_GROUP \
     --name spring-petclinic-config \
     --service $SPRING_APPS_SERVICE \

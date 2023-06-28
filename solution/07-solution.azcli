@@ -77,8 +77,301 @@ az spring create \
     --enable-api-portal \
     --location $LOCATION
 
+az spring application-configuration-service git repo add \
+    --resource-group $RESOURCE_GROUP \
+    --name spring-petclinic-config \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --label asa-solution-3.0-vnet \
+    --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server" \
+    --uri $GIT_REPO \
+    --password $GIT_PASSWORD \
+    --username $GIT_USERNAME
+
+#SHOULD NOT DO ASSIGN ENDPOINT!
+az spring app create \
+    --name $API_GATEWAY 
+
+az spring app create \
+    --name $ADMIN_SERVER 
+
+az spring app create \
+    --name $CUSTOMERS_SERVICE
+
+az spring app create \
+    --name $VETS_SERVICE
+
+az spring app create \
+    --name $VISITS_SERVICE
+
+az spring application-configuration-service bind --app ${API_GATEWAY}
+az spring application-configuration-service bind --app ${ADMIN_SERVER}
+az spring application-configuration-service bind --app ${CUSTOMERS_SERVICE}
+az spring application-configuration-service bind --app ${VETS_SERVICE}
+az spring application-configuration-service bind --app ${VISITS_SERVICE}
+
+az spring service-registry bind --app ${API_GATEWAY}
+az spring service-registry bind --app ${ADMIN_SERVER}
+az spring service-registry bind --app ${CUSTOMERS_SERVICE}
+az spring service-registry bind --app ${VETS_SERVICE}
+az spring service-registry bind --app ${VISITS_SERVICE}
+
+#CUSTOMERS_SERVICE_ID=$(az identity show -g $RESOURCE_GROUP -n customers-svc-uid --query id -o tsv)
+#VISITS_SERVICE_ID=$(az identity show -g $RESOURCE_GROUP -n visits-svc-uid --query id -o tsv)
+#VETS_SERVICE_ID=$(az identity show -g $RESOURCE_GROUP -n vets-svc-uid --query id -o tsv)
 
 
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $CUSTOMERS_SERVICE \
+    --user-assigned $CUSTOMERS_SERVICE_ID
 
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $VISITS_SERVICE \
+    --user-assigned $VISITS_SERVICE_ID
+
+az spring app identity assign \
+    --resource-group $RESOURCE_GROUP \
+    --name $VETS_SERVICE \
+    --user-assigned $VETS_SERVICE_ID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $CUSTOMERS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VISITS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VISITS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VETS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VETS_SERVICE_CID subs-id=$SUBID
+
+
+az spring app deploy --name ${API_GATEWAY} \
+    --config-file-patterns ${API_GATEWAY} \
+    --artifact-path ${API_GATEWAY_JAR}
+
+az spring app deploy --name ${ADMIN_SERVER} \
+    --config-file-patterns ${ADMIN_SERVER} \
+    --artifact-path ${ADMIN_SERVER_JAR}
+
+
+az spring app deploy --name ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+
+az spring app logs --name ${CUSTOMERS_SERVICE} --follow
+
+az spring app deploy --name ${VETS_SERVICE} \
+    --config-file-patterns ${VETS_SERVICE}  \
+    --artifact-path ${VETS_SERVICE_JAR} 
+    
+az spring app logs --name ${VETS_SERVICE} --follow
+
+az spring app deploy --name ${VISITS_SERVICE} \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} 
+
+az spring show \
+    --resource-group $RESOURCE_GROUP \
+    --name $SPRING_APPS_SERVICE_VNET \
+    --query "properties.networkProfile.serviceRuntimeNetworkResourceGroup" \
+    --output tsv
+
+SERVICE_RUNTIME_RG=$(az spring show \
+    --resource-group $RESOURCE_GROUP \
+    --name $SPRING_APPS_SERVICE_VNET \
+    --query "properties.networkProfile.serviceRuntimeNetworkResourceGroup" \
+    --output tsv)
+echo $SERVICE_RUNTIME_RG
+
+az network lb frontend-ip list \
+    --lb-name kubernetes-internal \
+    --resource-group $SERVICE_RUNTIME_RG \
+    --query "[0].privateIPAddress" \
+    --output tsv
+IP_ADDRESS=$(az network lb frontend-ip list \
+    --lb-name kubernetes-internal \
+    --resource-group $SERVICE_RUNTIME_RG \
+    --query "[0].privateIPAddress" \
+    --output tsv)
+echo $IP_ADDRESS
+
+az network private-dns zone create \
+    --resource-group $RESOURCE_GROUP \
+    --name private.azuremicroservices.io
+
+az network private-dns link vnet create \
+    --resource-group $RESOURCE_GROUP \
+    --name azure-spring-apps-dns-link \
+    --zone-name private.azuremicroservices.io \
+    --virtual-network $VIRTUAL_NETWORK_NAME \
+    --registration-enabled false
+
+az network private-dns record-set a add-record \
+    --resource-group $RESOURCE_GROUP \
+    --zone-name private.azuremicroservices.io \
+    --record-set-name '*' \
+    --ipv4-address $IP_ADDRESS
+
+az spring app update \
+    --resource-group $RESOURCE_GROUP \
+    --name $API_GATEWAY \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --assign-endpoint true
+
+az spring app update \
+    --resource-group $RESOURCE_GROUP \
+    --name $ADMIN_SERVER \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --assign-endpoint true
+
+# Acquire a certificate and add it to Key Vault
+az keyvault certificate get-default-policy > sample-policy.json
+
+DNS_LABEL=springappsdns$UNIQUEID
+DNS_NAME=sampleapp.${DNS_LABEL}.com
+cat sample-policy.json | sed "s/myapp.mydomain.com/${DNS_NAME}/g" > result-policy.json
+
+cat result-policy.json
+
+CERT_NAME_IN_KV=openlab-certificate
+az keyvault certificate create \
+    --vault-name $KEYVAULT_NAME \
+    --name $CERT_NAME_IN_KV \
+    --policy @result-policy.json
+
+# Configure domain in Azure Spring Apps
+
+VAULTURI=$(az keyvault show -n $KEYVAULT_NAME -g $RESOURCE_GROUP --query properties.vaultUri -o tsv)
+ASCDM_OID=$(az ad sp show --id 03b39d0f-4213-4864-a245-b1476ec03169 --query id --output tsv)
+
+az keyvault set-policy -g $RESOURCE_GROUP -n $KEYVAULT_NAME  --object-id $ASCDM_OID --certificate-permissions get list --secret-permissions get list
+
+CERT_NAME_IN_ASA=openlab-certificate
+az spring certificate add \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --name $CERT_NAME_IN_ASA \
+    --vault-certificate-name $CERT_NAME_IN_KV \
+    --vault-uri $VAULTURI
+
+az spring app custom-domain bind \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --domain-name $DNS_NAME \
+    --certificate $CERT_NAME_IN_ASA \
+    --app api-gateway
+
+APPLICATION_GATEWAY_PUBLIC_IP_NAME=pip-$APPNAME-app-gw
+az network public-ip create \
+    --resource-group $RESOURCE_GROUP \
+    --location $LOCATION \
+    --name $APPLICATION_GATEWAY_PUBLIC_IP_NAME \
+    --allocation-method Static \
+    --sku Standard \
+    --dns-name $DNS_LABEL
+
+APPGW_IDENTITY_NAME=id-$APPNAME-appgw
+az identity create \
+    --resource-group $RESOURCE_GROUP \
+    --name $APPGW_IDENTITY_NAME
+
+APPGW_IDENTITY_CLIENTID=$(az identity show --resource-group $RESOURCE_GROUP --name $APPGW_IDENTITY_NAME --query clientId --output tsv)
+echo $APPGW_IDENTITY_CLIENTID
+APPGW_IDENTITY_OID=$(az ad sp show --id $APPGW_IDENTITY_CLIENTID --query id --output tsv)
+
+az keyvault set-policy \
+    --name $KEYVAULT_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --object-id $APPGW_IDENTITY_OID \
+    --secret-permissions get list \
+    --certificate-permissions get list
+
+KEYVAULT_SECRET_ID_FOR_CERT=$(az keyvault certificate show --name $CERT_NAME_IN_KV --vault-name $KEYVAULT_NAME --query sid --output tsv)
+
+WAF_POLICY_NAME=waf-$APPNAME-$UNIQUEID
+az network application-gateway waf-policy create \
+    --name $WAF_POLICY_NAME \
+    --resource-group $RESOURCE_GROUP
+
+APPGW_NAME=agw-$APPNAME-$UNIQUEID
+APIGW_NAME=$SPRING_APPS_SERVICE-api-gateway
+SPRING_APP_PRIVATE_FQDN=${APIGW_NAME}.private.azuremicroservices.io
+
+az network application-gateway create \
+    --name $APPGW_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --location $LOCATION \
+    --capacity 2 \
+    --sku WAF_v2 \
+    --frontend-port 443 \
+    --http-settings-cookie-based-affinity Disabled \
+    --http-settings-port 443 \
+    --http-settings-protocol Https \
+    --public-ip-address $APPLICATION_GATEWAY_PUBLIC_IP_NAME \
+    --vnet-name $VIRTUAL_NETWORK_NAME \
+    --subnet $APPLICATION_GATEWAY_SUBNET_NAME \
+    --servers $SPRING_APP_PRIVATE_FQDN \
+    --key-vault-secret-id $KEYVAULT_SECRET_ID_FOR_CERT \
+    --identity $APPGW_IDENTITY_NAME \
+    --priority "1" \
+    --waf-policy $WAF_POLICY_NAME
+
+az keyvault certificate download \
+    --vault-name $KEYVAULT_NAME \
+    --name $CERT_NAME_IN_KV \
+    --file ./selfsignedcert.crt \
+    --encoding DER
+
+az network application-gateway root-cert create \
+    --resource-group $RESOURCE_GROUP \
+    --cert-file ./selfsignedcert.crt \
+    --gateway-name $APPGW_NAME \
+    --name MySelfSignedTrustedRootCert
+
+az network application-gateway http-settings update \
+    --resource-group $RESOURCE_GROUP \
+    --gateway-name $APPGW_NAME \
+    --host-name-from-backend-pool false \
+    --host-name $DNS_NAME \
+    --name appGatewayBackendHttpSettings \
+    --root-certs MySelfSignedTrustedRootCert
+
+az network application-gateway show-backend-health \
+    --name $APPGW_NAME \
+    --resource-group $RESOURCE_GROUP
+
+az network public-ip show \
+    --resource-group $RESOURCE_GROUP \
+    --name $APPLICATION_GATEWAY_PUBLIC_IP_NAME \
+    --query [ipAddress] \
+    --output tsv
+
+echo $DNS_NAME
+
+#Edit host file
+
+az network application-gateway waf-policy policy-setting update \
+    --mode Detection \
+    --policy-name $WAF_POLICY_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --state Enabled
 
 
