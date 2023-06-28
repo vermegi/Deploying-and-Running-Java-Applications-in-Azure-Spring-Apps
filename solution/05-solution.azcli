@@ -39,7 +39,7 @@ az spring application-configuration-service git repo update \
     --resource-group $RESOURCE_GROUP \
     --name spring-petclinic-config \
     --service $SPRING_APPS_SERVICE \
-    --label asa-solution-3.0b \
+    --label asa-solution-3.0 \
     --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server,messaging-emulator" \
     --uri $GIT_REPO \
     --password $GIT_PASSWORD \
@@ -88,6 +88,7 @@ az spring connection create mysql-flexible \
     --server $MYSQL_SERVER_NAME \
     --database $DATABASE_NAME \
     --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$MESSAGING_EMULATOR_CID subs-id=$SUBID
+
 
 
 
