@@ -69,7 +69,7 @@ az keyvault set-policy \
     --object-id $MESSAGING_EMULATOR_UID
 
 az spring app deploy --name ${MESSAGING_EMULATOR} \
-    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --config-file-patterns ${MESSAGING_EMULATOR} \
     --artifact-path ${MESSAGING_EMULATOR_JAR}
 
 # When deployed with messaging-emulator pattern. No idea why ... 
