@@ -188,6 +188,8 @@ az spring app deploy --name ${VISITS_SERVICE} \
     --config-file-patterns ${VISITS_SERVICE} \
     --artifact-path ${VISITS_SERVICE_JAR} 
 
+az spring app logs --name ${VISITS_SERVICE} --follow
+
 az spring show \
     --resource-group $RESOURCE_GROUP \
     --name $SPRING_APPS_SERVICE_VNET \
