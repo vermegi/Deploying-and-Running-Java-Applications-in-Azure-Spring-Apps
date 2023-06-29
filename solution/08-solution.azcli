@@ -93,18 +93,43 @@ az network vnet subnet create \
 BASTION_IP=bastion-ip-$APPNAME-$UNIQUEID
 az network public-ip create --resource-group $RESOURCE_GROUP --name $BASTION_IP --sku Standard
 BASTION=bastion-$APPNAME-$UNIQUEID
-az network bastion create --name $BASTION --public-ip-address $BASTION_IP --resource-group $RESOURCE_GROUP --vnet-name $VIRTUAL_NETWORK_NAME --sku Standard
+az network bastion create --name $BASTION --public-ip-address $BASTION_IP --resource-group $RESOURCE_GROUP --vnet-name $VIRTUAL_NETWORK_NAME --sku Standard --enable-tunneling true
 # The command requires the extension bastion. Do you want to install it now? The command will continue to run after the extension is installed. (Y/n): Y
 
 az vm show --name $VM_NAME --resource-group $RESOURCE_GROUP --query id 
 VM_ID=$(az vm show --name $VM_NAME --resource-group $RESOURCE_GROUP --query id -o tsv)
 
 az network bastion ssh -n $BASTION -g $RESOURCE_GROUP \
-   --auth-type ssh-key --username $VM_ADMIN --ssh-key ~/.ssh/id_rsa \
+   --auth-type ssh-key --username $VM_ADMIN \
    --target-resource-id $VM_ID
 
 #On bastion jumpbox:
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+az login
 az extension add --upgrade --name spring
+
+#Set up all ENV vars again!!!
+UNIQUEID=<your-unique-id>
+APPNAME=petclinic
+RESOURCE_GROUP=rg-$APPNAME-$UNIQUEID
+SPRING_APPS_SERVICE_VNET=sa-vnet-$APPNAME-$UNIQUEID
+CUSTOMERS_SERVICE=customers-service
+VETS_SERVICE=vets-service
+VISITS_SERVICE=visits-service
+MYSQL_SERVER_NAME_VNET=mysql-vnet$APPNAME-$UNIQUEID
+DATABASE_NAME=petclinic
+DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME=uid-dbadmin-$APPNAME-$UNIQUEID
+ADMIN_IDENTITY_RESOURCE_ID=$(az identity show \
+ --name $DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME \
+ --resource-group $RESOURCE_GROUP \
+ --query id \
+ --output tsv)
+CUSTOMERS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n customers-svc-uid --query clientId -o tsv)
+VETS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n vets-svc-uid --query clientId -o tsv)
+VISITS_SERVICE_CID=$(az identity show -g $RESOURCE_GROUP -n visits-svc-uid --query clientId -o tsv)
+SUBID=$(az account show --query id -o tsv)
+
+#az mysql flexible-server ad-admin create -g $RESOURCE_GROUP -s $MYSQL_SERVER_NAME_VNET -u givermei@microsoft.com -i 00000000-0000-0000-0000-000000000000 --identity $ADMIN_IDENTITY_RESOURCE_ID
 
 az spring connection create mysql-flexible \
     --resource-group $RESOURCE_GROUP \
@@ -133,6 +158,130 @@ az spring connection create mysql-flexible \
     --database $DATABASE_NAME \
     --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VETS_SERVICE_CID subs-id=$SUBID
 
+############MANUAL
+
+CURRENT_USER=$(az account show --query user.name --output tsv)
+echo $CURRENT_USER
+CURRENT_USER_OBJECTID=$(az ad signed-in-user show --query id --output tsv)
+echo $CURRENT_USER_OBJECTID
+
+$AAD_SP = Get-AzureADServicePrincipal -SearchString "Microsoft Graph";
+$AAD_SP
+
+$AAD_AppRole = $AAD_SP.AppRoles | Where-Object {$_.Value -eq "User.Read.All"}
+New-AzureADServiceAppRoleAssignment -ObjectId $MSI.ObjectId  -PrincipalId $MSI.ObjectId  -ResourceId $AAD_SP.ObjectId[0]  -Id $AAD_AppRole.Id 
+$AAD_AppRole = $AAD_SP.AppRoles | Where-Object {$_.Value -eq "GroupMember.Read.All"}
+New-AzureADServiceAppRoleAssignment -ObjectId $MSI.ObjectId  -PrincipalId $MSI.ObjectId  -ResourceId $AAD_SP.ObjectId[0]  -Id $AAD_AppRole.Id
+$AAD_AppRole = $AAD_SP.AppRoles | Where-Object {$_.Value -eq "Application.Read.All"}
+New-AzureADServiceAppRoleAssignment -ObjectId $MSI.ObjectId  -PrincipalId $MSI.ObjectId  -ResourceId $AAD_SP.ObjectId[0]  -Id $AAD_AppRole.Id
+
+az ad sp list --filter "displayname eq 'Microsoft Graph'" --query [0]
+
+# GRAPH_ID=$(az ad sp list --filter "displayname eq 'Microsoft Graph'" --query [0].id -o tsv)
+# echo $GRAPH_ID
+
+ADMIN_IDENTITY_OBJECT_ID=$(az identity show \
+ --name $DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME \
+ --resource-group $RESOURCE_GROUP \
+ --query clientId \
+ -o tsv)
+
+az role assignment create --assignee $ADMIN_IDENTITY_OBJECT_ID --role "df021288-bdef-4463-88db-98f22de89214" 
+
+az mysql flexible-server ad-admin create \
+    --resource-group $RESOURCE_GROUP \
+    --server-name $MYSQL_SERVER_NAME_VNET \
+    --object-id $CURRENT_USER_OBJECTID \
+    --display-name $CURRENT_USER \
+    --identity $DB_ADMIN_USER_ASSIGNED_IDENTITY_NAME
+
+IDENTITY_LOGIN_NAME_CUST="mysql_conn_cust"
+IDENTITY_LOGIN_NAME_VETS="mysql_conn_vets"
+IDENTITY_LOGIN_NAME_VISITS="mysql_conn_visits"
+   
+cat <<EOF >createuser_cust.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+DROP USER IF EXISTS '${IDENTITY_LOGIN_NAME_CUST}'@'%';
+CREATE AADUSER '${IDENTITY_LOGIN_NAME_CUST}' IDENTIFIED BY '${CUSTOMERS_SERVICE_CID}';
+GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${IDENTITY_LOGIN_NAME_CUST}'@'%';
+FLUSH privileges;
+EOF
+
+cat <<EOF >createuser_vets.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+DROP USER IF EXISTS '${IDENTITY_LOGIN_NAME_VETS}'@'%';
+CREATE AADUSER '${IDENTITY_LOGIN_NAME_VETS}' IDENTIFIED BY '${VETS_SERVICE_CID}';
+GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${IDENTITY_LOGIN_NAME_VETS}'@'%';
+FLUSH privileges;
+EOF
+
+cat <<EOF >createuser_visits.sql
+SET aad_auth_validate_oids_in_tenant = OFF;
+DROP USER IF EXISTS '${IDENTITY_LOGIN_NAME_VISITS}'@'%';
+CREATE AADUSER '${IDENTITY_LOGIN_NAME_VISITS}' IDENTIFIED BY '${VISITS_SERVICE_CID}';
+GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO '${IDENTITY_LOGIN_NAME_VISITS}'@'%';
+FLUSH privileges;
+EOF
+
+
+RDBMS_ACCESS_TOKEN=$(az account get-access-token \
+    --resource-type oss-rdbms \
+    --query accessToken \
+    --output tsv) 
+echo $RDBMS_ACCESS_TOKEN
+
+az mysql flexible-server execute \
+    --name ${MYSQL_SERVER_NAME_VNET} \
+    --admin-user ${CURRENT_USER} \
+    --admin-password ${RDBMS_ACCESS_TOKEN} \
+    --file-path "createuser_cust.sql"   
+# The command requires the extension rdbms-connect. Do you want to install it now? The command will continue to run after the extension is installed. (Y/n): Y
+
+az mysql flexible-server execute \
+    --name ${MYSQL_SERVER_NAME_VNET} \
+    --admin-user ${CURRENT_USER} \
+    --admin-password ${RDBMS_ACCESS_TOKEN} \
+    --file-path "createuser_vets.sql"   
+
+az mysql flexible-server execute \
+    --name ${MYSQL_SERVER_NAME_VNET} \
+    --admin-user ${CURRENT_USER} \
+    --admin-password ${RDBMS_ACCESS_TOKEN} \
+    --file-path "createuser_visits.sql"   
+
+exit
+
+#############END MANUAL
+
+DATASOURCE_URL="jdbc:mysql://$MYSQL_SERVER_NAME_VNET.mysql.database.azure.com:3306/$DATABASE_NAME?serverTimezone=UTC&sslmode=required"
+echo $DATASOURCE_URL
+
+# When service connection did not work (as in: for manual setup)
+IDENTITY_LOGIN_NAME_CUST="mysql_conn_cust"
+IDENTITY_LOGIN_NAME_VETS="mysql_conn_vets"
+IDENTITY_LOGIN_NAME_VISITS="mysql_conn_visits"
+az spring app deploy \
+    --name $CUSTOMERS_SERVICE \
+    --config-file-patterns ${CUSTOMERS_SERVICE} \
+    --artifact-path ${CUSTOMERS_SERVICE_JAR} \
+    --env spring.datasource.azure.passwordless-enabled=true spring.cloud.azure.credential.client-id=$CUSTOMERS_SERVICE_CID spring.cloud.azure.credential.managed-identity-enabled=true spring.datasource.url=$DATASOURCE_URL spring.datasource.username=$IDENTITY_LOGIN_NAME_CUST
+
+az spring app deploy \
+    --name $VETS_SERVICE \
+    --config-file-patterns ${VETS_SERVICE} \
+    --artifact-path ${VETS_SERVICE_JAR} \
+    --env spring.datasource.azure.passwordless-enabled=true spring.cloud.azure.credential.client-id=$VETS_SERVICE_CID spring.cloud.azure.credential.managed-identity-enabled=true spring.datasource.url=$DATASOURCE_URL spring.datasource.username=$IDENTITY_LOGIN_NAME_VETS
+
+az spring app deploy \
+    --name $VISITS_SERVICE \
+    --config-file-patterns ${VISITS_SERVICE} \
+    --artifact-path ${VISITS_SERVICE_JAR} \
+    --env spring.datasource.azure.passwordless-enabled=true spring.cloud.azure.credential.client-id=$VISITS_SERVICE_CID spring.cloud.azure.credential.managed-identity-enabled=true spring.datasource.url=$DATASOURCE_URL spring.datasource.username=$IDENTITY_LOGIN_NAME_VISITS
+
+
+echo $CUSTOMERS_SERVICE_CID
+
+# When service connection worked
 az spring app restart \
     --name $CUSTOMERS_SERVICE \
     --resource-group $RESOURCE_GROUP \
