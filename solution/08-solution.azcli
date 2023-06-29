@@ -1,0 +1,197 @@
+CUSTOMERS_CONN=$(az spring connection list \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $CUSTOMERS_SERVICE \
+    --query [0].id \
+    -o tsv)
+
+az spring connection delete \
+    --id $CUSTOMERS_CONN
+
+#Are you sure you want to perform this operation? (y/n): y
+
+VETS_CONN=$(az spring connection list \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VETS_SERVICE \
+    --query [0].id \
+    -o tsv)
+
+az spring connection delete \
+    --id $VETS_CONN
+
+
+VISITS_CONN=$(az spring connection list \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VISITS_SERVICE \
+    --query [0].id \
+    -o tsv)
+
+az spring connection delete \
+    --id $VISITS_CONN
+
+az mysql  flexible-server delete \
+    --name $MYSQL_SERVER_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --yes
+
+MYSQL_DNS="private.mysql.database.azure.com"
+az network private-dns zone create -g $RESOURCE_GROUP -n $MYSQL_DNS
+
+MYSQL_SERVER_NAME_VNET=mysql-vnet$APPNAME-$UNIQUEID
+az mysql flexible-server create \
+        --name ${MYSQL_SERVER_NAME_VNET} \
+        --resource-group ${RESOURCE_GROUP}  \
+        --location $LOCATION \
+        --admin-user myadmin \
+        --admin-password ${MYSQL_ADMIN_PASSWORD} \
+        --sku-name Standard_B1ms  \
+        --tier Burstable \
+        --version 5.7 \
+        --storage-size 20 \
+        --vnet $VIRTUAL_NETWORK_NAME \
+        --subnet $DATABASE_SUBNET_NAME \
+        --private-dns-zone $MYSQL_DNS
+
+az mysql flexible-server db create \
+    --server-name $MYSQL_SERVER_NAME_VNET \
+    --resource-group $RESOURCE_GROUP \
+    -d $DATABASE_NAME
+
+JUMPBOX_SUBNET_CIDR=10.1.5.0/24
+JUMPBOX_SUBNET_NAME=jumpbox-subnet
+az network vnet subnet create \
+    --name $JUMPBOX_SUBNET_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --vnet-name $VIRTUAL_NETWORK_NAME \
+    --address-prefix $JUMPBOX_SUBNET_CIDR
+
+VM_NAME=jumpbox-$APPNAME-$UNIQUEID
+VM_ADMIN=<username>
+VM_PASS=<password>
+az vm create \
+    --name $VM_NAME \
+    --admin-username $VM_ADMIN \
+    --admin-password $VM_PASS \
+    --image Debian11 \
+    --resource-group $RESOURCE_GROUP \
+    --vnet-name $VIRTUAL_NETWORK_NAME \
+    --subnet $JUMPBOX_SUBNET_NAME \
+    --generate-ssh-keys \
+    --output json \
+    --verbose
+
+
+BASTION_SUBNET_CIDR=10.1.6.0/24
+BASTION_SUBNET_NAME=AzureBastionSubnet
+az network vnet subnet create \
+    --name $BASTION_SUBNET_NAME \
+    --resource-group $RESOURCE_GROUP \
+    --vnet-name $VIRTUAL_NETWORK_NAME \
+    --address-prefix $BASTION_SUBNET_CIDR
+BASTION_IP=bastion-ip-$APPNAME-$UNIQUEID
+az network public-ip create --resource-group $RESOURCE_GROUP --name $BASTION_IP --sku Standard
+BASTION=bastion-$APPNAME-$UNIQUEID
+az network bastion create --name $BASTION --public-ip-address $BASTION_IP --resource-group $RESOURCE_GROUP --vnet-name $VIRTUAL_NETWORK_NAME --sku Standard
+# The command requires the extension bastion. Do you want to install it now? The command will continue to run after the extension is installed. (Y/n): Y
+
+az vm show --name $VM_NAME --resource-group $RESOURCE_GROUP --query id 
+VM_ID=$(az vm show --name $VM_NAME --resource-group $RESOURCE_GROUP --query id -o tsv)
+
+az network bastion ssh -n $BASTION -g $RESOURCE_GROUP \
+   --auth-type ssh-key --username $VM_ADMIN --ssh-key ~/.ssh/id_rsa \
+   --target-resource-id $VM_ID
+
+#On bastion jumpbox:
+az extension add --upgrade --name spring
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $CUSTOMERS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME_VNET \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VISITS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME_VNET \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VISITS_SERVICE_CID subs-id=$SUBID
+
+az spring connection create mysql-flexible \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --app $VETS_SERVICE \
+    --target-resource-group $RESOURCE_GROUP \
+    --server $MYSQL_SERVER_NAME_VNET \
+    --database $DATABASE_NAME \
+    --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VETS_SERVICE_CID subs-id=$SUBID
+
+az spring app restart \
+    --name $CUSTOMERS_SERVICE \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --no-wait
+
+az spring app restart \
+    --name $VETS_SERVICE \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --no-wait
+
+az spring app restart \
+    --name $VISITS_SERVICE \
+    --resource-group $RESOURCE_GROUP \
+    --service $SPRING_APPS_SERVICE_VNET \
+    --no-wait
+
+# Lock down the Key Vault instance by using a private endpoint
+
+az network vnet subnet update \
+   --name $PRIVATE_ENDPOINTS_SUBNET_NAME \
+   --resource-group $RESOURCE_GROUP \
+   --vnet-name $VIRTUAL_NETWORK_NAME \
+   --disable-private-endpoint-network-policies true
+
+KEYVAULT_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${KEYVAULT_NAME} --query "id" --resource-typ "Microsoft.KeyVault/vaults" -o tsv)
+
+az network private-endpoint create --resource-group $RESOURCE_GROUP \
+    --vnet-name $VIRTUAL_NETWORK_NAME \
+    --subnet $PRIVATE_ENDPOINTS_SUBNET_NAME \
+    --name pe-openlab-keyvault \
+    --private-connection-resource-id "$KEYVAULT_RESOURCE_ID" \
+    --group-id vault \
+    --connection-name openlab-keyvault-connection \
+    --location $LOCATION
+
+az network private-dns zone create \
+    --resource-group $RESOURCE_GROUP \
+    --name "privatelink.vaultcore.azure.net"
+
+az network private-dns link vnet create \
+    --resource-group $RESOURCE_GROUP \
+    --zone-name "privatelink.vaultcore.azure.net" \
+    --name MyVaultDNSLink \
+    --virtual-network $VIRTUAL_NETWORK_NAME \
+    --registration-enabled false
+
+KEYVAULT_NIC_ID=$(az network private-endpoint show --name pe-openlab-keyvault --resource-group $RESOURCE_GROUP --query 'networkInterfaces[0].id' -o tsv)
+KEYVAULT_NIC_IPADDRESS=$(az resource show --ids $KEYVAULT_NIC_ID --api-version 2019-04-01 -o json | jq -r '.properties.ipConfigurations[0].properties.privateIPAddress')
+
+az network private-dns record-set a add-record -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net" -n $KEYVAULT_NAME -a $KEYVAULT_NIC_IPADDRESS
+az network private-dns record-set list -g $RESOURCE_GROUP -z "privatelink.vaultcore.azure.net"
+
+az keyvault update \
+   --name $KEYVAULT_NAME \
+   --resource-group $RESOURCE_GROUP \
+   --public-network-access Disabled
+
+
+
+
