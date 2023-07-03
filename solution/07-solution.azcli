@@ -9,9 +9,11 @@ APP_SUBNET_CIDR=10.1.1.0/24
 APPLICATION_GATEWAY_SUBNET_CIDR=10.1.2.0/24
 PRIVATE_ENDPOINTS_SUBNET_CIDR=10.1.3.0/24
 DATABASE_SUBNET_CIDR=10.1.4.0/24
+
 APPLICATION_GATEWAY_SUBNET_NAME=app-gw-subnet
 PRIVATE_ENDPOINTS_SUBNET_NAME=private-endpoints-subnet
 DATABASE_SUBNET_NAME=database-subnet
+
 az network vnet subnet create --resource-group $RESOURCE_GROUP \
     --vnet-name $VIRTUAL_NETWORK_NAME \
     --address-prefixes $SERVICE_RUNTIME_SUBNET_CIDR \
@@ -35,6 +37,7 @@ az network vnet subnet create \
     --resource-group $RESOURCE_GROUP \
     --vnet-name $VIRTUAL_NETWORK_NAME \
     --address-prefix $DATABASE_SUBNET_CIDR
+
 
 VIRTUAL_NETWORK_RESOURCE_ID=`az network vnet show \
     --name $VIRTUAL_NETWORK_NAME \

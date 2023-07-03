@@ -278,9 +278,6 @@ az spring app deploy \
     --artifact-path ${VISITS_SERVICE_JAR} \
     --env spring.datasource.azure.passwordless-enabled=true spring.cloud.azure.credential.client-id=$VISITS_SERVICE_CID spring.cloud.azure.credential.managed-identity-enabled=true spring.datasource.url=$DATASOURCE_URL spring.datasource.username=$IDENTITY_LOGIN_NAME_VISITS
 
-
-echo $CUSTOMERS_SERVICE_CID
-
 # When service connection worked
 az spring app restart \
     --name $CUSTOMERS_SERVICE \
@@ -309,6 +306,7 @@ az network vnet subnet update \
    --disable-private-endpoint-network-policies true
 
 KEYVAULT_RESOURCE_ID=$(az resource show -g ${RESOURCE_GROUP} -n ${KEYVAULT_NAME} --query "id" --resource-typ "Microsoft.KeyVault/vaults" -o tsv)
+echo $KEYVAULT_RESOURCE_ID
 
 az network private-endpoint create --resource-group $RESOURCE_GROUP \
     --vnet-name $VIRTUAL_NETWORK_NAME \
