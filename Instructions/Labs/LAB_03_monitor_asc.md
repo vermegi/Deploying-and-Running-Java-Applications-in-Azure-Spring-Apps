@@ -72,7 +72,7 @@ As the initial mechanism for debugging any errors that may occur in your apps, S
 
 You now know how to live stream any logs to your console. Next, you will configure Application Insights for your apps. Spring Apps Service uses an in-process Java Agent for Application Insights. When you first created your service, an Application Insights resource also got created for you by default. Double check whether this Application Insights instance is properly linked to your Spring Apps Service. If it is not, re-link Application Insights. You can use the following guidance to perform this task:
 
-- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?pivots=sc-standard-tier).
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://learn.microsoft.com/azure/spring-apps/how-to-application-insights?pivots=sc-enterprise).
 
 <details>
 <summary>hint</summary>
@@ -87,23 +87,36 @@ You now know how to live stream any logs to your console. Next, you will configu
 1. Run the following command to check whether Application Insights is linked to your Spring Apps Service.
 
    ```bash
-   az spring app-insights show \
-       -g $RESOURCE_GROUP \
-       -n $SPRING_APPS_SERVICE
+   az spring build-service builder buildpack-binding show --name default
    ```
 
    > **Note**: This should generate an output that resembles the following content:
 
    ```json
    {
-     "appInsightsAgentVersions": {
-       "java": "3.2.11"
+     "id": "/subscriptions/xxxx/resourceGroups/rg-petclinic-592faa/providers/Microsoft.AppPlatform/Spring/sa-vnet-petclinic-592faa/buildServices/default/builders/default/buildpackBindings/default",
+     "name": "default",
+     "properties": {
+       "bindingType": "ApplicationInsights",
+       "launchProperties": {
+         "properties": {
+           "connection-string": "InstrumentationKey=xxxx;IngestionEndpoint=https://northeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope. livediagnostics.monitor.azure.com/",
+           "sampling-percentage": "10"
+         },
+         "secrets": null
+       },
+       "provisioningState": "Succeeded"
      },
-     "appInsightsInstrumentationKey": "InstrumentationKey=xxx-xxx-xxx;IngestionEndpoint=https://eastus-5.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
-     "appInsightsSamplingRate": 10.0,
-     "error": null,
-     "provisioningState": "Succeeded",
-     "traceEnabled": true
+     "resourceGroup": "rg-petclinic-592faa",
+     "systemData": {
+       "createdAt": "2023-06-28T07:57:36.474785+00:00",
+       "createdBy": "xxxx",
+       "createdByType": "User",
+       "lastModifiedAt": "2023-06-28T07:57:36.474785+00:00",
+       "lastModifiedBy": "xxxx",
+       "lastModifiedByType": "User"
+     },
+     "type": "Microsoft.AppPlatform/Spring/buildServices/builders/buildpackBindings"
    }
    ```
 
@@ -121,19 +134,18 @@ You now know how to live stream any logs to your console. Next, you will configu
 1. You can now use this instrumentation key to reconfigure Application Insights for your Spring Apps Service.
 
    ```bash
-   az spring app-insights update \
-       -g $RESOURCE_GROUP \
-       -n $SPRING_APPS_SERVICE \
-       --sampling-rate 50 \
-       --app-insights-key $INSTRUMENTATIONKEY
+   az spring build-service builder buildpack-binding set \
+       --name default \
+       --builder-name default \
+       --type ApplicationInsights \
+       --properties sampling-percentage=10 \
+                    connection-string=$INSTRUMENTATIONKEY
    ```
 
-1. To validate the outcome, re-run the `az spring app-insights show` command and verify that it generates the intended output.
+1. To validate the outcome, re-run the `az spring build-service builder buildpack-binding show` command and verify that it generates the intended output.
 
    ```bash
-   az spring app-insights show \
-       -g $RESOURCE_GROUP \
-       -n $SPRING_APPS_SERVICE
+   az spring build-service builder buildpack-binding show --name default
    ```
 
 </details>
@@ -142,7 +154,7 @@ You now know how to live stream any logs to your console. Next, you will configu
 
 Now that Application Insights is properly configured, you can use it to monitor your apps. You can use the following guidance to perform this task:
 
-- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-standard-tier).
+- [Use Application Insights Java In-Process Agent in Azure Spring Apps](https://learn.microsoft.com/azure/spring-apps/how-to-application-insights?WT.mc_id=java-13165-sakriema&pivots=sc-enterprise).
 
 Use this guidance to review such Application Insights features as:
 
