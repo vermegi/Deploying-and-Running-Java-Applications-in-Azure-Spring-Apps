@@ -209,6 +209,7 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
    curl -o tracing-server.yml https://raw.githubusercontent.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/master/tracing-server.yml
    curl -o vets-service.yml https://raw.githubusercontent.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/master/vets-service.yml
    curl -o visits-service.yml https://raw.githubusercontent.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/master/visits-service.yml
+   curl -o messaging-emulator.yml https://raw.githubusercontent.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/master/messaging-emulator.yml
    ```
 
 1. From the Git Bash prompt, run the following commands to commit and push your changes to your private GitHub repository.
