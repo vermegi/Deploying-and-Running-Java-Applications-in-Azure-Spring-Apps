@@ -10,7 +10,7 @@ lab:
 
 ## Challenge scenario
 
-By now, you have completed setting up your Spring Petclinic application in Azure and secured the secrets used by the microservices to connect to their data store. You are satisfied with the results, but you do recognize that there is still room for improvement. In particular, you are concerned with the public endpoints of the application which are directly accessible to anyone with access to the internet. You would like to add a Web Application Firewall to filter incoming requests to your application. In this exercise, you will step through implementing this configuration.
+By now, you have completed setting up your Spring Petclinic application in Azure, secured the secrets used by the microservices, and used passwordless connections to connect to their data store. You are satisfied with the results, but you do recognize that there is still room for improvement. In particular, you are concerned with the public endpoints of the application which are directly accessible to anyone with access to the internet. You would like to add a Web Application Firewall to filter incoming requests to your application. In this exercise, you will step through implementing this configuration.
 
 ## Objectives
 
@@ -50,13 +50,13 @@ During this challenge, you will:
 
 ### Create networking resources
 
-Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 4 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Database for MySQL Single Server instance,  the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You can use the following guidance to implement these changes:
+Since you want to place apps in your Azure Spring Apps service behind an Azure Application Gateway, you will need to provide the networking resources for the Spring Apps service and the Application Gateway. You can deploy all of them in the same virtual network, in which case you will need at least 3 subnets, with one of them for the Application Gateway and 2 for the Spring Apps service. You will also need to create a subnet for private endpoints that provide connectivity to any backend services your applications use, such as the Azure Key Vault instance, the Service Bus namespace and the Event Hub namespace. You will also need an additional subnet to deploy your MySQL Flexible Server database into. You can use the following guidance to implement these changes:
 
 - [Create a Virtual Network and default subnet](https://docs.microsoft.com/cli/azure/network/vnet?view=azure-cli-latest#az-network-vnet-create).
 - [Add subnets to a Virtual Network](https://docs.microsoft.com/cli/azure/network/vnet/subnet?view=azure-cli-latest).
 - [Deploy Azure Spring Apps in a virtual network](https://docs.microsoft.com/azure/spring-cloud/how-to-deploy-in-azure-virtual-network?tabs=azure-portal).
 
-In later exercises you will be creating the private endpoints for the backend services.
+In later exercises you will be creating the private endpoints for the backend services and redeploy the database server.0
 
 <details>
 <summary>hint</summary>
@@ -84,9 +84,11 @@ In later exercises you will be creating the private endpoints for the backend se
    APPLICATION_GATEWAY_SUBNET_CIDR=10.1.2.0/24
    PRIVATE_ENDPOINTS_SUBNET_CIDR=10.1.3.0/24
    DATABASE_SUBNET_CIDR=10.1.4.0/24
+
    APPLICATION_GATEWAY_SUBNET_NAME=app-gw-subnet
    PRIVATE_ENDPOINTS_SUBNET_NAME=private-endpoints-subnet
    DATABASE_SUBNET_NAME=database-subnet
+   
    az network vnet subnet create --resource-group $RESOURCE_GROUP \
        --vnet-name $VIRTUAL_NETWORK_NAME \
        --address-prefixes $SERVICE_RUNTIME_SUBNET_CIDR \
@@ -141,9 +143,10 @@ Now that you have all the networking resources ready, you need to recreate your 
 
 When you recreate your Spring Apps instance in the virtual network, you will also need to rerun some of the steps from the previous exercise:
 
-- Recreate the config server.
+- Reconfigure the Application Configuration Service.
 - Recreate and redeploy all apps. In the previous exercises you assigned an endpoint to the `api-gateway` and `app-admin` service apps. At this point, in this task, you will skip this step and, instead, you will do so later in this exercise, once you configure the internal DNS name resolution.
-- Reassign a managed identity to each of the apps (for `customers-service`, `vets-service` and `visits-service` only) and give them access to the Azure Key Vault so they can access the username and password secrets required to connect to the MySQL database.
+- Reassign a user assigned managed identity to each of the apps (for `customers-service`, `vets-service` and `visits-service` only) and give them access to the Azure Key Vault so they can access the secrets in there.
+- Recreate the service connections to the database.
 
 <details>
 <summary>hint</summary>
@@ -160,16 +163,19 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 1. Next, recreate your Azure Spring Apps instance within the designated subnets of the virtual network you created earlier in this exercise.
 
    ```bash
-   SPRING_APPS_SERVICE=sa-vnet-$APPNAME-$UNIQUEID
-   az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE
-   az provider register --namespace Microsoft.ContainerService
-   az spring create  \
+   SPRING_APPS_SERVICE_VNET=sa-vnet-$APPNAME-$UNIQUEID
+   az config set defaults.group=$RESOURCE_GROUP defaults.spring=$SPRING_APPS_SERVICE_VNET
+   az spring create \
        --resource-group $RESOURCE_GROUP \
-       --name $SPRING_APPS_SERVICE \
+       --name $SPRING_APPS_SERVICE_VNET \
+       --sku enterprise \
        --vnet $VIRTUAL_NETWORK_NAME \
        --service-runtime-subnet service-runtime-subnet \
        --app-subnet apps-subnet \
-       --sku standard \
+       --enable-application-configuration-service \
+       --enable-service-registry \
+       --enable-gateway \
+       --enable-api-portal \
        --location $LOCATION
    ```
 
@@ -177,133 +183,134 @@ When you recreate your Spring Apps instance in the virtual network, you will als
 
    > **Note**: Notice the differences in this create statement to the first time you created the Spring Apps service. You are now also indicating in which vnet and subnets the deployment should happen.
 
-1. Set up the config server.
+1. Set up the Application Configuration Service.
 
    ```bash
-   az spring config-server git set \
-        --name $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --uri $GIT_REPO \
-        --label main \
-        --password $GIT_PASSWORD \
-        --username $GIT_USERNAME
+   az spring application-configuration-service git repo add \
+       --resource-group $RESOURCE_GROUP \
+       --name spring-petclinic-config \
+       --service $SPRING_APPS_SERVICE_VNET \
+       --label asa-solution-3.0-vnet \
+       --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server,messaging-emulator" \
+       --uri $GIT_REPO \
+       --password $GIT_PASSWORD \
+       --username $GIT_USERNAME
    ```
 
-1. Recreate each of the apps in Spring Apps, including managed identities for the `customers-service`, `visits-service`, and `vets-service` apps.
+1. Recreate each of the apps in Spring Apps.
 
    ```bash
-   az spring app create --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name api-gateway
-
-   az spring app create --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name admin-service
-                        
-   az spring app create --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name customers-service \
-                              --system-assigned
-
-   az spring app create --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name visits-service \
-                              --system-assigned
-
-   az spring app create --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name vets-service \
-                              --system-assigned
+   az spring app create \
+       --name $API_GATEWAY 
+   
+   az spring app create \
+       --name $ADMIN_SERVER 
+   
+   az spring app create \
+       --name $CUSTOMERS_SERVICE
+   
+   az spring app create \
+       --name $VETS_SERVICE
+   
+   az spring app create \
+       --name $VISITS_SERVICE
    ```
 
    > **Note**: Wait for the provisioning of each app to complete. This might take about 5 minutes for each app.
 
-   > **Note**: Notice the differences in this create statement for the services as opposed to the first time you created these apps. You are now immediately assigning the managed identity to them.
-
-1. Retrieve the managed identities of the apps, and grant them access to the Key Vault instance.
+1. Bind these application to the Application Configuration Service.
 
    ```bash
-   CUSTOMERS_SERVICE_ID=$(az spring app identity show \
-       --service $SPRING_APPS_SERVICE \
-       --resource-group $RESOURCE_GROUP \
-       --name customers-service \
-       --output tsv \
-       --query principalId)
+   az spring application-configuration-service bind --app ${API_GATEWAY}
+   az spring application-configuration-service bind --app ${ADMIN_SERVER}
+   az spring application-configuration-service bind --app ${CUSTOMERS_SERVICE}
+   az spring application-configuration-service bind --app ${VETS_SERVICE}
+   az spring application-configuration-service bind --app ${VISITS_SERVICE}
+   ```
 
-   az keyvault set-policy \
-       --name $KEYVAULT_NAME \
-       --resource-group $RESOURCE_GROUP \
-       --secret-permissions get list  \
-       --object-id $CUSTOMERS_SERVICE_ID
+1. Bind them as well to the service registry.
 
-   VISITS_SERVICE_ID=$(az spring app identity show \
-       --service $SPRING_APPS_SERVICE \
-       --resource-group $RESOURCE_GROUP \
-       --name visits-service \
-       --output tsv \
-       --query principalId)
+   ```bash
+   az spring service-registry bind --app ${API_GATEWAY}
+   az spring service-registry bind --app ${ADMIN_SERVER}
+   az spring service-registry bind --app ${CUSTOMERS_SERVICE}
+   az spring service-registry bind --app ${VETS_SERVICE}
+   az spring service-registry bind --app ${VISITS_SERVICE}
+   ```
 
-   az keyvault set-policy \
-       --name $KEYVAULT_NAME \
-       --resource-group $RESOURCE_GROUP \
-       --secret-permissions get list  \
-       --object-id $VISITS_SERVICE_ID
+1. Reassign the user assigned managed identities to the apps. Since you are using user assigned managed identities here, you can reuse them and you don't need to reapply role assignments to them.
 
-   VETS_SERVICE_ID=$(az spring app identity show \
-       --service $SPRING_APPS_SERVICE \
+   ```bash
+   az spring app identity assign \
        --resource-group $RESOURCE_GROUP \
-       --name vets-service \
-       --output tsv \
-       --query principalId)
+       --name $CUSTOMERS_SERVICE \
+       --user-assigned $CUSTOMERS_SERVICE_ID
+   
+   az spring app identity assign \
+       --resource-group $RESOURCE_GROUP \
+       --name $VISITS_SERVICE \
+       --user-assigned $VISITS_SERVICE_ID
+   
+   az spring app identity assign \
+       --resource-group $RESOURCE_GROUP \
+       --name $VETS_SERVICE \
+       --user-assigned $VETS_SERVICE_ID
+   ```
 
-   az keyvault set-policy \
-       --name $KEYVAULT_NAME \
+1. Create for the `customers`, `visits` and `vets` services the service connection to the database.
+
+   ```bash
+   az spring connection create mysql-flexible \
        --resource-group $RESOURCE_GROUP \
-       --secret-permissions get list  \
-       --object-id $VETS_SERVICE_ID
+       --service $SPRING_APPS_SERVICE_VNET \
+       --app $CUSTOMERS_SERVICE \
+       --target-resource-group $RESOURCE_GROUP \
+       --server $MYSQL_SERVER_NAME \
+       --database $DATABASE_NAME \
+       --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$CUSTOMERS_SERVICE_CID subs-id=$SUBID
+   
+   az spring connection create mysql-flexible \
+       --resource-group $RESOURCE_GROUP \
+       --service $SPRING_APPS_SERVICE_VNET \
+       --app $VISITS_SERVICE \
+       --target-resource-group $RESOURCE_GROUP \
+       --server $MYSQL_SERVER_NAME \
+       --database $DATABASE_NAME \
+       --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VISITS_SERVICE_CID subs-id=$SUBID
+   
+   az spring connection create mysql-flexible \
+       --resource-group $RESOURCE_GROUP \
+       --service $SPRING_APPS_SERVICE_VNET \
+       --app $VETS_SERVICE \
+       --target-resource-group $RESOURCE_GROUP \
+       --server $MYSQL_SERVER_NAME \
+       --database $DATABASE_NAME \
+       --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$VETS_SERVICE_CID subs-id=$SUBID
    ```
 
 1. Redeploy each of the apps.
 
    ```bash
-   cd ~/projects/spring-petclinic-microservices
-   az spring app deploy \
-        --service $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --name api-gateway \
-        --no-wait \
-        --artifact-path spring-petclinic-api-gateway/target/spring-petclinic-api-gateway-$VERSION.jar
+   cd ~/workspaces/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/src
+   az spring app deploy --name ${API_GATEWAY} \
+       --config-file-patterns ${API_GATEWAY} \
+       --artifact-path ${API_GATEWAY_JAR}
+   
+   az spring app deploy --name ${ADMIN_SERVER} \
+       --config-file-patterns ${ADMIN_SERVER} \
+       --artifact-path ${ADMIN_SERVER_JAR}
+   
+   az spring app deploy --name ${CUSTOMERS_SERVICE} \
+       --config-file-patterns ${CUSTOMERS_SERVICE} \
+       --artifact-path ${CUSTOMERS_SERVICE_JAR} 
+      
+   az spring app deploy --name ${VETS_SERVICE} \
+       --config-file-patterns ${VETS_SERVICE}  \
+       --artifact-path ${VETS_SERVICE_JAR} 
 
-   az spring app deploy \
-        --service $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --name admin-service \
-        --no-wait \
-        --artifact-path spring-petclinic-admin-server/target/spring-petclinic-admin-server-$VERSION.jar
-                        
-   az spring app deploy \
-        --service $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --name customers-service \
-        --no-wait \
-        --artifact-path spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar \
-        --env SPRING_PROFILES_ACTIVE=mysql
-
-   az spring app deploy \
-        --service $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --name visits-service \
-        --no-wait \
-        --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
-        --env SPRING_PROFILES_ACTIVE=mysql
-
-   az spring app deploy \
-        --service $SPRING_APPS_SERVICE \
-        --resource-group $RESOURCE_GROUP \
-        --name vets-service \
-        --no-wait \
-        --artifact-path spring-petclinic-vets-service/target/spring-petclinic-vets-service-$VERSION.jar \
-        --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy --name ${VISITS_SERVICE} \
+       --config-file-patterns ${VISITS_SERVICE} \
+       --artifact-path ${VISITS_SERVICE_JAR} 
    ```
 
 </details>
@@ -321,16 +328,17 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
 1. Start by identifying the IP address used by your Spring Apps service. You can accomplish this by querying for the internal load balancer IP address of the service runtime subnet.
 
    ```bash
-   SERVICE_RUNTIME_RG=`az spring show \
+   SERVICE_RUNTIME_RG=$(az spring show \
        --resource-group $RESOURCE_GROUP \
-       --name $SPRING_APPS_SERVICE \
+       --name $SPRING_APPS_SERVICE_VNET \
        --query "properties.networkProfile.serviceRuntimeNetworkResourceGroup" \
-       --output tsv`
-   IP_ADDRESS=`az network lb frontend-ip list \
+       --output tsv)
+   
+   IP_ADDRESS=$(az network lb frontend-ip list \
        --lb-name kubernetes-internal \
        --resource-group $SERVICE_RUNTIME_RG \
-       --query "[0].privateIpAddress" \
-       --output tsv`
+       --query "[0].privateIPAddress" \
+       --output tsv)
    ```
 
     > **Note**: Notice that Azure Spring Apps uses a separate resource group for resources. You can view each resource as they are created.
@@ -348,7 +356,7 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
    ```bash
    az network private-dns link vnet create \
        --resource-group $RESOURCE_GROUP \
-       --name azure-spring-cloud-dns-link \
+       --name azure-spring-apps-dns-link \
        --zone-name private.azuremicroservices.io \
        --virtual-network $VIRTUAL_NETWORK_NAME \
        --registration-enabled false
@@ -371,18 +379,18 @@ At this point, you have redeployed your Azure Spring Apps service in a virtual n
    ```bash
    az spring app update \
        --resource-group $RESOURCE_GROUP \
-       --name api-gateway \
-       --service $SPRING_APPS_SERVICE \
+       --name $API_GATEWAY \
+       --service $SPRING_APPS_SERVICE_VNET \
        --assign-endpoint true
 
    az spring app update \
        --resource-group $RESOURCE_GROUP \
-       --name admin-service \
-       --service $SPRING_APPS_SERVICE \
+       --name $ADMIN_SERVER \
+       --service $SPRING_APPS_SERVICE_VNET \
        --assign-endpoint true
    ```
 
-   > **Note**: If you try connecting at this point to the spring petclinic application via the `api-gateway` and `admin-service` endpoints, you will not be able to do so, since these endpoints are currently only available within the virtual network. You could test such connectivity if you had an Azure VM connected to that virtual network. Later in this exercise, you will expose these two endpoints by using an Azure Application Gateway, which will allow you to test connectivity from the internet.
+   > **Note**: If you try connecting at this point to the spring petclinic application via the `api-gateway` and `admin-service` endpoints, you will not be able to do so, since these endpoints are currently only available within the virtual network. You could test such connectivity if you had an Azure VM connected to that virtual network. Later in this exercise, you will expose these two endpoints by using an Azure Application Gateway, which will allow you to test connectivity from the internet. In the next lab a jump box in the network will be created as well for executing some specific steps. In case you see errors in your apps you can already execute the steps for provisioning this jump box to test connectivity within the VNet to your apps.
 
    > **Note**: Notice that you will be unable to use log streaming at this time. You will need a VM in the same virtual network to be able to do so.
 
@@ -489,7 +497,7 @@ You will only create a custom domain for the `api-gateway` service. This is the 
    CERT_NAME_IN_ASA=openlab-certificate
    az spring certificate add \
        --resource-group $RESOURCE_GROUP \
-       --service $SPRING_APPS_SERVICE \
+       --service $SPRING_APPS_SERVICE_VNET \
        --name $CERT_NAME_IN_ASA \
        --vault-certificate-name $CERT_NAME_IN_KV \
        --vault-uri $VAULTURI
@@ -500,7 +508,7 @@ You will only create a custom domain for the `api-gateway` service. This is the 
    ```bash
    az spring app custom-domain bind \
        --resource-group $RESOURCE_GROUP \
-       --service $SPRING_APPS_SERVICE \
+       --service $SPRING_APPS_SERVICE_VNET \
        --domain-name $DNS_NAME \
        --certificate $CERT_NAME_IN_ASA \
        --app api-gateway
