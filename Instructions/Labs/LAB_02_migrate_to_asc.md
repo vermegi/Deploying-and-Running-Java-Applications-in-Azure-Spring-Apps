@@ -355,11 +355,11 @@ You now have the compute and data services available for deployment of the compo
 1. In the src directory parent **pom.xml** file double check the version number on line 9.
 
     ```bash
-        <parent>        
-            <groupId>org.springframework.samples</groupId>
-            <artifactId>spring-petclinic-microservices</artifactId>
-            <version>3.0.2</version>    
-        </parent>
+       <parent>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-parent</artifactId>
+           <version>3.0.2</version>
+       </parent>
     ```
 
 1. From the Git Bash window, set a `VERSION` environment variable to this version number `3.0.2`.
@@ -461,7 +461,7 @@ You now have the compute and data services available for deployment of the compo
        --name $CUSTOMERS_SERVICE
    az spring application-configuration-service bind --app ${CUSTOMERS_SERVICE}
    az spring service-registry bind --app ${CUSTOMERS_SERVICE}
-   CUSTOMERS_SERVICE_JAR=spring-petclinic-customers-service/target/  spring-petclinic-customers-service-$VERSION.jar
+   CUSTOMERS_SERVICE_JAR=spring-petclinic-customers-service/target/spring-petclinic-customers-service-$VERSION.jar
    az spring app deploy --name ${CUSTOMERS_SERVICE} \
        --config-file-patterns ${CUSTOMERS_SERVICE} \
        --artifact-path ${CUSTOMERS_SERVICE_JAR} 
