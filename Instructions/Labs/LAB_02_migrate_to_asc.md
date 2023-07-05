@@ -185,7 +185,7 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
 
    > **Note**: You can check the validity of your token with the following statement: `curl -XGET -H 'authorization: token <token_value>' 'https://api.github.com/repos/<user_name>/spring-petclinic-microservices-config'`. This statement should succeed. If it does not, redo the above steps for generating the PAT token.
 
-1. From the Git Bash prompt, change the current directory to the **workspaces** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`.
+1. From the Git Bash prompt, change the current directory to the **workspaces** folder. Next, clone the newly created GitHub repository by typing `git clone `, pasting the clone URL you copied into Clipboard in the previous step, and entering the PAT string followed by the `@` symbol in front of `github.com`. In case you haven't already you can also clone here your code repository.
 
    ```bash
    cd ~/workspaces
