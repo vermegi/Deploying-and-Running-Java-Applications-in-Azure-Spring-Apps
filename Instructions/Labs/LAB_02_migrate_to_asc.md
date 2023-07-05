@@ -193,7 +193,7 @@ As part of the setup process, you need to create a Personal Access Token (PAT) i
    git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices-config.git
     
    # Clone source code repo
-   git clone https://<token>@github.com/<your-github-username>/spring-petclinic-microservices.git
+   git clone https://<token>@github.com/<your-github-username>/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps.git
 
    ```
 
