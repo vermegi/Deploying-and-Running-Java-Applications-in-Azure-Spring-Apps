@@ -239,9 +239,11 @@ In the spring-petclinic-microservices repository, the `spring-petclinic-messagin
 
 1.  In the navigation menu, in the **Settings** section, select **Apps**, wait until the **Provisioning state** of the `messaging-emulator` app changes to **Succeeded**, and then select the `messaging-emulator` app entry.
 
-   > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
+    > **Note**: The provisioning might take about 3 minutes. Select **Refresh** in order to update the provisioning status.
 
-1.  On the newly open browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
+1. Once provisioning is complete. Select the apps URL and open this in a new browser window.
+
+1.  On the newly opened browser page titled **Message**, enter **1** in the **Pet** text box and a random text in the **Message** text box, and then select **Submit**.
 
 1. In the Azure Portal, navigate to your resource group and select the Service Bus namespace you deployed in the previous task.
 
