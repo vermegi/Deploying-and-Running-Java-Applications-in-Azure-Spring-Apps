@@ -44,7 +44,7 @@ During this challenge, you will:
 
 You will start by deleting the existing secrets from the Key Vault. The Key Vault is still there in case other secrets are needed for your apps. For instance for third party services that don't support passwordless connectivity. You can use the following guidance to perform this task:
 
-- [Delete secrets](https://learn.microsoft.com/en-us/azure/key-vault/general/key-vault-recovery?tabs=azure-cli#secrets-cli).
+- [Delete secrets](https://learn.microsoft.com/azure/key-vault/general/key-vault-recovery?tabs=azure-cli#secrets-cli).
 
 <details>
 <summary>hint</summary>
@@ -64,7 +64,7 @@ You will start by deleting the existing secrets from the Key Vault. The Key Vaul
 
 Now that these secrets are deleted from the Key Vault, you will need to create a managed identity to link to the admin account of your MySQL Flexible server. This managed identity will be associated with your own user account in one of the next steps where you create the service connections. You can use the following guidance to perform this task:
 
-- [Set up Azure Active Directory authentication for Azure Database for MySQL - Flexible Server](https://learn.microsoft.com/en-us/azure/mysql/flexible-server/how-to-azure-ad).
+- [Set up Azure Active Directory authentication for Azure Database for MySQL - Flexible Server](https://learn.microsoft.com/azure/mysql/flexible-server/how-to-azure-ad).
 
 <details>
 <summary>hint</summary>
@@ -88,7 +88,7 @@ Now that these secrets are deleted from the Key Vault, you will need to create a
 
 The apps deployed as the Spring Petclinic microservices will now connect using a service connector to the MySQL Flexible server. A service connector will set up the needed environment variables the service needs to make the connection. You can use the following guidance to create a service connector:
 
-- [Connect an Azure Database for MySQL instance to your application in Azure Spring Apps](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-bind-mysql?tabs=Service-Connector).
+- [Connect an Azure Database for MySQL instance to your application in Azure Spring Apps](https://learn.microsoft.com/azure/spring-apps/how-to-bind-mysql?tabs=Service-Connector).
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Flexible Server instance, so they will need to be assigned a service connector:
 
@@ -181,7 +181,7 @@ Since each of these apps already has a user assigned managed identity assigned t
 
 ### Update the applications to use passwordless connectivity
 
-By now all setup on the spring apps service side is done. You will still need to update your microservices to make use of the new passwordless capabilities. To accomplish this, you can use the following the guidance: [Connect an Azure Database for MySQL instance to your application in Azure Spring Apps](https://learn.microsoft.com/en-us/azure/spring-apps/how-to-bind-mysql?tabs=Service-Connector).
+By now all setup on the spring apps service side is done. You will still need to update your microservices to make use of the new passwordless capabilities. To accomplish this, you can use the following the guidance: [Connect an Azure Database for MySQL instance to your application in Azure Spring Apps](https://learn.microsoft.com/azure/spring-apps/how-to-bind-mysql?tabs=Service-Connector).
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so they will need to have their code updated:
 

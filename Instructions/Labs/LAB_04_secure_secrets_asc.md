@@ -48,7 +48,7 @@ During this challenge, you will:
 
 You will start by creating an Azure Key Vault instance that will host your application secrets. You can use the following guidance to perform this task:
 
-- [Create Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
+- [Create Key Vault](https://learn.microsoft.com/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=system-assigned-managed-identity#set-up-your-key-vault).
 
 <details>
 <summary>hint</summary>
@@ -73,7 +73,7 @@ You will start by creating an Azure Key Vault instance that will host your appli
 
 Now that your Key Vault provisioning is completed, you need to add to it a secret containing the connection string to the database hosted by Azure Database for MySQL Single Server. You can use the following guidance to perform this task:
 
-- [Add a secret to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#set-up-your-key-vault).
+- [Add a secret to Key Vault](https://learn.microsoft.com/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=user-assigned-managed-identity#set-up-your-key-vault).
 
 These secrets should be called `SPRING-DATASOURCE-URL`, `SPRING-DATASOURCE-USERNAME` and `SPRING-DATASOURCE-PASSWORD`.
 
@@ -149,7 +149,7 @@ The following three apps of your application use the database hosted by the Azur
 
 ### Grant the managed identity permissions to access the Azure Key Vault secrets
 
-By now, you have created a managed identity for the `customers-service`, `vets-service` and `visits-service`. In this step, you need to grant these 3 managed identities access to the secrets you added to the Azure Key Vault instance. To accomplish this, you can use the following the guidance: [Grant your app access to Key Vault](https://docs.microsoft.com/azure/spring-cloud/tutorial-managed-identities-key-vault#grant-your-app-access-to-key-vault).
+By now, you have created a managed identity for the `customers-service`, `vets-service` and `visits-service`. In this step, you need to grant these 3 managed identities access to the secrets you added to the Azure Key Vault instance. To accomplish this, you can use the following the guidance: [Grant your app access to Key Vault](https://learn.microsoft.com/azure/spring-apps/tutorial-managed-identities-key-vault?tabs=user-assigned-managed-identity#grant-your-app-access-to-key-vault).
 
 The following three apps of your application use the database hosted by the Azure Database for MySQL Single Server instance, so their managed identities will need to be granted permissions to access the secrets:
 

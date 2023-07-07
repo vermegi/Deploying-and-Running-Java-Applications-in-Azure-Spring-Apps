@@ -50,7 +50,7 @@ During this challenge, you will:
 
 As the next step, you will create an Azure Spring Apps Enterprise Service instance. You will use for this purpose Azure CLI. If you are interested in accomplishing this programmatically, review the Microsoft documentation that describes the provisioning process.
 
-- [Quickstart: Provision Azure Spring Apps using Azure CLI](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-deploy-infrastructure-vnet-azure-cli?tabs=azure-spring-apps-enterprise)
+- [Quickstart: Provision Azure Spring Apps using Azure CLI](https://learn.microsoft.com/azure/spring-apps/quickstart-deploy-infrastructure-vnet-azure-cli?tabs=azure-spring-apps-enterprise)
 
 <details>
 <summary>hint</summary>
@@ -344,7 +344,7 @@ You will also need to update the config for your applications to use the newly p
 
 You now have the compute and data services available for deployment of the components of your applications, including `spring-petclinic-admin-server`, `spring-petclinic-customers-service`, `spring-petclinic-vets-service`, `spring-petclinic-visits-service` and `spring-petclinic-api-gateway`. In this task, you will deploy these components as microservices to the Azure Spring Apps service. You will not be deploying the `spring-petclinic-config-server` and `spring-petclinic-discovery-server` to Azure Spring Apps, since these will be provided to you by the platform. To perform the deployment, you can use the following guidance:
 
-- [Quickstart: Build and deploy apps to Azure Spring Apps using the Enterprise plan](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-deploy-apps-enterprise).
+- [Quickstart: Build and deploy apps to Azure Spring Apps using the Enterprise plan](https://learn.microsoft.com/azure/spring-apps/quickstart-deploy-apps-enterprise).
 
    > **Note**: The `spring-petclinic-api-gateway` and `spring-petclinic-admin-server` will have a public endpoint assigned to them.
 
