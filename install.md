@@ -29,7 +29,7 @@ The [git repository of this lab](https://github.com/MicrosoftLearning/Deploying-
 The [git repository of this lab](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps) contains a dev container for Java development. This container contains all the needed tools for running this lab. For this option you need the following tools to be installed on your local system:
 
 - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
-- Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads), or similar on another OS.
+- Latest Git for Windows available from [Git Downloads](https://git-scm.com/downloads), or similar on another OS.
   > **Note**: If needed, reinstall Git and, during installation, ensure that the Git Credential Manager is enabled.
 - [Visual Studio Code Remote Containers option](https://code.visualstudio.com/docs/remote/containers). 
 - [docker](https://docs.docker.com/get-docker/).
@@ -88,11 +88,11 @@ To get started, follow the following steps:
 
 - Visual Studio Code available from [Visual Studio Code Downloads](https://code.visualstudio.com/download)
   - Java and Spring Boot Visual Studio Code extension packs available from [Java extensions for Visual Studio Code](https://code.visualstudio.com/docs/java/extensions)
-- Git for Windows 2.3.61 available from [Git Downloads](https://git-scm.com/downloads), or similar on another OS.
+- Latest Git for Windows available from [Git Downloads](https://git-scm.com/downloads), or similar on another OS.
 
 > **Note**: If needed, reinstall Git and, during installation, ensure that the Git Credential Manager is enabled.
 
-- Apache Maven 3.8.5 available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
+- Latest Apache Maven available from [Apache Maven Project downloads](https://maven.apache.org/download.cgi)
 
 > **Note**: To install Apache Maven, extract the content of the .zip file by running `unzip apache-maven-3.8.5-bin.zip`. Next, add the path to the bin directory of the extracted content to the `PATH` environment variable. Assuming that you extracted the content directly into your home directory, you could accomplish this by running the following command from the Git Bash shell: `export PATH=~/apache-maven-3.8.5/bin:$PATH`.
 
