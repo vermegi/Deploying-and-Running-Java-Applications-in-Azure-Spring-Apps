@@ -1,0 +1,12 @@
+az login
+
+az account set --subscription xxx
+
+UNIQUEID=$(openssl rand -hex 3)
+echo $UNIQUEID
+APPNAME=petclinic
+RESOURCE_GROUP=rg-$APPNAME-$UNIQUEID
+LOCATION=northeurope
+az group create -g $RESOURCE_GROUP -l $LOCATION
+
+
