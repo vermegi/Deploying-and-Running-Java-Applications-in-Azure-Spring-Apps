@@ -208,7 +208,7 @@ You now have all relevant components in place to switch to the secrets stored in
 1. Save the file and commit and push these changes to your remote config repository.
 
    ```bash
-   cd ~/projects/spring-petclinic-microservices-config
+   cd ~/workspaces/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps
    git add .
    git commit -m 'added key vault'
    git push

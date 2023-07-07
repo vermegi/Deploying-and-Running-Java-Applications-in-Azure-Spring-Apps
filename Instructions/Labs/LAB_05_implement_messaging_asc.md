@@ -120,7 +120,7 @@ This translates the secret in Key Vault to the correct application property for 
 1. Commit and push your changes to the remote repository.
 
    ```bash
-   cd ~/projects/spring-petclinic-microservices-config
+   cd ~/workspaces/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps
    git add .
    git commit -m 'added service bus'
    git push
