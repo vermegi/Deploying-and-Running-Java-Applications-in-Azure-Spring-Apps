@@ -42,9 +42,9 @@ This first challenge will be mainly a conceptual exercise that does not involve 
 
 To start, you will learn about the existing Spring Petclinic application.
 
-1. Navigate to the [labstarter branch of the GitHub repo hosting the Spring Petclinic application code](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter) and review the README.md file.
+1. Navigate to the [src directory of the GitHub repository of this lab](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/tree/master/src) and review the README.md file.
 
-1. Examine the information about [starting services locally without Docker](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-without-docker), [Starting services locally with docker-compose](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-with-docker-compose), and [Starting services locally with docker-compose and Java](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter#starting-services-locally-with-docker-compose-and-java). If time permits, consider launching the application locally using either of these methods.
+1. Examine the information about [starting services locally without Docker](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/blob/MicrosoftLearning/master/src/README.md#starting-services-locally-without-docker), [Starting services locally with docker-compose](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/blob/MicrosoftLearning/master/src/README.md#starting-services-locally-with-docker-compose), and [Starting services locally with docker-compose and Java](https://github.com/MicrosoftLearning/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/blob/MicrosoftLearning/master/src/README.md#starting-services-locally-with-docker-compose-and-java). If time permits, consider launching the application locally using either of these methods.
 
 1. In the web browser displaying the GitHub repo, navigate to each folder containing the code of the individual spring-petclinic-* services and review their content. You don't need to know their full details, but you should understand their basic structure.
 
@@ -54,33 +54,7 @@ To start, you will learn about the existing Spring Petclinic application.
 <summary>hint</summary>
 <br/>
 
-1. On your lab computer, start a web browser and navigate to [GitHub](https://github.com) and sign in to your GitHub account. If you do not have a GitHub account, create one by navigating to [the Join GitHub page](https://github.com/join) and following the instructions provided on [the Signing up for a new GitHub account page](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account).
-
-1. Navigate to the [spring-petclinic-microservices project](https://github.com/Azure-Samples/spring-petclinic-microservices/tree/labstarter) and select **Fork**.
-
-1. Make sure your own username is indicated as the fork `Owner` and select **Create fork**. This will create a copy or fork of this project in your own account.
-
-1. Make sure you uncheck the `Copy the azure branch only` checkbox. You will be using the labstarter branch in this repository, so your fork should contain all the branches from this repo and not only the default azure branch.
-
-1. On your lab computer, in the Git Bash window, run the following commands to clone your fork of the spring-petclinic-microservices project to your workstation. Make sure to replace `<your-github-account>` in the below command:
-
-   ```bash
-   mkdir projects
-   cd projects
-   git clone https://github.com/<your-github-account>/spring-petclinic-microservices.git
-   ```
-
-1. When prompted to sign in to GitHub, select the **Sign in with your browser** option. This will automatically open a new tab in the web browser window, prompting you to provide your GitHub username and password.
-
-1. In the browser window, enter your GitHub credentials, select **Sign in**, and, once successfully signed in, close the newly opened browser tab.
-
-1. On your lab computer, in the Git Bash window, run the following command to checkout the labstarter folder.
-
-   ```bash
-   git checkout labstarter
-   ```
-
-1. In projects folder double check that the spring petclinic application got cloned correctly. You can use the repository in your projects folder to regularly push your changes to.
+1. Use the steps in the [install instructions](../../install.md) to startup this project with your setup tooling of choice.
 
 </details>
 
@@ -88,7 +62,7 @@ To start, you will learn about the existing Spring Petclinic application.
 
 Now that you have familiarized yourself with the application you will be migrating to Azure, as the next step, you will need to consider different compute options you have at your disposal for hosting this application.
 
-The four primary options you will take into account are [Azure App Service](https://docs.microsoft.com/azure/app-service/overview), [Azure Kubernetes Service](https://docs.microsoft.com/azure/aks/intro-kubernetes), [Azure Spring Apps](https://docs.microsoft.com/azure/spring-cloud/) and [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/overview). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
+The four primary options you will take into account are [Azure App Service](https://docs.microsoft.com/azure/app-service/overview), [Azure Kubernetes Service](https://docs.microsoft.com/azure/aks/intro-kubernetes), [Azure Spring Apps](https://learn.microsoft.com/azure/spring-apps/) and [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/overview). Given that the Spring Petclinic application consists of multiple microservices working together to provide the functionality you reviewed in the previous task, what would you consider to be the most suitable option? Before you answer this question, review the following requirements:
 
 * The Spring Petclinic application should be accessible via a public endpoint to any user (anonymously).
 * The new implementation of Spring Petclinic should eliminate the need to manually upgrade and manage the underlying infrastructure. Instead, the application should use the platform-as-a-service (PaaS) model.
@@ -141,7 +115,7 @@ The Azure platform offers several database-as-a-services options, including [Azu
 * The target database service must support automatic backups.
 * The target database service needs to support automatic patching.
 
-Based on these requirements, you decided to use Azure Database for MySQL Single Server.
+Based on these requirements, you decided to use Azure Database for MySQL Flexible Server.
 
 ### Consider resource organization in Azure
 
@@ -191,7 +165,7 @@ The Azure Database for MySQL deployment will not require any virtual network con
 <br/>
 In case you chose Azure Spring Apps, no additional supporting services are needed during the first phase of the migration. All you need is a compute platform and a database.
 
-In case you chose AKS, you will also need a container registry for storing any container images that will be deployed to the cluster. You can use for this purpose Azure Container Registry.
+In case you choose AKS, you will also need a container registry for storing any container images that will be deployed to the cluster. You can use for this purpose Azure Container Registry.
 </details>
 
 ### Consider tools for connecting to and managing your Azure environment

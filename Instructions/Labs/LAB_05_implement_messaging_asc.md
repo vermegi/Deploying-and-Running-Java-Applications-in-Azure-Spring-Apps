@@ -112,22 +112,15 @@ This translates the secret in Key Vault to the correct application property for 
        --vault-name $KEYVAULT_NAME
    ```
 
-1. In your configuration repository's `application.yml` file add the below fragment directly under the `on-profile: mysql` entry (in line 78).
+1. In your configuration repository replace the `application.yml` with the contents of [this application.yml](../../config/05_application.yml) file. This file contains the following changes:
 
-   ```yaml
-     jms:
-       servicebus:
-         connection-string: ${spring.jms.servicebus.connection-string}
-         idle-timeout: 60000
-         pricing-tier: premium
-   ```
+   * It adds the `spring.jms.servicebus` configuration on lines 16 to 20.
+   * Make sure you replace the `<your-kv-name>` replacement value with the name of your Key Vault.
 
-    > **Note**: Particular attention to indentation as shown above is important: `jms` should be at the same indentation level as `config`, `datasource` and `cloud`.
-
-6. Commit and push your changes to the remote repository.
+1. Commit and push your changes to the remote repository.
 
    ```bash
-   cd ~/projects/spring-petclinic-microservices-config
+   cd ~/workspaces/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps
    git add .
    git commit -m 'added service bus'
    git push
@@ -154,57 +147,92 @@ In the spring-petclinic-microservices repository, the `spring-petclinic-messagin
 1. Update the compiled version of the microservices available by running an additional build.
 
    ```bash
-   cd ~/projects/spring-petclinic-microservices
-   mvn clean package -DskipTests
+   cd ~/workspaces/Deploying-and-Running-Java-Applications-in-Azure-Spring-Apps/src
+   mvn clean package -DskipTests -rf :spring-petclinic-messaging-emulator
    ```
 
 1. Create a new application in your Spring Apps service for the `messaging-emulator` and assign a public endpoint to it.
 
    ```bash
-   az spring app create --service $SPRING_APPS_SERVICE \
-       --resource-group $RESOURCE_GROUP \
-       --name messaging-emulator \
+   az spring app create \
+       --name $MESSAGING_EMULATOR \
        --assign-endpoint true
    ```
 
    > **Note**: Wait for the provisioning to complete. This might take about 3 minutes.
 
-1. Create a system-assigned identity to this new application and store the reference to the identity in an environment variable.
+1. Update the Application Configuration Service to also pick up the messaging-emulator config.
 
    ```bash
-   az spring app identity assign \
-       --service $SPRING_APPS_SERVICE \
+   az spring application-configuration-service git repo update \
        --resource-group $RESOURCE_GROUP \
-       --name messaging-emulator \
-       --system-assigned
+       --name spring-petclinic-config \
+       --service $SPRING_APPS_SERVICE \
+       --label main \
+       --patterns "api-gateway,customers-service,vets-service,visits-service,admin-server,messaging-emulator" \
+       --uri $GIT_REPO \
+       --password $GIT_PASSWORD \
+       --username $GIT_USERNAME
+   ```
 
-   MESSAGING_EMULATOR_ID=$(az spring app identity show \
-       --service $SPRING_APPS_SERVICE \
+   > **Note**: In case you are using a branch other than `main` in your config repo, you can change the branch name with the `label` parameter.
+
+   > **Note**: Wait for the operation to complete. This might take about 2 minutes.
+
+1. Bind this new app to the Application Configuration Service and to the Service Registry.
+
+   ```bash
+   az spring application-configuration-service bind --app ${MESSAGING_EMULATOR}
+   
+   az spring service-registry bind --app ${MESSAGING_EMULATOR}
+   ```
+
+1. Create a new user assigned managed identity for this new application and assign it to the `messaging-emulator` app:
+
+   ```bash
+   MESSAGING_EMULATOR_ID=$(az identity create -g $RESOURCE_GROUP -n messaging-svc-uid --query id -o tsv)
+   
+   az spring app identity assign \
        --resource-group $RESOURCE_GROUP \
-       --name messaging-emulator \
-       --output tsv \
-       --query principalId)
+       --name $MESSAGING_EMULATOR \
+       --user-assigned $MESSAGING_EMULATOR_ID   
    ```
 
 1. Grant to the newly assigned identity the get and list permissions on your Key Vault secrets.
 
    ```bash
+   MESSAGING_EMULATOR_UID=$(az identity show -g $RESOURCE_GROUP -n messaging-svc-uid --query principalId -o tsv)
+   
    az keyvault set-policy \
        --name $KEYVAULT_NAME \
        --resource-group $RESOURCE_GROUP \
        --secret-permissions get list  \
-       --object-id $MESSAGING_EMULATOR_ID
+       --object-id $MESSAGING_EMULATOR_UID
+   ```
+
+1. Since the messaging-emulator will also save data in the database, you will also need to create a service connection for it: 
+
+   ```bash
+   MESSAGING_EMULATOR_CID=$(az identity show -g $RESOURCE_GROUP -n messaging-svc-uid --query clientId -o tsv)
+    
+   az spring connection create mysql-flexible \
+       --resource-group $RESOURCE_GROUP \
+       --service $SPRING_APPS_SERVICE \
+       --app $MESSAGING_EMULATOR \
+       --target-resource-group $RESOURCE_GROUP \
+       --server $MYSQL_SERVER_NAME \
+       --database $DATABASE_NAME \
+       --user-identity mysql-identity-id=$ADMIN_IDENTITY_RESOURCE_ID client-id=$MESSAGING_EMULATOR_CID subs-id=$SUBID
    ```
 
 1. You can now deploy the messaging-emulator application.
 
    ```bash
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-       --resource-group $RESOURCE_GROUP \
-       --name messaging-emulator \
-       --no-wait \
-       --artifact-path spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-$VERSION.jar \
-       --env SPRING_PROFILES_ACTIVE=mysql
+   MESSAGING_EMULATOR_JAR=spring-petclinic-messaging-emulator/target/spring-petclinic-messaging-emulator-$VERSION.jar
+   
+   az spring app deploy --name ${MESSAGING_EMULATOR} \
+       --config-file-patterns ${MESSAGING_EMULATOR} \
+       --artifact-path ${MESSAGING_EMULATOR_JAR}
    ```
 
 1. Switch to the web browser window displaying the Azure Portal, navigate to the resource group containing the resources you deployed in this lab, and, from there, navigate to the Azure Spring Apps Service.
@@ -273,147 +301,147 @@ You will next add the code required to send and receive messages to the `visits`
 
    ```java
    package org.springframework.samples.petclinic.visits.entities;
-
+   
    import java.io.Serializable;
    import java.util.Date;
-
+   
    public class VisitRequest implements Serializable {
        private static final long serialVersionUID = -249974321255677286L;
-
+   
        private Integer requestId;
        private Integer petId;
        private String message;
-
+   
        public VisitRequest() {
        }
-
+   
        public Integer getRequestId() {
            return requestId;
        }
-
+   
        public void setRequestId(Integer id) {
            this.requestId = id;
        }
-
+   
        public Integer getPetId() {
            return petId;
        }
-
+   
        public void setPetId(Integer petId) {
            this.petId = petId;
        }
-
+   
        public String getMessage() {
            return message;
        }
-
+   
        public void setMessage(String message) {
            this.message = message;
        }
    }
    ```
 
-2. In the same directory, add a `VisitResponse.java` class containing the following code:
+1. In the same directory, add a `VisitResponse.java` class containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.entities;
-
+   
    public class VisitResponse {
        Integer requestId;
        Boolean confirmed;
        String reason;
-
+   
        public VisitResponse() {
        }
-    
+   
        public VisitResponse(Integer requestId, Boolean confirmed, String reason) {
            this.requestId = requestId;
            this.confirmed = confirmed;
            this.reason = reason;
        }    
-
+   
        public Boolean getConfirmed() {
            return confirmed;
        }
-
+   
        public void setConfirmed(Boolean confirmed) {
            this.confirmed = confirmed;
        }
-
+   
        public String getReason() {
            return reason;
        }
-
+   
        public void setReason(String reason) {
            this.reason = reason;
        }
-
+   
        public Integer getRequestId() {
            return requestId;
        }
-
+   
        public void setRequestId(Integer requestId) {
            this.requestId = requestId;
        }
    }
    ```
 
-3. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/config` subdirectory and add a `MessagingConfig.java` class file containing the following code:
-
-   ```java
-    package org.springframework.samples.petclinic.visits.config;
-    import java.util.HashMap;
-    import java.util.Map;
-    import org.springframework.beans.factory.annotation.Value;
-    import org.springframework.context.annotation.Bean;
-    import org.springframework.context.annotation.Configuration;
-    import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
-    import org.springframework.jms.support.converter.MessageConverter;
-    import org.springframework.samples.petclinic.visits.entities.VisitRequest;
-    import org.springframework.samples.petclinic.visits.entities.VisitResponse;
-    @Configuration
-    public class MessagingConfig {
-        @Bean("QueueConfig")
-        public QueueConfig queueConfig() {
-            return new QueueConfig();
-        }
-        @Bean
-        public MessageConverter jackson2Converter() {
-            MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-            Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
-            typeMappings.put("visitRequest", VisitRequest.class);
-            typeMappings.put("visitResponse", VisitResponse.class);
-            converter.setTypeIdMappings(typeMappings);
-            converter.setTypeIdPropertyName("messageType");
-            return converter;
-        }
-    }
-   ```
-
-4. In the same directory, add a `QueueConfig.java` class file containing the following code:
+1. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/config` subdirectory and add a `MessagingConfig.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.config;
-
+   import java.util.HashMap;
+   import java.util.Map;
    import org.springframework.beans.factory.annotation.Value;
+   import org.springframework.context.annotation.Bean;
+   import org.springframework.context.annotation.Configuration;
+   import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+   import org.springframework.jms.support.converter.MessageConverter;
+   import org.springframework.samples.petclinic.visits.entities.VisitRequest;
+   import org.springframework.samples.petclinic.visits.entities.VisitResponse;
+   @Configuration
+   public class MessagingConfig {
+       @Bean("QueueConfig")
+       public QueueConfig queueConfig() {
+           return new QueueConfig();
+       }
+       @Bean
+       public MessageConverter jackson2Converter() {
+           MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+           Map<String, Class<?>> typeMappings = new HashMap<String, Class<?>>();
+           typeMappings.put("visitRequest", VisitRequest.class);
+           typeMappings.put("visitResponse", VisitResponse.class);
+           converter.setTypeIdMappings(typeMappings);
+           converter.setTypeIdPropertyName("messageType");
+           return converter;
+       }
+   }
+   ```
 
+1. In the same directory, add a `QueueConfig.java` class file containing the following code:
+
+   ```java
+   package org.springframework.samples.petclinic.visits.config;
+   
+   import org.springframework.beans.factory.annotation.Value;
+   
    public class QueueConfig {
        @Value("${spring.jms.queue.visits-requests:visits-requests}")
        private String visitsRequestsQueue;
-
+   
        public String getVisitsRequestsQueue() {
            return visitsRequestsQueue;
        }   
    }
    ```
 
-5. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/service` subdirectory and add a `VisitsReceiver.java` class file containing the following code:
+1. In the `spring-petclinic-visits-service` directory, create a new `src/main/java/org/springframework/samples/petclinic/visits/service` subdirectory and add a `VisitsReceiver.java` class file containing the following code:
 
    ```java
    package org.springframework.samples.petclinic.visits.service;
-
+   
    import java.util.Date;
-
+   
    import org.springframework.beans.factory.annotation.Value;
    import org.springframework.context.annotation.Bean;
    import org.springframework.jms.annotation.JmsListener;
@@ -423,18 +451,18 @@ You will next add the code required to send and receive messages to the `visits`
    import org.springframework.samples.petclinic.visits.model.Visit;
    import org.springframework.samples.petclinic.visits.model.VisitRepository;
    import org.springframework.stereotype.Component;
-
+   
    import lombok.RequiredArgsConstructor;
    import lombok.extern.slf4j.Slf4j;
-
+   
    @Component
    @Slf4j
    @RequiredArgsConstructor
    public class VisitsReceiver {
        private final VisitRepository visitsRepository;
-    
+   
        private final JmsTemplate jmsTemplate;
-
+   
        @JmsListener(destination = "visits-requests")
        void receiveVisitRequests(VisitRequest visitRequest) {
            log.info("Received message: {}", visitRequest.getMessage());
@@ -456,18 +484,15 @@ This `VisitsReceiver` service is listening to the `visits-requests` queue. Each 
 1. Rebuild your application
 
    ```bash
-   mvn clean package -DskipTests
+   mvn clean package -DskipTests -rf :spring-petclinic-visits-service
    ```
 
 1. Redeploy the visits microservice.
 
    ```bash
-   az spring app deploy --service $SPRING_APPS_SERVICE \
-                              --resource-group $RESOURCE_GROUP \
-                              --name visits-service \
-                              --no-wait \
-                              --artifact-path spring-petclinic-visits-service/target/spring-petclinic-visits-service-$VERSION.jar \
-                              --env SPRING_PROFILES_ACTIVE=mysql
+   az spring app deploy --name ${VISITS_SERVICE} \
+       --config-file-patterns ${VISITS_SERVICE} \
+       --artifact-path ${VISITS_SERVICE_JAR} 
    ```
 
 1. To validate the resulting functionality, in the Azure Portal, navigate back to the page of the `visits-requests` queue of the Service Bus namespace you deployed earlier in this lab.
@@ -481,6 +506,12 @@ This `VisitsReceiver` service is listening to the `visits-requests` queue. Each 
 1. In the list of owners, select the first entry (**George Franklin**).
 
 1. On the **Owner Information** page, in the **Pets and Visits** section, verify the presence of an entry representing the message you submitted earlier in this lab.
+
+1. You can also check the logs of the `vistis-service` to see if you see the log message on the message receive.
+
+   ```bash
+   az spring app logs --name ${VISITS_SERVICE} --follow
+   ```
 
 </details>
 
